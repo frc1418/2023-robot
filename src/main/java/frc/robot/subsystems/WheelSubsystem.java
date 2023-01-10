@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DrivetrainSubsystem;
 
 public class WheelSubsystem extends SubsystemBase{
 
@@ -30,7 +31,13 @@ public class WheelSubsystem extends SubsystemBase{
         this.turningEncoder = new AnalogEncoder(turningEncoder);
         pidController = this.angleMotor.getPIDController();
 
-        pidController.setOutputRange(-1, 1);
+        pidController.setP(0.02);
+        pidController.setI(0);
+        pidController.setD(0);
+        pidController.setFF(0.03);
+        
+        pidController.setPositionPIDWrappingEnabled(true);
+        pidController.setOutputRange(-2 * Math.PI, 2 * Math.PI);
     }
 
     public void drive (SwerveModuleState state) {
@@ -39,9 +46,12 @@ public class WheelSubsystem extends SubsystemBase{
         
         double speed = state.speedMetersPerSecond;
         Rotation2d angle = optimizedState.angle;
-
-        speedMotor.set(speed / Math.sqrt(2));
-        pidController.setReference(angle.getRadians(), ControlType.kPosition);
+        //if (location != DrivetrainSubsystem.m_frontRightLocation) {
+            speedMotor.set(speed / Math.sqrt(2));
+            pidController.setReference(angle.getRadians(), ControlType.kPosition);
+            //System.out.println("hi");
+        //}
+        
     }
 
     public CANSparkMax getAngleMotor(){

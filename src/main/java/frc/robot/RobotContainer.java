@@ -67,7 +67,7 @@ public class RobotContainer {
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
-              swerveDrive.drive(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
+              swerveDrive.drive(leftJoystick.getX(), leftJoystick.getY(), rightJoystick.getX());
             } else {
               swerveDrive.drive(0, 0, 0);
             }
