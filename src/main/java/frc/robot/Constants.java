@@ -23,15 +23,19 @@ public final class Constants {
 
         public final static int BACK_RIGHT_SPEED_ID = 0;
         public final static int BACK_RIGHT_ANGLE_ID = 0;
+        public final static int BACK_RIGHT_ENCODER = 0;
 
         public final static int BACK_LEFT_SPEED_ID = 0;
         public final static int BACK_LEFT_ANGLE_ID = 0;
+        public final static int BACK_LEFT_ENCODER = 0;
 
         public final static int FRONT_RIGHT_SPEED_ID = 0;
         public final static int FRONT_RIGHT_ANGLE_ID = 0;
+        public final static int FRONT_RIGHT_ENCODER = 0;
 
         public final static int FRONT_LEFT_SPEED_ID = 0;
         public final static int FRONT_LEFT_ANGLE_ID = 0;
+        public final static int FRONT_LEFT_ENCODER = 0;
 
         public final static Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
         public final static Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);

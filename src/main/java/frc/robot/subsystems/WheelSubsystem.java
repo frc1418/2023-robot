@@ -34,14 +34,13 @@ public class WheelSubsystem extends SubsystemBase{
     }
 
     public void drive (SwerveModuleState state) {
-        double speed = state.speedMetersPerSecond;
-        Rotation2d angle = state.angle;
-
-        var optimizedState = SwerveModuleState.optimize(state,
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(state,
             new Rotation2d(turningEncoder.getDistance()));
+        
+        double speed = state.speedMetersPerSecond;
+        Rotation2d angle = optimizedState.angle;
 
-
-        speedMotor.set (speed);
+        speedMotor.set(speed / Math.sqrt(2));
         pidController.setReference(angle.getRadians(), ControlType.kPosition);
     }
 

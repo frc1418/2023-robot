@@ -33,16 +33,16 @@ public class RobotContainer {
 
     private WheelSubsystem backRightWheel = new WheelSubsystem (
         DrivetrainSubsystem.BACK_RIGHT_ANGLE_ID, DrivetrainSubsystem.BACK_RIGHT_SPEED_ID,
-        0, DrivetrainSubsystem.m_backRightLocation);
+        DrivetrainSubsystem.BACK_RIGHT_ENCODER, DrivetrainSubsystem.m_backRightLocation);
     private WheelSubsystem backLeftWheel = new WheelSubsystem (
         DrivetrainSubsystem.BACK_LEFT_ANGLE_ID, DrivetrainSubsystem.BACK_LEFT_SPEED_ID,
-        0, DrivetrainSubsystem.m_backLeftLocation);
+        DrivetrainSubsystem.BACK_LEFT_ENCODER, DrivetrainSubsystem.m_backLeftLocation);
     private WheelSubsystem frontRightWheel = new WheelSubsystem (
         DrivetrainSubsystem.FRONT_RIGHT_ANGLE_ID, DrivetrainSubsystem.FRONT_RIGHT_SPEED_ID,
-        0, DrivetrainSubsystem.m_frontRightLocation);
+        DrivetrainSubsystem.FRONT_RIGHT_ENCODER, DrivetrainSubsystem.m_frontRightLocation);
     private WheelSubsystem frontLeftWheel = new WheelSubsystem (
         DrivetrainSubsystem.FRONT_LEFT_ANGLE_ID, DrivetrainSubsystem.FRONT_LEFT_SPEED_ID,
-        0, DrivetrainSubsystem.m_frontLeftLocation);
+        DrivetrainSubsystem.FRONT_LEFT_ENCODER, DrivetrainSubsystem.m_frontLeftLocation);
     
     private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
 
