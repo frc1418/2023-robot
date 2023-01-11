@@ -67,7 +67,8 @@ public class RobotContainer {
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
-              swerveDrive.drive(leftJoystick.getX(), leftJoystick.getY(), rightJoystick.getX());
+              System.out.println("X: " + leftJoystick.getX() + "   Y: " + leftJoystick.getY() *-1 + "   ROT: " + rightJoystick.getX());
+              swerveDrive.drive(applyDeadband(leftJoystick.getX()), applyDeadband(leftJoystick.getY()*-1), applyDeadband(rightJoystick.getX()));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
@@ -84,5 +85,10 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
       // An ExampleCommand will run in autonomous
       return m_autoCommand;
-  }
+    }
+
+    public double applyDeadband(double val){
+      if (Math.abs(val) < DrivetrainSubsystem.DEADBAND) return 0;
+      else return val;
+    }
 }
