@@ -58,11 +58,26 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         SwerveModuleState frontLeftState = moduleStates[2];
         SwerveModuleState frontRightState = moduleStates[3];
 
-        frontLeft.drive(frontLeftState);
-        frontRight.drive(frontRightState);
-        backLeft.drive(backLeftState);
-        backRight.drive(backRightState);
+        // frontLeft.drive(frontLeftState);
+        // frontRight.drive(frontRightState);
+        // backLeft.drive(backLeftState);
+        // backRight.drive(backRightState);
 
+        System.out.println("BR: " + backRight.getAngleMotor().getEncoder().getPosition());
+        //backRight.getEncoder().getDistance();
+
+
+    }
+
+    public void resetEncoders() {
+        frontLeft.getEncoder().reset();
+        frontLeft.getAngleMotor().getEncoder().setPosition(0);
+
+        frontRight.getEncoder().reset();
+        frontRight.getAngleMotor().getEncoder().setPosition(0);
+
+        backLeft.getEncoder().reset();
+        backLeft.getAngleMotor().getEncoder().setPosition(0);
 
         backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
