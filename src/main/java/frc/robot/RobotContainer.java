@@ -116,8 +116,6 @@ public class RobotContainer {
     private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
 
-  
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
       this.robot = robot;
