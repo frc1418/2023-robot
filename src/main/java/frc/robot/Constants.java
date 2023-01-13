@@ -39,10 +39,10 @@ public final class Constants {
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 1;
 
-        public final static Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-        public final static Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-        public final static Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-        public final static Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+        public final static Translation2d m_frontLeftLocation = new Translation2d(21.625/2, 21.625/2);
+        public final static Translation2d m_frontRightLocation = new Translation2d(21.625/2, -21.625/2);
+        public final static Translation2d m_backLeftLocation = new Translation2d(-21.625/2, 21.625/2);
+        public final static Translation2d m_backRightLocation = new Translation2d(-21.625/2, -21.625/2);
 
     }
 }

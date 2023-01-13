@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDriverSubsystem extends SubsystemBase{
@@ -13,12 +16,22 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     private WheelSubsystem frontLeft;
 
     private SwerveDriveKinematics kinematics;
+    
+    private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
+    private final NetworkTable table = ntInstance.getTable("/components/drivetrain");
+
+    private final NetworkTableEntry backRightAngleEncoder = table.getEntry("backRightAngleEncoder");
+    private final NetworkTableEntry backLeftAngleEncoder = table.getEntry("backLeftAngleEncoder");
+    private final NetworkTableEntry frontRightAngleEncoder = table.getEntry("frontRightAngleEncoder");
+    private final NetworkTableEntry frontLeftAngleEncoder = table.getEntry("frontLeftAngleEncoder");
+
 
     public SwerveDriverSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft) {
         this.backRight = backRight;
         this.backLeft = backLeft;
         this.frontRight = frontRight;
         this.frontLeft = frontLeft;
+        
 
         kinematics = new SwerveDriveKinematics(
             frontLeft.location, frontRight.location, backLeft.location, backRight.location);
@@ -28,7 +41,8 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     public void drive (double x, double y, double rot) {
         
 
-        ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
+        // ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
 
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
@@ -43,8 +57,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         // backLeft.drive(backLeftState);
         // backRight.drive(backRightState);
 
-        System.out.println("BR: " + backRight.getAngleMotor().getEncoder().getPosition());
-        //backRight.getEncoder().getDistance();
+        backLeftAngleEncoder.setDouble(backLeft.getEncoder().getAbsolutePosition());
+        backRightAngleEncoder.setDouble(backRight.getEncoder().getAbsolutePosition());
+        frontLeftAngleEncoder.setDouble(frontLeft.getEncoder().getAbsolutePosition());
+        frontRightAngleEncoder.setDouble(frontRight.getEncoder().getAbsolutePosition());
 
 
     }

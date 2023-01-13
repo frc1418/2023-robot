@@ -9,6 +9,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -63,8 +66,6 @@ public class RobotContainer {
     
     private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
 
-  
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
       this.robot = robot;
@@ -82,6 +83,9 @@ public class RobotContainer {
       frontRightAngleMotor.setIdleMode(IdleMode.kBrake);
       backLeftAngleMotor.setIdleMode(IdleMode.kBrake);
       backRightAngleMotor.setIdleMode(IdleMode.kBrake);
+
+      frontRightAngleMotor.setInverted(true);
+      backRightAngleMotor.setInverted(true);
     }
 
     /**
