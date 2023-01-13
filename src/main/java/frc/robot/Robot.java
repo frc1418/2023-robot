@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    // This seems a little weird to have here. Probably just a testing thing I assume. Probably best to get rid of it though
     m_robotContainer.backLeftWheel.getAngleMotor().setIdleMode(IdleMode.kCoast);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

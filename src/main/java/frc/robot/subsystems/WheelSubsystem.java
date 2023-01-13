@@ -37,12 +37,18 @@ public class WheelSubsystem extends SubsystemBase{
 
         
 
+        // I imagine you'll want this to be much larger (~50)
+        // When the error is 1/4 rotation, (90 degrees), the motor should probably run at 12v, so that means
+        // kP * .25 = 12
+        // kP       = 48
         pidController.setP(0.06);
         pidController.setI(0);
         pidController.setD(0);
         pidController.setFF(0.03);
         
         pidController.setPositionPIDWrappingEnabled(true);
+        // The PID output should go from -12 to 12, since that's the possible values you can give the motor
+        // -2*PI<->2*PI is really an input range
         pidController.setOutputRange(-2 * Math.PI, 2 * Math.PI);
     }
 
@@ -55,7 +61,11 @@ public class WheelSubsystem extends SubsystemBase{
         targetVoltage = optimizedState.speedMetersPerSecond;
         Rotation2d angle = optimizedState.angle;
         //if (location != DrivetrainSubsystem.m_frontRightLocation) {
+            // Why not use the velocity control, like you use the position control?
+            // I would set up a PIDController for the speed motor too
             speedMotor.set(targetVoltage / Math.sqrt(2));
+            // Read the docs for `setReference`. Position should be in rotations, not radians.
+            // I think you need to divide by 2PI.
             pidController.setReference(angle.getRadians(), ControlType.kPosition);
             //System.out.println("hi");
         //}
