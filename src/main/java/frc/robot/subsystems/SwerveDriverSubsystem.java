@@ -58,10 +58,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         SwerveModuleState frontLeftState = moduleStates[2];
         SwerveModuleState frontRightState = moduleStates[3];
 
-        // frontLeft.drive(frontLeftState);
-        // frontRight.drive(frontRightState);
-        // backLeft.drive(backLeftState);
-        // backRight.drive(backRightState);
+        frontLeft.drive(frontLeftState);
+        frontRight.drive(frontRightState);
+        backLeft.drive(backLeftState);
+        backRight.drive(backRightState);
 
         // backLeft.getAngleMotor().setVoltage(0.5);
         // backRight.getAngleMotor().setVoltage(0.5);
