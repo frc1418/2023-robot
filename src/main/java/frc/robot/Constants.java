@@ -22,23 +22,23 @@ public final class Constants {
 
         public static final double WIDTH = 22.5;
         public static final double LENGTH = 22.5;
-        
+
 
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
-        public final static int BACK_RIGHT_ENCODER = 2;
+        public final static int BACK_RIGHT_ENCODER = 0;
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
-        public final static int BACK_LEFT_ENCODER = 3;
+        public final static int BACK_LEFT_ENCODER = 1;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
-        public final static int FRONT_RIGHT_ENCODER = 0;
+        public final static int FRONT_RIGHT_ENCODER = 2;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
-        public final static int FRONT_LEFT_ENCODER = 1;
+        public final static int FRONT_LEFT_ENCODER = 3;
 
         public final static Translation2d m_frontLeftLocation = new Translation2d(21.625/2, 21.625/2);
         public final static Translation2d m_frontRightLocation = new Translation2d(21.625/2, -21.625/2);
