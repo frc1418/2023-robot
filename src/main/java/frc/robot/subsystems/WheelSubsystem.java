@@ -25,45 +25,37 @@ public class WheelSubsystem extends SubsystemBase{
     private AnalogEncoder turningEncoder;    
     
     Translation2d location;
-    private final double MAX_VOLTS = 4.95;
+    private double encoderOffset;
 
     private double targetVoltage = 0;
 
-    private boolean invertEncoder;
 
-    public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location, boolean invertEncoder) {
+    public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location, double encoderOffset) {
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
         this.location = location;
         this.turningEncoder = turningEncoder;
-        this.invertEncoder = invertEncoder;
+        this.encoderOffset = encoderOffset;
 
-        pidController = new PIDController(0.06, 0, 0);
+        pidController = new PIDController(0.3, 0, 0.01);
+        pidController.enableContinuousInput(0, 1);
+        pidController.setTolerance(0.5, 1);
     }
 
     public void drive (SwerveModuleState state) {
-        //this.turningEncoder.reset();
-
-        double encoderPos;
-
-        if(invertEncoder){
-            encoderPos = -turningEncoder.getAbsolutePosition();
-        } else {
-            encoderPos = turningEncoder.getAbsolutePosition();
-        }
-
         
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state,
-            new Rotation2d(encoderPos));
+            new Rotation2d(getEncoderPosition()));
             
         targetVoltage = optimizedState.speedMetersPerSecond;
         speedMotor.set(targetVoltage / Math.sqrt(2));
 
         Rotation2d angle = optimizedState.angle;
-        double pidOutput = pidController.calculate(getEncoderPosition(), angle.getDegrees() / 360);
+        double pidOutput = pidController.calculate(getEncoderPosition(), angle.getRotations());
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
-        angleMotor.set(clampedPidOutpt);
+        if (!pidController.atSetpoint())
+            angleMotor.set(clampedPidOutpt);
         
     }
 
@@ -83,7 +75,7 @@ public class WheelSubsystem extends SubsystemBase{
     }
 
     public double getEncoderPosition() {
-        double rawPos = turningEncoder.getAbsolutePosition();// - turningEncoder.getPositionOffset();
+        double rawPos = turningEncoder.getAbsolutePosition() - encoderOffset;
         if (rawPos < 0)
             return 1 + rawPos;
         else

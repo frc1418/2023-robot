@@ -53,21 +53,21 @@ public class RobotContainer {
     private AnalogEncoder backLeftEncoder = new AnalogEncoder(DrivetrainSubsystem.BACK_LEFT_ENCODER);
 
     private CANSparkMax frontLeftAngleMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_ANGLE_ID, MotorType.kBrushless);
-    private CANSparkMax frontLeftSpeedtMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_SPEED_ID, MotorType.kBrushless);
+    private CANSparkMax frontLeftSpeedMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_SPEED_ID, MotorType.kBrushless);
     private AnalogEncoder frontLeftEncoder = new AnalogEncoder(DrivetrainSubsystem.FRONT_LEFT_ENCODER);
 
     private WheelSubsystem backRightWheel = new WheelSubsystem (
-        backRightAngleMotor, backRightSpeedMotor,
-        backRightEncoder, DrivetrainSubsystem.m_backRightLocation, true);
+        backRightAngleMotor, backRightSpeedMotor, backRightEncoder,
+        DrivetrainSubsystem.m_backRightLocation, DrivetrainSubsystem.BACK_RIGHT_ENCODER_OFFSET);
     public WheelSubsystem backLeftWheel = new WheelSubsystem (
-        backLeftAngleMotor, backLeftSpeedMotor,
-        backLeftEncoder, DrivetrainSubsystem.m_backLeftLocation, false);
+      backLeftAngleMotor, backLeftSpeedMotor, backLeftEncoder,
+      DrivetrainSubsystem.m_backLeftLocation, DrivetrainSubsystem.BACK_LEFT_ENCODER_OFFSET);
     private WheelSubsystem frontRightWheel = new WheelSubsystem (
-        frontRightAngleMotor, frontRightSpeedMotor,
-        frontRightEncoder, DrivetrainSubsystem.m_frontRightLocation, false);
+      frontRightAngleMotor, frontRightSpeedMotor, frontRightEncoder,
+      DrivetrainSubsystem.m_frontRightLocation, DrivetrainSubsystem.FRONT_RIGHT_ENCODER_OFFSET);
     private WheelSubsystem frontLeftWheel = new WheelSubsystem (
-        frontLeftAngleMotor, frontLeftSpeedtMotor,
-        frontLeftEncoder, DrivetrainSubsystem.m_frontLeftLocation, true);
+      frontLeftAngleMotor, frontLeftSpeedMotor, frontLeftEncoder,
+      DrivetrainSubsystem.m_frontLeftLocation, DrivetrainSubsystem.FRONT_LEFT_ENCODER_OFFSET);
     
     private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
 
@@ -89,8 +89,8 @@ public class RobotContainer {
       backLeftAngleMotor.setIdleMode(IdleMode.kBrake);
       backRightAngleMotor.setIdleMode(IdleMode.kBrake);
 
-      frontRightAngleMotor.setInverted(true);
-      backRightAngleMotor.setInverted(true);
+      frontRightSpeedMotor.setInverted(true);
+      backRightSpeedMotor.setInverted(true);
     }
 
     /**

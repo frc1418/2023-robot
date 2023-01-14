@@ -41,8 +41,8 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     public void drive (double x, double y, double rot) {
         
 
-        // ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
+        ChassisSpeeds speeds = new ChassisSpeeds(-y / 8, -x / 8, 0);
+        // ChassisSpeeds speeds = new ChassisSpeeds(0.1, 0.1, 0);
 
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
@@ -52,10 +52,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         SwerveModuleState backLeftState = moduleStates[2];
         SwerveModuleState backRightState = moduleStates[3];
 
-        // frontLeft.drive(frontLeftState);
-        // frontRight.drive(frontRightState);
-        // backLeft.drive(backLeftState);
-        // backRight.drive(backRightState);
+        frontLeft.drive(frontLeftState);
+        frontRight.drive(frontRightState);
+        backLeft.drive(backLeftState);
+        backRight.drive(backRightState);
 
         // backLeft.getAngleMotor().setVoltage(0.5);
         // backRight.getAngleMotor().setVoltage(0.5);
