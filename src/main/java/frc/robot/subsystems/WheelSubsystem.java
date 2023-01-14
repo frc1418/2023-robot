@@ -57,11 +57,12 @@ public class WheelSubsystem extends SubsystemBase{
             new Rotation2d(encoderPos));
             
         targetVoltage = optimizedState.speedMetersPerSecond;
-        Rotation2d angle = optimizedState.angle;
+        speedMotor.set(targetVoltage / Math.sqrt(2));
 
+        Rotation2d angle = optimizedState.angle;
         double pidOutput = pidController.calculate(getEncoderPosition(), angle.getDegrees() / 360);
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
-        speedMotor.set(targetVoltage / Math.sqrt(2));
+        
         angleMotor.set(clampedPidOutpt);
         
     }
