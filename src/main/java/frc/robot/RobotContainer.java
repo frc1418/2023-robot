@@ -9,6 +9,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -38,32 +42,34 @@ public class RobotContainer {
 
     private CANSparkMax backRightAngleMotor = new CANSparkMax(DrivetrainSubsystem.BACK_RIGHT_ANGLE_ID, MotorType.kBrushless);
     private CANSparkMax backRightSpeedMotor = new CANSparkMax(DrivetrainSubsystem.BACK_RIGHT_SPEED_ID, MotorType.kBrushless);
+    private AnalogEncoder backRightEncoder = new AnalogEncoder(DrivetrainSubsystem.BACK_RIGHT_ENCODER);
 
     private CANSparkMax frontRightAngleMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_RIGHT_ANGLE_ID, MotorType.kBrushless);
     private CANSparkMax frontRightSpeedMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_RIGHT_SPEED_ID, MotorType.kBrushless);
+    private AnalogEncoder frontRightEncoder = new AnalogEncoder(DrivetrainSubsystem.FRONT_RIGHT_ENCODER);
 
     private CANSparkMax backLeftAngleMotor = new CANSparkMax(DrivetrainSubsystem.BACK_LEFT_ANGLE_ID, MotorType.kBrushless);
     private CANSparkMax backLeftSpeedMotor = new CANSparkMax(DrivetrainSubsystem.BACK_LEFT_SPEED_ID, MotorType.kBrushless);
+    private AnalogEncoder backLeftEncoder = new AnalogEncoder(DrivetrainSubsystem.BACK_LEFT_ENCODER);
 
     private CANSparkMax frontLeftAngleMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_ANGLE_ID, MotorType.kBrushless);
-    private CANSparkMax frontLeftSpeedtMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_SPEED_ID, MotorType.kBrushless);
+    private CANSparkMax frontLeftSpeedMotor = new CANSparkMax(DrivetrainSubsystem.FRONT_LEFT_SPEED_ID, MotorType.kBrushless);
+    private AnalogEncoder frontLeftEncoder = new AnalogEncoder(DrivetrainSubsystem.FRONT_LEFT_ENCODER);
 
     private WheelSubsystem backRightWheel = new WheelSubsystem (
-        backRightAngleMotor, backRightSpeedMotor,
-        DrivetrainSubsystem.BACK_RIGHT_ENCODER, DrivetrainSubsystem.m_backRightLocation);
+        backRightAngleMotor, backRightSpeedMotor, backRightEncoder,
+        DrivetrainSubsystem.m_backRightLocation, DrivetrainSubsystem.BACK_RIGHT_ENCODER_OFFSET);
     public WheelSubsystem backLeftWheel = new WheelSubsystem (
-        backLeftAngleMotor, backLeftSpeedMotor,
-        DrivetrainSubsystem.BACK_LEFT_ENCODER, DrivetrainSubsystem.m_backLeftLocation);
+      backLeftAngleMotor, backLeftSpeedMotor, backLeftEncoder,
+      DrivetrainSubsystem.m_backLeftLocation, DrivetrainSubsystem.BACK_LEFT_ENCODER_OFFSET);
     private WheelSubsystem frontRightWheel = new WheelSubsystem (
-        frontRightAngleMotor, frontRightSpeedMotor,
-        DrivetrainSubsystem.FRONT_RIGHT_ENCODER, DrivetrainSubsystem.m_frontRightLocation);
+      frontRightAngleMotor, frontRightSpeedMotor, frontRightEncoder,
+      DrivetrainSubsystem.m_frontRightLocation, DrivetrainSubsystem.FRONT_RIGHT_ENCODER_OFFSET);
     private WheelSubsystem frontLeftWheel = new WheelSubsystem (
-        frontLeftAngleMotor, frontLeftSpeedtMotor,
-        DrivetrainSubsystem.FRONT_LEFT_ENCODER, DrivetrainSubsystem.m_frontLeftLocation);
+      frontLeftAngleMotor, frontLeftSpeedMotor, frontLeftEncoder,
+      DrivetrainSubsystem.m_frontLeftLocation, DrivetrainSubsystem.FRONT_LEFT_ENCODER_OFFSET);
     
     private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
-
-  
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -82,6 +88,9 @@ public class RobotContainer {
       frontRightAngleMotor.setIdleMode(IdleMode.kBrake);
       backLeftAngleMotor.setIdleMode(IdleMode.kBrake);
       backRightAngleMotor.setIdleMode(IdleMode.kBrake);
+
+      frontRightSpeedMotor.setInverted(true);
+      backRightSpeedMotor.setInverted(true);
     }
 
     /**
