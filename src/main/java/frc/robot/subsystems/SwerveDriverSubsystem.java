@@ -63,21 +63,16 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         backLeft.drive(backLeftState);
         backRight.drive(backRightState);
 
-        // backLeft.getAngleMotor().setVoltage(0.5);
-        // backRight.getAngleMotor().setVoltage(0.5);
-        // frontLeft.getAngleMotor().setVoltage(0.5);
-        // frontRight.getAngleMotor().setVoltage(0.5);
-
 
         backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
 
-        backLeftEncoderOutput.setDouble(backLeft.encoderOutput);
-        backRightEncoderOutput.setDouble(backRight.encoderOutput);
-        frontLeftEncoderOutput.setDouble(frontLeft.encoderOutput);
-        frontRightEncoderOutput.setDouble(frontRight.encoderOutput);
+        backLeftEncoderOutput.setDouble(backLeft.getEncoderOutput());
+        backRightEncoderOutput.setDouble(backRight.getEncoderOutput());
+        frontLeftEncoderOutput.setDouble(frontLeft.getEncoderOutput());
+        frontRightEncoderOutput.setDouble(frontRight.getEncoderOutput());
 
 
     }
