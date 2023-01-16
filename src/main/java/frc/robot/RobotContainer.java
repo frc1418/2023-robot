@@ -8,23 +8,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDriverSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -110,7 +106,10 @@ public class RobotContainer {
           () -> {
             if (robot.isTeleopEnabled()) {
               // System.out.println("X: " + leftJoystick.getX() + "   Y: " + leftJoystick.getY() *-1 + "   ROT: " + rightJoystick.getX());
-              swerveDrive.drive(applyDeadband(leftJoystick.getX()), applyDeadband(leftJoystick.getY())*-1, applyDeadband(rightJoystick.getX()));
+              swerveDrive.drive(
+                  applyDeadband(leftJoystick.getX() / 2,DrivetrainSubsystem.DRIFT_DEADBAND),
+                  applyDeadband(-leftJoystick.getY() / 2, DrivetrainSubsystem.DRIFT_DEADBAND),
+                  applyDeadband(-rightJoystick.getX() / 32, DrivetrainSubsystem.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
@@ -137,8 +136,8 @@ public class RobotContainer {
       return m_autoCommand;
     }
 
-    public double applyDeadband(double val){
-      if (Math.abs(val) < DrivetrainSubsystem.DEADBAND) return 0;
+    public double applyDeadband(double val, double deadband){
+      if (Math.abs(val) < deadband) return 0;
       else return val;
     }
 }

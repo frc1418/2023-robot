@@ -18,7 +18,8 @@ public final class Constants {
 
     public final static class DrivetrainSubsystem {
 
-        public static final double DEADBAND = 0.05;
+        public static final double DRIFT_DEADBAND = 0.05;
+        public static final double ROTATION_DEADBAND = 0.002;
 
         public static final double WIDTH = 22.5;
         public static final double LENGTH = 22.5;

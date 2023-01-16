@@ -29,6 +29,8 @@ public class WheelSubsystem extends SubsystemBase{
 
     private double targetVoltage = 0;
 
+    double encoderOutput = 0;
+
 
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location, double encoderOffset) {
         this.angleMotor = angleMotor;
@@ -37,25 +39,32 @@ public class WheelSubsystem extends SubsystemBase{
         this.turningEncoder = turningEncoder;
         this.encoderOffset = encoderOffset;
 
-        pidController = new PIDController(0.3, 0, 0.01);
+        this.turningEncoder.setPositionOffset(encoderOffset);
+
+        pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);
-        pidController.setTolerance(0.5, 1);
+        pidController.setTolerance(1.0/360);
     }
 
     public void drive (SwerveModuleState state) {
         
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state,
-            new Rotation2d(getEncoderPosition()));
+            Rotation2d.fromRotations(getEncoderPosition()));
             
         targetVoltage = optimizedState.speedMetersPerSecond;
         speedMotor.set(targetVoltage / Math.sqrt(2));
 
         Rotation2d angle = optimizedState.angle;
+        System.out.println(angle.getRotations());
         double pidOutput = pidController.calculate(getEncoderPosition(), angle.getRotations());
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
         if (!pidController.atSetpoint())
-            angleMotor.set(clampedPidOutpt);
+            encoderOutput = clampedPidOutpt;
+        else
+            encoderOutput = 0;
+
+        angleMotor.set(-encoderOutput);
         
     }
 

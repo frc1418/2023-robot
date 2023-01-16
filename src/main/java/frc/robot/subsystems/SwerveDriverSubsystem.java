@@ -25,6 +25,12 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     private final NetworkTableEntry frontRightAngleEncoder = table.getEntry("frontRightAngleEncoder");
     private final NetworkTableEntry frontLeftAngleEncoder = table.getEntry("frontLeftAngleEncoder");
 
+    private final NetworkTableEntry backRightEncoderOutput = table.getEntry("backRightEncoderOutput");
+    private final NetworkTableEntry backLeftEncoderOutput = table.getEntry("backLeftEncoderOutput");
+    private final NetworkTableEntry frontRightEncoderOutput = table.getEntry("frontRightEncoderOutput");
+    private final NetworkTableEntry frontLeftEncoderOutput = table.getEntry("frontLeftEncoderOutput");
+
+
 
     public SwerveDriverSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft) {
         this.backRight = backRight;
@@ -41,16 +47,16 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     public void drive (double x, double y, double rot) {
         
 
-        ChassisSpeeds speeds = new ChassisSpeeds(-y / 8, -x / 8, 0);
-        // ChassisSpeeds speeds = new ChassisSpeeds(0.1, 0.1, 0);
+        ChassisSpeeds speeds = new ChassisSpeeds(y, x, rot);
+        // ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
 
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        SwerveModuleState frontLeftState = moduleStates[0];
-        SwerveModuleState frontRightState = moduleStates[1];
-        SwerveModuleState backLeftState = moduleStates[2];
-        SwerveModuleState backRightState = moduleStates[3];
+        SwerveModuleState backLeftState = moduleStates[0];
+        SwerveModuleState backRightState = moduleStates[1];
+        SwerveModuleState frontLeftState = moduleStates[2];
+        SwerveModuleState frontRightState = moduleStates[3];
 
         frontLeft.drive(frontLeftState);
         frontRight.drive(frontRightState);
@@ -67,6 +73,11 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
+
+        backLeftEncoderOutput.setDouble(backLeft.encoderOutput);
+        backRightEncoderOutput.setDouble(backRight.encoderOutput);
+        frontLeftEncoderOutput.setDouble(frontLeft.encoderOutput);
+        frontRightEncoderOutput.setDouble(frontRight.encoderOutput);
 
 
     }
