@@ -105,7 +105,6 @@ public class RobotContainer {
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
-              // System.out.println("X: " + leftJoystick.getX() + "   Y: " + leftJoystick.getY() *-1 + "   ROT: " + rightJoystick.getX());
               swerveDrive.drive(
                   applyDeadband(leftJoystick.getX() / 2,DrivetrainSubsystem.DRIFT_DEADBAND),
                   applyDeadband(-leftJoystick.getY() / 2, DrivetrainSubsystem.DRIFT_DEADBAND),
