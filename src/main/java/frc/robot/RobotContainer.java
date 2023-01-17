@@ -8,16 +8,22 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.common.Odometry;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDriverSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
@@ -65,7 +71,29 @@ public class RobotContainer {
       frontLeftAngleMotor, frontLeftSpeedMotor, frontLeftEncoder,
       DrivetrainSubsystem.m_frontLeftLocation);
     
-    private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
+
+    ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kMXP);
+
+    private SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+          frontLeftWheel.getLocation(),
+          frontRightWheel.getLocation(),
+          backLeftWheel.getLocation(),
+          backRightWheel.getLocation());
+
+    private SwerveModulePosition[] positions = new SwerveModulePosition[] {
+      frontLeftWheel.getSwerveModulePosition(),
+      frontRightWheel.getSwerveModulePosition(),
+      backLeftWheel.getSwerveModulePosition(),
+      backRightWheel.getSwerveModulePosition()
+    };
+
+    private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(swerveKinematics, gyro.getRotation2d(), positions);
+
+    private Odometry odometry = new Odometry(gyro, driveOdometry, positions);
+    
+    private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(
+        backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
+        swerveKinematics, odometry);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -116,6 +144,8 @@ public class RobotContainer {
 
       JoystickButton resetEncoderButton = new JoystickButton(rightJoystick, 3);
 
+      JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
+
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
@@ -130,6 +160,11 @@ public class RobotContainer {
           },
           swerveDrive));
       
+      fieldCentricButton.toggleOnTrue(new RunCommand(
+          () -> {
+            System.out.println("FIELD CENTRIC TOGGLED");
+            swerveDrive.toggleFieldCentric();
+          }, swerveDrive));
 
       resetEncoderButton.whileTrue(new RunCommand(
         () -> {
