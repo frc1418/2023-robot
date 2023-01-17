@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.common.Odometry;
 
 public class SwerveDriverSubsystem extends SubsystemBase{
 
@@ -14,8 +16,6 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     private WheelSubsystem backLeft;
     private WheelSubsystem frontRight;
     private WheelSubsystem frontLeft;
-
-    private SwerveDriveKinematics kinematics;
     
     private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
     private final NetworkTable table = ntInstance.getTable("/components/drivetrain");
@@ -32,15 +32,19 @@ public class SwerveDriverSubsystem extends SubsystemBase{
 
 
 
-    public SwerveDriverSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft) {
+    private SwerveDriveKinematics kinematics;
+    private Odometry odometry;
+    
+    public boolean fieldCentric = false;
+
+    public SwerveDriverSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft, SwerveDriveKinematics kinematics, Odometry odometry) {
         this.backRight = backRight;
         this.backLeft = backLeft;
         this.frontRight = frontRight;
         this.frontLeft = frontLeft;
-        
 
-        kinematics = new SwerveDriveKinematics(
-            frontLeft.location, frontRight.location, backLeft.location, backRight.location);
+        this.kinematics = kinematics;
+        this.odometry = odometry;
     }
 
 
@@ -50,6 +54,9 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
 
+        if (fieldCentric) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, null);
+        }
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
@@ -76,6 +83,7 @@ public class SwerveDriverSubsystem extends SubsystemBase{
 
 
     }
+    
 
     public void resetEncoders() {
         frontLeft.getEncoder().reset();
@@ -89,6 +97,28 @@ public class SwerveDriverSubsystem extends SubsystemBase{
 
         backRight.getEncoder().reset();
         backRight.getAngleMotor().getEncoder().setPosition(0);
+    }
+
+    @Override
+    public void periodic() {
+        odometry.update(getPositions());
+    }
+
+    public void toggleFieldCentric() {
+        fieldCentric = !fieldCentric;
+    }
+
+    public boolean getFieldCentric() {
+        return fieldCentric;
+    }
+
+    public SwerveModulePosition[] getPositions() {
+        return new SwerveModulePosition[] {
+            frontLeft.getSwerveModulePosition(),
+            frontRight.getSwerveModulePosition(),
+            backLeft.getSwerveModulePosition(),
+            backRight.getSwerveModulePosition()
+          };
     }
 
 }

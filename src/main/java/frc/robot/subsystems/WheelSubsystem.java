@@ -1,20 +1,14 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DrivetrainSubsystem;
 
 public class WheelSubsystem extends SubsystemBase{
 
@@ -34,8 +28,11 @@ public class WheelSubsystem extends SubsystemBase{
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location) {
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
-        this.location = location;
         this.turningEncoder = turningEncoder;
+        this.encoderOffset = encoderOffset;
+        this.location = location;
+
+        this.turningEncoder.setPositionOffset(encoderOffset);
 
         pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);
@@ -92,5 +89,13 @@ public class WheelSubsystem extends SubsystemBase{
 
     public double getangleSetpoint() {
         return angleSetpoint;
+    }
+
+    public Translation2d getLocation() {
+        return location;
+    }
+    public SwerveModulePosition getSwerveModulePosition() {
+        return new SwerveModulePosition(
+            speedMotor.getEncoder().getPosition(), new Rotation2d(getEncoderPosition()));
     }
 }
