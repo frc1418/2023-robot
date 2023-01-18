@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -18,9 +20,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.common.Odometry;
@@ -72,7 +77,7 @@ public class RobotContainer {
       DrivetrainSubsystem.m_frontLeftLocation);
     
 
-    ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kMXP);
+    Gyro gyro = new AHRS(SPI.Port.kMXP);
 
     private SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           frontLeftWheel.getLocation(),
@@ -101,7 +106,6 @@ public class RobotContainer {
 
       // Configure the button bindings
       configureButtonBindings();
-      configureObjects();
     }
 
     public void configureObjects() {
@@ -142,6 +146,8 @@ public class RobotContainer {
       Joystick leftJoystick = new Joystick(0);
       Joystick rightJoystick = new Joystick(1);
 
+      
+
       JoystickButton resetEncoderButton = new JoystickButton(rightJoystick, 3);
 
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
@@ -159,18 +165,19 @@ public class RobotContainer {
             }
           },
           swerveDrive));
-      
-      fieldCentricButton.toggleOnTrue(new RunCommand(
+
+
+      fieldCentricButton.onTrue(new InstantCommand(
           () -> {
             System.out.println("FIELD CENTRIC TOGGLED");
             swerveDrive.toggleFieldCentric();
-          }, swerveDrive));
+          }));
 
-      resetEncoderButton.whileTrue(new RunCommand(
-        () -> {
-          System.out.println("RESET");
-          swerveDrive.resetEncoders();
-      }, swerveDrive));
+      // resetEncoderButton.whileTrue(new RunCommand(
+      //   () -> {
+      //     System.out.println("RESET");
+      //     swerveDrive.resetEncoders();
+      // }, swerveDrive));
 
 
     }
@@ -188,5 +195,9 @@ public class RobotContainer {
     public double applyDeadband(double val, double deadband){
       if (Math.abs(val) < deadband) return 0;
       else return val;
+    }
+
+    public Odometry getOdometry() {
+      return odometry;
     }
 }

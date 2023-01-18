@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import org.opencv.core.RotatedRect;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -30,6 +33,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     private final NetworkTableEntry frontRightEncoderOutput = table.getEntry("frontRightEncoderOutput");
     private final NetworkTableEntry frontLeftEncoderOutput = table.getEntry("frontLeftEncoderOutput");
 
+    private final NetworkTable odometryTable = ntInstance.getTable("/common/Odometry");
+    private final NetworkTableEntry odometryPose = odometryTable.getEntry("odometryPose");
+
+
 
 
     private SwerveDriveKinematics kinematics;
@@ -55,15 +62,15 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
 
         if (fieldCentric) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, null);
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, odometry.getRotation2d());
         }
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        SwerveModuleState backLeftState = moduleStates[0];
-        SwerveModuleState backRightState = moduleStates[1];
-        SwerveModuleState frontLeftState = moduleStates[2];
-        SwerveModuleState frontRightState = moduleStates[3];
+        SwerveModuleState frontLeftState = moduleStates[0];
+        SwerveModuleState frontRightState = moduleStates[1];
+        SwerveModuleState backLeftState = moduleStates[2];
+        SwerveModuleState backRightState = moduleStates[3];
 
         frontLeft.drive(frontLeftState);
         frontRight.drive(frontRightState);
@@ -102,6 +109,18 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         odometry.update(getPositions());
+
+        odometryPose.setString(odometry.getPose().toString());
+
+        backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
+        backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
+        frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
+        frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
+
+        backLeftEncoderOutput.setDouble(backLeft.getEncoderOutput());
+        backRightEncoderOutput.setDouble(backRight.getEncoderOutput());
+        frontLeftEncoderOutput.setDouble(frontLeft.getEncoderOutput());
+        frontRightEncoderOutput.setDouble(frontRight.getEncoderOutput());
     }
 
     public void toggleFieldCentric() {

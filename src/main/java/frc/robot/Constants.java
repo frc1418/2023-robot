@@ -46,10 +46,10 @@ public final class Constants {
         public final static int FRONT_LEFT_ENCODER = 3;
         public final static double FRONT_LEFT_ENCODER_OFFSET = 0.811;
 
-        public final static Translation2d m_frontLeftLocation = new Translation2d(21.625/2, 21.625/2);
-        public final static Translation2d m_frontRightLocation = new Translation2d(21.625/2, -21.625/2);
-        public final static Translation2d m_backLeftLocation = new Translation2d(-21.625/2, 21.625/2);
-        public final static Translation2d m_backRightLocation = new Translation2d(-21.625/2, -21.625/2);
+        public final static Translation2d m_frontLeftLocation = new Translation2d(-21.625/2, 21.625/2);
+        public final static Translation2d m_frontRightLocation = new Translation2d(-21.625/2, -21.625/2);
+        public final static Translation2d m_backLeftLocation = new Translation2d(21.625/2, 21.625/2);
+        public final static Translation2d m_backRightLocation = new Translation2d(21.625/2, -21.625/2);
 
     }
 }
