@@ -51,7 +51,6 @@ public class WheelSubsystem extends SubsystemBase{
         speedMotor.set(targetVoltage / Math.sqrt(2));
 
         Rotation2d angle = optimizedState.angle;
-        System.out.println(angle.getRotations());
         double pidOutput = pidController.calculate(getEncoderPosition(), angle.getRotations());
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
@@ -75,6 +74,7 @@ public class WheelSubsystem extends SubsystemBase{
     public AnalogEncoder getEncoder(){
         return turningEncoder;
     }
+
     public double getTargetVoltage() {
         return targetVoltage;
     }
@@ -96,6 +96,7 @@ public class WheelSubsystem extends SubsystemBase{
     }
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(
-            speedMotor.getEncoder().getPosition(), new Rotation2d(getEncoderPosition()));
+            //TODO: Change rotations to meters
+            speedMotor.getEncoder().getPosition(), Rotation2d.fromRotations(getEncoderPosition()));
     }
 }

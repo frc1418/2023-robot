@@ -37,10 +37,8 @@ public class Odometry {
 
         // Update the pose
         pose = odometry.update(gyroAngle, newPositions);
-    }
 
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        modulePositions = newPositions;
     }
 
     public void reset(Pose2d pose) {
@@ -51,6 +49,11 @@ public class Odometry {
         gyro.reset();
     }
 
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    
     public double getHeading() {
         return gyro.getRotation2d().getDegrees();
     }
