@@ -165,12 +165,13 @@ public class RobotContainer {
             }
           },
           swerveDrive));
-      
-      fieldCentricButton.toggleOnTrue(new RunCommand(
+
+
+      fieldCentricButton.onTrue(new InstantCommand(
           () -> {
             System.out.println("FIELD CENTRIC TOGGLED");
             swerveDrive.toggleFieldCentric();
-          }, swerveDrive));
+          }));
 
 
       fieldCentricButton.onTrue(new InstantCommand(
