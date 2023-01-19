@@ -29,7 +29,7 @@ public class WheelSubsystem extends SubsystemBase{
 
     private double targetVoltage = 0;
 
-    private double encoderOutput = 0;
+    private double angleVoltage = 0;
 
 
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location, double encoderOffset) {
@@ -60,11 +60,11 @@ public class WheelSubsystem extends SubsystemBase{
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
         if (!pidController.atSetpoint())
-            encoderOutput = clampedPidOutpt;
+            angleVoltage = clampedPidOutpt;
         else
-            encoderOutput = 0;
+            angleVoltage = 0;
 
-        angleMotor.set(encoderOutput);
+        angleMotor.set(angleVoltage);
         
     }
 
@@ -91,7 +91,7 @@ public class WheelSubsystem extends SubsystemBase{
             return rawPos;
     }
 
-    public double getEncoderOutput() {
-        return encoderOutput;
+    public double getAngleVoltage() {
+        return angleVoltage;
     }
 }
