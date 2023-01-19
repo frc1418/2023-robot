@@ -30,7 +30,7 @@ import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.SwerveDriverSubsystem;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
 
 /**
@@ -96,7 +96,7 @@ public class RobotContainer {
 
     private Odometry odometry = new Odometry(gyro, driveOdometry, positions);
     
-    private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(
+    private SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem(
         backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
         swerveKinematics, odometry);
 
@@ -106,6 +106,7 @@ public class RobotContainer {
 
       // Configure the button bindings
       configureButtonBindings();
+      configureObjects();
     }
 
     public void configureObjects() {
@@ -166,18 +167,11 @@ public class RobotContainer {
           },
           swerveDrive));
 
-
-      fieldCentricButton.onTrue(new InstantCommand(
-          () -> {
-            swerveDrive.toggleFieldCentric();
-          }));
-
-
       fieldCentricButton.onTrue(new InstantCommand(
           () -> {
             System.out.println("FIELD CENTRIC TOGGLED");
             swerveDrive.toggleFieldCentric();
-          }));
+          }, swerveDrive));
 
       // resetEncoderButton.whileTrue(new RunCommand(
       //   () -> {

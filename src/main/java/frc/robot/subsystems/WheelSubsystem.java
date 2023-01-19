@@ -29,6 +29,9 @@ public class WheelSubsystem extends SubsystemBase{
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
         this.turningEncoder = turningEncoder;
+        this.location = location;
+
+        this.speedMotor.getEncoder().setPosition(0);
 
         pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);
@@ -76,6 +79,7 @@ public class WheelSubsystem extends SubsystemBase{
     }
 
     public double getEncoderPosition() {
+        // return turningEncoder.getAbsolutePosition();
         double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
         if (rawPos < 0)
             return 1 + rawPos;
@@ -90,6 +94,11 @@ public class WheelSubsystem extends SubsystemBase{
     public Translation2d getLocation() {
         return location;
     }
+
+    public double getDistanceDriven() {
+        return speedMotor.getEncoder().getPosition();
+    }
+
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(
             //TODO: Change rotations to meters

@@ -118,15 +118,20 @@ public class SwerveDriveSubsystem extends SubsystemBase{
 
         odometryPose.setString(odometry.getPose().toString());
 
+        // backLeftAngleEncoder.setDouble(backLeft.getDistanceDriven());
+        // backRightAngleEncoder.setDouble(backRight.getDistanceDriven());
+        // frontLeftAngleEncoder.setDouble(frontLeft.getDistanceDriven());
+        // frontRightAngleEncoder.setDouble(frontRight.getDistanceDriven());
+
         backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
 
-        backLeftEncoderOutput.setDouble(backLeft.getAngleVoltage());
-        backRightEncoderOutput.setDouble(backRight.getAngleVoltage());
-        frontLeftEncoderOutput.setDouble(frontLeft.getAngleVoltage());
-        frontRightEncoderOutput.setDouble(frontRight.getAngleVoltage());
+        // backLeftEncoderOutput.setDouble(backLeft.getAngleVoltage());
+        // backRightEncoderOutput.setDouble(backRight.getAngleVoltage());
+        // frontLeftEncoderOutput.setDouble(frontLeft.getAngleVoltage());
+        // frontRightEncoderOutput.setDouble(frontRight.getAngleVoltage());
     }
 
     public void toggleFieldCentric() {
