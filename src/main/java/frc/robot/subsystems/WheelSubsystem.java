@@ -64,7 +64,7 @@ public class WheelSubsystem extends SubsystemBase{
         else
             encoderOutput = 0;
 
-        angleMotor.set(-encoderOutput);
+        angleMotor.set(encoderOutput);
         
     }
 

@@ -85,6 +85,16 @@ public class RobotContainer {
       backLeftAngleMotor.setIdleMode(IdleMode.kBrake);
       backRightAngleMotor.setIdleMode(IdleMode.kBrake);
 
+      frontLeftSpeedMotor.setIdleMode(IdleMode.kBrake);
+      frontRightSpeedMotor.setIdleMode(IdleMode.kBrake);
+      backLeftSpeedMotor.setIdleMode(IdleMode.kBrake);
+      backRightSpeedMotor.setIdleMode(IdleMode.kBrake);
+
+      frontLeftAngleMotor.setInverted(true);
+      frontRightAngleMotor.setInverted(true);
+      backLeftAngleMotor.setInverted(true);
+      backRightAngleMotor.setInverted(true);
+
       frontRightSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(true);
     }
