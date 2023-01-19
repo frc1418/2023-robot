@@ -32,6 +32,7 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     private final NetworkTableEntry backLeftEncoderOutput = table.getEntry("backLeftEncoderOutput");
     private final NetworkTableEntry frontRightEncoderOutput = table.getEntry("frontRightEncoderOutput");
     private final NetworkTableEntry frontLeftEncoderOutput = table.getEntry("frontLeftEncoderOutput");
+    private final NetworkTableEntry isFieldCentric = table.getEntry("isFieldCentric");
 
     private final NetworkTable odometryTable = ntInstance.getTable("/common/Odometry");
     private final NetworkTableEntry odometryPose = odometryTable.getEntry("odometryPose");
@@ -51,6 +52,8 @@ public class SwerveDriverSubsystem extends SubsystemBase{
 
         this.kinematics = kinematics;
         this.odometry = odometry;
+
+        this.isFieldCentric.setBoolean(fieldCentric);
     }
 
 
@@ -128,6 +131,7 @@ public class SwerveDriverSubsystem extends SubsystemBase{
 
     public void toggleFieldCentric() {
         fieldCentric = !fieldCentric;
+        isFieldCentric.setBoolean(fieldCentric);
     }
 
     public boolean getFieldCentric() {
