@@ -77,6 +77,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         backLeft.drive(backLeftState);
         backRight.drive(backRightState);
 
+        backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
+        backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
+        frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
+        frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
 
         backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
@@ -117,10 +121,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
 
-        backLeftEncoderOutput.setDouble(backLeft.getEncoderOutput());
-        backRightEncoderOutput.setDouble(backRight.getEncoderOutput());
-        frontLeftEncoderOutput.setDouble(frontLeft.getEncoderOutput());
-        frontRightEncoderOutput.setDouble(frontRight.getEncoderOutput());
+        backLeftEncoderOutput.setDouble(backLeft.getAngleVoltage());
+        backRightEncoderOutput.setDouble(backRight.getAngleVoltage());
+        frontLeftEncoderOutput.setDouble(frontLeft.getAngleVoltage());
+        frontRightEncoderOutput.setDouble(frontRight.getAngleVoltage());
     }
 
     public void toggleFieldCentric() {
