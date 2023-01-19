@@ -13,7 +13,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.Odometry;
 
-public class SwerveDriverSubsystem extends SubsystemBase{
+public class SwerveDriveSubsystem extends SubsystemBase{
 
     private WheelSubsystem backRight;
     private WheelSubsystem backLeft;
@@ -44,7 +44,7 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     
     public boolean fieldCentric = false;
 
-    public SwerveDriverSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft, SwerveDriveKinematics kinematics, Odometry odometry) {
+    public SwerveDriveSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft, SwerveDriveKinematics kinematics, Odometry odometry) {
         this.backRight = backRight;
         this.backLeft = backLeft;
         this.frontRight = frontRight;
