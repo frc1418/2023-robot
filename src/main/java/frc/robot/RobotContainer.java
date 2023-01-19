@@ -54,16 +54,16 @@ public class RobotContainer {
 
     private WheelSubsystem backRightWheel = new WheelSubsystem (
         backRightAngleMotor, backRightSpeedMotor, backRightEncoder,
-        DrivetrainSubsystem.m_backRightLocation, DrivetrainSubsystem.BACK_RIGHT_ENCODER_OFFSET);
+        DrivetrainSubsystem.m_backRightLocation);
     public WheelSubsystem backLeftWheel = new WheelSubsystem (
       backLeftAngleMotor, backLeftSpeedMotor, backLeftEncoder,
-      DrivetrainSubsystem.m_backLeftLocation, DrivetrainSubsystem.BACK_LEFT_ENCODER_OFFSET);
+      DrivetrainSubsystem.m_backLeftLocation);
     private WheelSubsystem frontRightWheel = new WheelSubsystem (
       frontRightAngleMotor, frontRightSpeedMotor, frontRightEncoder,
-      DrivetrainSubsystem.m_frontRightLocation, DrivetrainSubsystem.FRONT_RIGHT_ENCODER_OFFSET);
+      DrivetrainSubsystem.m_frontRightLocation);
     private WheelSubsystem frontLeftWheel = new WheelSubsystem (
       frontLeftAngleMotor, frontLeftSpeedMotor, frontLeftEncoder,
-      DrivetrainSubsystem.m_frontLeftLocation, DrivetrainSubsystem.FRONT_LEFT_ENCODER_OFFSET);
+      DrivetrainSubsystem.m_frontLeftLocation);
     
     private SwerveDriverSubsystem swerveDrive = new SwerveDriverSubsystem(backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel);
 
@@ -97,6 +97,11 @@ public class RobotContainer {
 
       frontRightSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(true);
+
+      backRightEncoder.setPositionOffset(DrivetrainSubsystem.BACK_RIGHT_ENCODER_OFFSET);
+      backLeftEncoder.setPositionOffset(DrivetrainSubsystem.BACK_LEFT_ENCODER_OFFSET);
+      frontRightEncoder.setPositionOffset(DrivetrainSubsystem.FRONT_RIGHT_ENCODER_OFFSET);
+      frontLeftEncoder.setPositionOffset(DrivetrainSubsystem.FRONT_LEFT_ENCODER_OFFSET);
     }
 
     /**

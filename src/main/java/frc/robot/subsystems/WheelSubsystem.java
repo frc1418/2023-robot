@@ -25,21 +25,17 @@ public class WheelSubsystem extends SubsystemBase{
     private AnalogEncoder turningEncoder;    
     
     Translation2d location;
-    private double encoderOffset;
 
     private double targetVoltage = 0;
 
     private double angleVoltage = 0;
 
 
-    public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location, double encoderOffset) {
+    public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location) {
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
         this.location = location;
         this.turningEncoder = turningEncoder;
-        this.encoderOffset = encoderOffset;
-
-        this.turningEncoder.setPositionOffset(encoderOffset);
 
         pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);
@@ -84,7 +80,7 @@ public class WheelSubsystem extends SubsystemBase{
     }
 
     public double getEncoderPosition() {
-        double rawPos = turningEncoder.getAbsolutePosition() - encoderOffset;
+        double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
         if (rawPos < 0)
             return 1 + rawPos;
         else
