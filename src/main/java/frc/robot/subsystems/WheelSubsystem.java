@@ -29,10 +29,6 @@ public class WheelSubsystem extends SubsystemBase{
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
         this.turningEncoder = turningEncoder;
-        this.encoderOffset = encoderOffset;
-        this.location = location;
-
-        this.turningEncoder.setPositionOffset(encoderOffset);
 
         pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);
