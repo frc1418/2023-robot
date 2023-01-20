@@ -47,7 +47,7 @@ public class SwerveDriverSubsystem extends SubsystemBase{
     public void drive (double x, double y, double rot) {
         
 
-        ChassisSpeeds speeds = new ChassisSpeeds(y, x, rot);
+        ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
 
         // Convert to module states
@@ -69,10 +69,10 @@ public class SwerveDriverSubsystem extends SubsystemBase{
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
 
-        backLeftEncoderOutput.setDouble(backLeft.getAngleVoltage());
-        backRightEncoderOutput.setDouble(backRight.getAngleVoltage());
-        frontLeftEncoderOutput.setDouble(frontLeft.getAngleVoltage());
-        frontRightEncoderOutput.setDouble(frontRight.getAngleVoltage());
+        backLeftEncoderOutput.setDouble(backLeft.getangleSetpoint());
+        backRightEncoderOutput.setDouble(backRight.getangleSetpoint());
+        frontLeftEncoderOutput.setDouble(frontLeft.getangleSetpoint());
+        frontRightEncoderOutput.setDouble(frontRight.getangleSetpoint());
 
 
     }
