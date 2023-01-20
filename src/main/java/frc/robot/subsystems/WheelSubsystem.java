@@ -47,6 +47,9 @@ public class WheelSubsystem extends SubsystemBase{
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state,
             Rotation2d.fromRotations(getEncoderPosition()));
             
+        // SwerveModuleState returns a speed between 0 and sqrt(2)
+        // for x and y values between 0 and 1. Dividing by sqrt(2)
+        // converts the range to 0-1.
         targetVoltage = optimizedState.speedMetersPerSecond;
         speedMotor.set(targetVoltage / Math.sqrt(2));
 
