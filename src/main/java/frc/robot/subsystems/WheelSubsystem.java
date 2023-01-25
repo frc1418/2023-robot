@@ -74,7 +74,6 @@ public class WheelSubsystem extends SubsystemBase{
     public AnalogEncoder getEncoder(){
         return turningEncoder;
     }
-
     public double getTargetVoltage() {
         return targetVoltage;
     }
