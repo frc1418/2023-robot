@@ -32,6 +32,7 @@ public class WheelSubsystem extends SubsystemBase{
         this.location = location;
 
         this.speedMotor.getEncoder().setPosition(0);
+        this.speedMotor.getEncoder().setPositionConversionFactor(0.33/8.33);
 
         pidController = new PIDController(4, 0, 0);
         pidController.enableContinuousInput(0, 1);

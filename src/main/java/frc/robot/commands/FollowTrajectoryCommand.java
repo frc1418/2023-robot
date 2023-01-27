@@ -28,7 +28,7 @@ public class FollowTrajectoryCommand extends CommandBase {
     private boolean resetOdometry;
     private HolonomicDriveController controller;
 
-    private double startingTime;
+    private long startingTime;
     private Rotation2d desiredRotation;
 
   /**
@@ -51,13 +51,14 @@ public class FollowTrajectoryCommand extends CommandBase {
 
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements();
+    addRequirements(swerveDriveSubsystem);
 
-    PIDController speedController = new PIDController(1, 0, 0);
-    ProfiledPIDController angleController = new ProfiledPIDController(1, 0, 0,
+    PIDController speedControllerX = new PIDController(1, 0, 0.0001);
+    PIDController speedControllerY = new PIDController(1, 0, 0.0001);
+    ProfiledPIDController angleController = new ProfiledPIDController(0, 0, 0,
         new TrapezoidProfile.Constraints(2*Math.PI, Math.PI));
 
-    controller = new HolonomicDriveController(speedController, speedController, angleController);
+    controller = new HolonomicDriveController(speedControllerX, speedControllerY, angleController);
   }
 
   // Called when the command is initially scheduled.
@@ -74,9 +75,11 @@ public class FollowTrajectoryCommand extends CommandBase {
   public void execute() {
     Trajectory.State goal = trajectory.sample(getCurrentTime());
     ChassisSpeeds adjustedSpeeds = controller.calculate(odometry.getPose(), goal, desiredRotation);
-    System.out.println(getCurrentTime());
-    swerveDriveSubsystem.drive(0.4, 0, 0);
-    // swerveDriveSubsystem.drive(adjustedSpeeds.vxMetersPerSecond, adjustedSpeeds.vyMetersPerSecond, adjustedSpeeds.omegaRadiansPerSecond);
+    System.out.println(adjustedSpeeds.toString());
+    System.out.println(goal.toString());
+    System.out.println(odometry.getPose());
+    System.out.println("");
+    swerveDriveSubsystem.drive(adjustedSpeeds.vxMetersPerSecond, adjustedSpeeds.vyMetersPerSecond, adjustedSpeeds.omegaRadiansPerSecond);
   }
 
   // Called once the command ends or is interrupted.
@@ -90,6 +93,6 @@ public class FollowTrajectoryCommand extends CommandBase {
   }
 
   public double getCurrentTime() {
-    return System.nanoTime() - startingTime;
+    return (System.nanoTime() - startingTime) / (double) 1000000000;
   }
 }
