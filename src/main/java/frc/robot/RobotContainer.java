@@ -86,12 +86,6 @@ public class RobotContainer {
 
     Gyro gyro = new AHRS(SPI.Port.kMXP);
 
-    private SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-          frontLeftWheel.getLocation(),
-          frontRightWheel.getLocation(),
-          backLeftWheel.getLocation(),
-          backRightWheel.getLocation());
-
     private SwerveModulePosition[] positions = new SwerveModulePosition[] {
       frontLeftWheel.getSwerveModulePosition(),
       frontRightWheel.getSwerveModulePosition(),
@@ -99,13 +93,13 @@ public class RobotContainer {
       backRightWheel.getSwerveModulePosition()
     };
 
-    private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(swerveKinematics, gyro.getRotation2d(), positions);
+    private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(DrivetrainSubsystem.swerveKinematics, gyro.getRotation2d(), positions);
 
     private Odometry odometry = new Odometry(gyro, driveOdometry, positions);
     
     private SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem(
         backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
-        swerveKinematics, odometry);
+        DrivetrainSubsystem.swerveKinematics, odometry);
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -220,5 +214,18 @@ public class RobotContainer {
 
     public Odometry getOdometry() {
       return odometry;
+    }
+
+    public void coastDrive() {
+      frontLeftAngleMotor.setIdleMode(IdleMode.kCoast);
+      frontRightAngleMotor.setIdleMode(IdleMode.kCoast);
+      backLeftAngleMotor.setIdleMode(IdleMode.kCoast);
+      backRightAngleMotor.setIdleMode(IdleMode.kCoast);
+
+
+      frontLeftSpeedMotor.setIdleMode(IdleMode.kCoast);
+      frontRightSpeedMotor.setIdleMode(IdleMode.kCoast);
+      backLeftSpeedMotor.setIdleMode(IdleMode.kCoast);
+      backRightSpeedMotor.setIdleMode(IdleMode.kCoast);
     }
 }

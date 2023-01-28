@@ -61,7 +61,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         
 
         ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
-        // ChassisSpeeds speeds = new ChassisSpeeds(0, 0.3, 0);
+        // ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
 
         if (fieldCentric) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, odometry.getRotation2d());
@@ -69,6 +69,19 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
+        SwerveModuleState frontLeftState = moduleStates[0];
+        SwerveModuleState frontRightState = moduleStates[1];
+        SwerveModuleState backLeftState = moduleStates[2];
+        SwerveModuleState backRightState = moduleStates[3];
+
+        frontLeft.drive(frontLeftState);
+        frontRight.drive(frontRightState);
+        backLeft.drive(backLeftState);
+        backRight.drive(backRightState);
+
+    }
+
+    public void drive (SwerveModuleState[] moduleStates) {
         SwerveModuleState frontLeftState = moduleStates[0];
         SwerveModuleState frontRightState = moduleStates[1];
         SwerveModuleState backLeftState = moduleStates[2];
