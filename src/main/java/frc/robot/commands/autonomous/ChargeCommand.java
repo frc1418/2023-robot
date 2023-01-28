@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    // private String TRAJECTORY_NAME = "charge";
+    private String TRAJECTORY_NAME = "charge";
 
   /**
    * Creates a new ExampleCommand.
@@ -39,22 +39,23 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    // Trajectory charge = trajectories.get(TRAJECTORY_NAME);
+    Trajectory charge = trajectories.get(TRAJECTORY_NAME);
     
-    TrajectoryConfig config = new TrajectoryConfig(0.4, 0.3)
+    TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
           .setKinematics(DrivetrainSubsystem.swerveKinematics);
 
-    Trajectory traj = TrajectoryGenerator.generateTrajectory(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(new Translation2d(0.5, 0)),
-      new Pose2d(1, 0, Rotation2d.fromDegrees(90)),
-      config
-    );
+    // Trajectory traj = TrajectoryGenerator.generateTrajectory(
+    //   new Pose2d(0, 0, Rotation2d.fromDegrees(90)),
+    //   List.of(new Translation2d(0, 1)),
+    //   new Pose2d(0, 2, Rotation2d.fromDegrees(90)),
+    //   config
+    // );
 
-    odometry.reset(traj.getInitialPose());
+    odometry.zeroHeading();
+    odometry.reset(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
-    PIDController speedControllerX = new PIDController(0.08, 0, 0.00);
-    PIDController speedControllerY = new PIDController(0.08, 0, 0.000);
+    PIDController speedControllerX = new PIDController(1.5, 0, 0.00);
+    PIDController speedControllerY = new PIDController(1.5, 0, 0.000);
     ProfiledPIDController angleController = new ProfiledPIDController(0.02, 0, 0,
         new TrapezoidProfile.Constraints(2*Math.PI, Math.PI));
 
@@ -62,7 +63,7 @@ public class ChargeCommand extends SequentialCommandGroup {
 
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            traj,
+            charge,
             odometry::getPose, // Functional interface to feed supplier
             DrivetrainSubsystem.swerveKinematics,
 
@@ -73,7 +74,7 @@ public class ChargeCommand extends SequentialCommandGroup {
             swerveDriveSubsystem::drive,
             swerveDriveSubsystem);
 
-    Rotation2d endingRotation = Rotation2d.fromDegrees(90);//traj.sample(traj.getTotalTimeSeconds()).poseMeters.getRotation();
+    // Rotation2d endingRotation = Rotation2d.fromDegrees(90);//traj.sample(traj.getTotalTimeSeconds()).poseMeters.getRotation();
     
     addCommands(
         swerveControllerCommand

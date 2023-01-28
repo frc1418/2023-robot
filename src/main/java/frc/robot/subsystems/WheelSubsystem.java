@@ -101,7 +101,6 @@ public class WheelSubsystem extends SubsystemBase{
 
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(
-            //TODO: Change rotations to meters
             speedMotor.getEncoder().getPosition(), Rotation2d.fromRotations(getEncoderPosition()));
     }
 }
