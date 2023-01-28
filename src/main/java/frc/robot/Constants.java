@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -24,33 +25,36 @@ public final class Constants {
         public static final double WIDTH = 22.5;
         public static final double LENGTH = 22.5;
 
-
-
-
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
         public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.2434;
+        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.240;
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.014;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 0.017;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
         public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.735;
+        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.734;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.075;
+        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.070;
 
-        public final static Translation2d m_frontLeftLocation = new Translation2d(-21.625/2, 21.625/2);
-        public final static Translation2d m_frontRightLocation = new Translation2d(-21.625/2, -21.625/2);
-        public final static Translation2d m_backLeftLocation = new Translation2d(21.625/2, 21.625/2);
-        public final static Translation2d m_backRightLocation = new Translation2d(21.625/2, -21.625/2);
+        public final static Translation2d m_frontLeftLocation = new Translation2d(-19/2, 19/2);
+        public final static Translation2d m_frontRightLocation = new Translation2d(-19/2, -19/2);
+        public final static Translation2d m_backLeftLocation = new Translation2d(19/2, 19/2);
+        public final static Translation2d m_backRightLocation = new Translation2d(19/2, -19/2);
+
+        public final static SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+          m_frontLeftLocation,
+          m_frontRightLocation,
+          m_backLeftLocation,
+          m_backRightLocation);
 
     }
 }

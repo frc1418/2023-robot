@@ -53,9 +53,9 @@ public class FollowTrajectoryCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
 
-    PIDController speedControllerX = new PIDController(1, 0, 0.0001);
-    PIDController speedControllerY = new PIDController(1, 0, 0.0001);
-    ProfiledPIDController angleController = new ProfiledPIDController(0, 0, 0,
+    PIDController speedControllerX = new PIDController(1.5, 0, 0.00);
+    PIDController speedControllerY = new PIDController(1.5, 0, 0.000);
+    ProfiledPIDController angleController = new ProfiledPIDController(0.02, 0, 0,
         new TrapezoidProfile.Constraints(2*Math.PI, Math.PI));
 
     controller = new HolonomicDriveController(speedControllerX, speedControllerY, angleController);
