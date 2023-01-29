@@ -45,10 +45,10 @@ public final class Constants {
         public final static int FRONT_LEFT_ENCODER = 3;
         public final static double FRONT_LEFT_ENCODER_OFFSET = 0.071;
 
-        public final static Translation2d m_frontLeftLocation = new Translation2d(-9.4, 9.4);
-        public final static Translation2d m_frontRightLocation = new Translation2d(-9.4, -9.4);
-        public final static Translation2d m_backLeftLocation = new Translation2d(9.4, 9.4);
-        public final static Translation2d m_backRightLocation = new Translation2d(9.4, -9.4);
+        public final static Translation2d m_frontLeftLocation = new Translation2d(9.4, 9.4);
+        public final static Translation2d m_frontRightLocation = new Translation2d(9.4, -9.4);
+        public final static Translation2d m_backLeftLocation = new Translation2d(-9.4, 9.4);
+        public final static Translation2d m_backRightLocation = new Translation2d(-9.4, -9.4);
 
         public final static SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
           m_frontLeftLocation,

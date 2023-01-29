@@ -63,6 +63,6 @@ public class Odometry {
         return -gyro.getRate();
     }
     public Rotation2d getRotation2d() {
-        return gyro.getRotation2d().unaryMinus();
+        return gyro.getRotation2d();//.unaryMinus();
     }
 }

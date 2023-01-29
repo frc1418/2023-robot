@@ -137,10 +137,10 @@ public class RobotContainer {
       backLeftSpeedMotor.setIdleMode(IdleMode.kBrake);
       backRightSpeedMotor.setIdleMode(IdleMode.kBrake);
 
-      frontLeftAngleMotor.setInverted(true);
-      frontRightAngleMotor.setInverted(true);
-      backLeftAngleMotor.setInverted(true);
-      backRightAngleMotor.setInverted(true);
+      // frontLeftAngleMotor.setInverted(true);
+      // frontRightAngleMotor.setInverted(true);
+      // backLeftAngleMotor.setInverted(true);
+      // backRightAngleMotor.setInverted(true);
 
       frontRightSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(true);
@@ -173,7 +173,7 @@ public class RobotContainer {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
                   applyDeadband(-leftJoystick.getY() / 2, DrivetrainSubsystem.DRIFT_DEADBAND),
-                  applyDeadband(leftJoystick.getX() / 2,DrivetrainSubsystem.DRIFT_DEADBAND),
+                  applyDeadband(-leftJoystick.getX() / 2,DrivetrainSubsystem.DRIFT_DEADBAND),
                   applyDeadband(-rightJoystick.getX() / 32, DrivetrainSubsystem.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
