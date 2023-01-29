@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    private String TRAJECTORY_NAME = "charge";
+    private String TRAJECTORY_NAME = "chargeLeft";
 
   /**
    * Creates a new ExampleCommand.
@@ -41,8 +41,8 @@ public class ChargeCommand extends SequentialCommandGroup {
 
     Trajectory charge = trajectories.get(TRAJECTORY_NAME);
     
-    TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
-          .setKinematics(DrivetrainSubsystem.swerveKinematics);
+    // TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
+    //       .setKinematics(DrivetrainSubsystem.swerveKinematics);
 
     // Trajectory traj = TrajectoryGenerator.generateTrajectory(
     //   new Pose2d(0, 0, Rotation2d.fromDegrees(90)),
@@ -52,11 +52,11 @@ public class ChargeCommand extends SequentialCommandGroup {
     // );
 
     odometry.zeroHeading();
-    odometry.reset(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+    odometry.reset(charge.getInitialPose());
 
-    PIDController speedControllerX = new PIDController(1.5, 0, 0.00);
-    PIDController speedControllerY = new PIDController(1.5, 0, 0.000);
-    ProfiledPIDController angleController = new ProfiledPIDController(0.02, 0, 0,
+    PIDController speedControllerX = new PIDController(1, 0, 0.00);
+    PIDController speedControllerY = new PIDController(1, 0, 0.000);
+    ProfiledPIDController angleController = new ProfiledPIDController(0.1, 0, 0,
         new TrapezoidProfile.Constraints(2*Math.PI, Math.PI));
 
     angleController.enableContinuousInput(-Math.PI, Math.PI);

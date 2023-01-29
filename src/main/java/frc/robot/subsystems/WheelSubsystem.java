@@ -59,7 +59,7 @@ public class WheelSubsystem extends SubsystemBase{
         else
             angleSetpoint = 0;
 
-        angleMotor.set(angleSetpoint);
+        angleMotor.set(-angleSetpoint);
         
     }
 
@@ -82,9 +82,9 @@ public class WheelSubsystem extends SubsystemBase{
         // return turningEncoder.getAbsolutePosition();
         double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
         if (rawPos < 0)
-            return 1 + rawPos;
+            return -rawPos;
         else
-            return rawPos;
+            return 1 - rawPos;
     }
 
     public double getangleSetpoint() {
