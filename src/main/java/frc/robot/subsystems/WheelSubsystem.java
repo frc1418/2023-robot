@@ -59,7 +59,7 @@ public class WheelSubsystem extends SubsystemBase{
         else
             angleSetpoint = 0;
 
-        angleMotor.set(-angleSetpoint);
+        angleMotor.set(angleSetpoint);
         
     }
 
