@@ -75,10 +75,10 @@ public class FollowTrajectoryCommand extends CommandBase {
   public void execute() {
     Trajectory.State goal = trajectory.sample(getCurrentTime());
     ChassisSpeeds adjustedSpeeds = controller.calculate(odometry.getPose(), goal, desiredRotation);
-    System.out.println(adjustedSpeeds.toString());
-    System.out.println(goal.toString());
-    System.out.println(odometry.getPose());
-    System.out.println("");
+    // System.out.println(adjustedSpeeds.toString());
+    // System.out.println(goal.toString());
+    // System.out.println(odometry.getPose());
+    // System.out.println("");
     swerveDriveSubsystem.drive(adjustedSpeeds.vxMetersPerSecond, adjustedSpeeds.vyMetersPerSecond, adjustedSpeeds.omegaRadiansPerSecond);
   }
 

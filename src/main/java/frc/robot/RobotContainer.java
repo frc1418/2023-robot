@@ -172,9 +172,9 @@ public class RobotContainer {
           () -> {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
-                  applyDeadband(-leftJoystick.getY() / 2, DrivetrainSubsystem.DRIFT_DEADBAND),
-                  applyDeadband(-leftJoystick.getX() / 2,DrivetrainSubsystem.DRIFT_DEADBAND),
-                  applyDeadband(-rightJoystick.getX() / 32, DrivetrainSubsystem.ROTATION_DEADBAND));
+                  applyDeadband(-leftJoystick.getY() * 1.4, DrivetrainSubsystem.DRIFT_DEADBAND),
+                  applyDeadband(-leftJoystick.getX() * 1.4,DrivetrainSubsystem.DRIFT_DEADBAND),
+                  applyDeadband(-rightJoystick.getX() / 12, DrivetrainSubsystem.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
