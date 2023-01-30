@@ -1,12 +1,19 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,15 +22,20 @@ public class WheelSubsystem extends SubsystemBase{
     
     private CANSparkMax angleMotor;
     private CANSparkMax speedMotor;
-    private PIDController pidController;
+    private PIDController anglePIDController;
+    private SparkMaxPIDController speedPIDController;
     private AnalogEncoder turningEncoder;    
     
     Translation2d location;
 
-    private double targetVoltage = 0;
+    private double targetSpeed = 0;
 
     private double angleSetpoint = 0;
+    private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
+    private final NetworkTable table = ntInstance.getTable("/components/drivetrain");
 
+    private final NetworkTableEntry speedTarget = table.getEntry("speedTarget");
+    private final NetworkTableEntry velocity = table.getEntry("wheelvelocity");
 
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location) {
         this.angleMotor = angleMotor;
@@ -33,10 +45,24 @@ public class WheelSubsystem extends SubsystemBase{
 
         this.speedMotor.getEncoder().setPosition(0);
         this.speedMotor.getEncoder().setPositionConversionFactor(0.33/8.33);
+        this.speedMotor.getEncoder().setVelocityConversionFactor(this.speedMotor.getEncoder().getPositionConversionFactor() / 60.0);
+        this.speedPIDController = this.speedMotor.getPIDController();
 
-        pidController = new PIDController(4, 0, 0);
-        pidController.enableContinuousInput(0, 1);
-        pidController.setTolerance(1.0/360);
+        speedPIDController.setP(0.00);
+        speedPIDController.setI(0.00);
+        speedPIDController.setD(0.00);
+        speedPIDController.setFF(0.259);
+        
+
+
+
+        anglePIDController = new PIDController(4, 0, 0);
+        anglePIDController.enableContinuousInput(0, 1);
+        anglePIDController.setTolerance(1.0/360);
+
+
+        speedTarget.setDouble(0);
+        velocity.setDouble(0);
     }
 
     public void drive (SwerveModuleState state) {
@@ -44,17 +70,17 @@ public class WheelSubsystem extends SubsystemBase{
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state,
             Rotation2d.fromRotations(getEncoderPosition()));
             
-        // SwerveModuleState returns a speed between 0 and sqrt(2)
-        // for x and y values between 0 and 1. Dividing by sqrt(2)
-        // converts the range to 0-1.
-        targetVoltage = optimizedState.speedMetersPerSecond;
-        speedMotor.set(targetVoltage / Math.sqrt(2));
+        targetSpeed = optimizedState.speedMetersPerSecond;
+        speedPIDController.setReference(targetSpeed, ControlType.kVelocity);
+
+        speedTarget.setDouble(targetSpeed);
+        velocity.setDouble(speedMotor.getEncoder().getVelocity());
 
         Rotation2d angle = optimizedState.angle;
-        double pidOutput = pidController.calculate(getEncoderPosition(), angle.getRotations());
+        double pidOutput = anglePIDController.calculate(getEncoderPosition(), angle.getRotations());
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
-        if (!pidController.atSetpoint())
+        if (!anglePIDController.atSetpoint())
             angleSetpoint = clampedPidOutpt;
         else
             angleSetpoint = 0;
@@ -74,8 +100,8 @@ public class WheelSubsystem extends SubsystemBase{
     public AnalogEncoder getEncoder(){
         return turningEncoder;
     }
-    public double getTargetVoltage() {
-        return targetVoltage;
+    public double gettargetSpeed() {
+        return targetSpeed;
     }
 
     public double getEncoderPosition() {

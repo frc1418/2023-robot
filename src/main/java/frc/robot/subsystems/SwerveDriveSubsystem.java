@@ -37,6 +37,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
 
     private final NetworkTable odometryTable = ntInstance.getTable("/common/Odometry");
     private final NetworkTableEntry odometryPose = odometryTable.getEntry("odometryPose");
+    private final NetworkTableEntry velocity = table.getEntry("wheelvelocity");
 
 
 
@@ -74,6 +75,8 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         SwerveModuleState frontRightState = moduleStates[1];
         SwerveModuleState backLeftState = moduleStates[2];
         SwerveModuleState backRightState = moduleStates[3];
+
+        velocity.setDouble(frontLeft.getSpeedMotor().getEncoder().getVelocity());
 
         frontLeft.drive(frontLeftState);
         frontRight.drive(frontRightState);
