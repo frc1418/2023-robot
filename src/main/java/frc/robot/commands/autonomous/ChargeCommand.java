@@ -4,15 +4,22 @@
 
 package frc.robot.commands.autonomous;
 
+import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -24,6 +31,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
@@ -39,7 +47,7 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    Trajectory charge = trajectories.get(TRAJECTORY_NAME);
+    PathPlannerTrajectory charge = PathPlanner.loadPath("chargeLeft", new PathConstraints(0.4, 0.4));
     
     // TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
     //       .setKinematics(DrivetrainSubsystem.swerveKinematics);
@@ -52,32 +60,29 @@ public class ChargeCommand extends SequentialCommandGroup {
     // );
 
     odometry.zeroHeading();
-    odometry.reset(charge.getInitialPose());
+    odometry.reset(charge.getInitialHolonomicPose());
 
-    PIDController speedControllerX = new PIDController(1, 0, 0.00);
-    PIDController speedControllerY = new PIDController(1, 0, 0.000);
-    ProfiledPIDController angleController = new ProfiledPIDController(0.1, 0, 0,
-        new TrapezoidProfile.Constraints(2*Math.PI, Math.PI));
+    // PIDController speedControllerX = new PIDController(1, 0, 0.00);
+    // PIDController speedControllerY = new PIDController(1, 0, 0.000);
+    PIDController angleController = new PIDController(0.1, 0, 0);
 
-    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    // angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            charge,
-            odometry::getPose, // Functional interface to feed supplier
-            DrivetrainSubsystem.swerveKinematics,
-
-            // Position controllers
-            speedControllerX,
-            speedControllerY,
-            angleController,
-            swerveDriveSubsystem::drive,
-            swerveDriveSubsystem);
+    PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
+        charge,
+        odometry::getPose,
+        DrivetrainSubsystem.swerveKinematics,
+        new PIDController(1, 0, 0),
+        new PIDController(1, 0, 0),
+        angleController,
+        swerveDriveSubsystem::drive,
+        swerveDriveSubsystem);
 
     // Rotation2d endingRotation = Rotation2d.fromDegrees(90);//traj.sample(traj.getTotalTimeSeconds()).poseMeters.getRotation();
     
     addCommands(
-        swerveControllerCommand
+      new InstantCommand(() -> odometry.reset(charge.getInitialHolonomicPose())),
+      swerveControllerCommand
     );
 
 
