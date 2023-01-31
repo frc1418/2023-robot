@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    private String TRAJECTORY_NAME = "chargeLeft";
+    private String TRAJECTORY_NAME = "overChargingStation";
 
   /**
    * Creates a new ExampleCommand.
@@ -47,45 +47,9 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    PathPlannerTrajectory charge = PathPlanner.loadPath("overChargingStation", new PathConstraints(2.5, 1));
-    
-    // TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
-    //       .setKinematics(DrivetrainSubsystem.swerveKinematics);
+    PathPlannerTrajectory charge = PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(2.5, 1));
 
-    // Trajectory traj = TrajectoryGenerator.generateTrajectory(
-    //   new Pose2d(0, 0, Rotation2d.fromDegrees(90)),
-    //   List.of(new Translation2d(0, 1)),
-    //   new Pose2d(0, 2, Rotation2d.fromDegrees(90)),
-    //   config
-    // );
-
-    odometry.zeroHeading();
-    odometry.reset(charge.getInitialHolonomicPose());
-
-    // PIDController speedControllerX = new PIDController(1, 0, 0.00);
-    // PIDController speedControllerY = new PIDController(1, 0, 0.000);
-    PIDController angleController = new PIDController(0, 0, 0);
-
-    // angleController.enableContinuousInput(-Math.PI, Math.PI);
-
-    PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
-        charge,
-        odometry::getPose,
-        DrivetrainSubsystem.swerveKinematics,
-        new PIDController(1.5, 0, 0),
-        new PIDController(1.5, 0, 0),
-        angleController,
-        swerveDriveSubsystem::drive,
-        swerveDriveSubsystem);
-
-    // Rotation2d endingRotation = Rotation2d.fromDegrees(90);//traj.sample(traj.getTotalTimeSeconds()).poseMeters.getRotation();
-    
-    addCommands(
-      new InstantCommand(() -> odometry.reset(charge.getInitialHolonomicPose())),
-      swerveControllerCommand,
-      new InstantCommand(() -> swerveDriveSubsystem.drive(0, 0, 0))
-    );
-
+    addCommands(new FollowTrajectoryCommand(charge, odometry, swerveDriveSubsystem));
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
