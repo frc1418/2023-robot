@@ -91,6 +91,8 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         SwerveModuleState backLeftState = moduleStates[2];
         SwerveModuleState backRightState = moduleStates[3];
 
+        velocity.setDouble(frontLeftState.speedMetersPerSecond);
+
         frontLeft.drive(frontLeftState);
         frontRight.drive(frontRightState);
         backLeft.drive(backLeftState);

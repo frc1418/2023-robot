@@ -47,7 +47,7 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    PathPlannerTrajectory charge = PathPlanner.loadPath("chargeLeft", new PathConstraints(0.5, 0.5));
+    PathPlannerTrajectory charge = PathPlanner.loadPath("overChargingStation", new PathConstraints(2.5, 1));
     
     // TrajectoryConfig config = new TrajectoryConfig(0.4, 0.4)
     //       .setKinematics(DrivetrainSubsystem.swerveKinematics);
@@ -64,7 +64,7 @@ public class ChargeCommand extends SequentialCommandGroup {
 
     // PIDController speedControllerX = new PIDController(1, 0, 0.00);
     // PIDController speedControllerY = new PIDController(1, 0, 0.000);
-    PIDController angleController = new PIDController(0.01, 0, 0);
+    PIDController angleController = new PIDController(0, 0, 0);
 
     // angleController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -72,8 +72,8 @@ public class ChargeCommand extends SequentialCommandGroup {
         charge,
         odometry::getPose,
         DrivetrainSubsystem.swerveKinematics,
-        new PIDController(1, 0, 0),
-        new PIDController(1, 0, 0),
+        new PIDController(1.5, 0, 0),
+        new PIDController(1.5, 0, 0),
         angleController,
         swerveDriveSubsystem::drive,
         swerveDriveSubsystem);
