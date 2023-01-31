@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import org.opencv.core.Mat;
-import org.opencv.core.RotatedRect;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -29,10 +25,6 @@ public class SwerveDriveSubsystem extends SubsystemBase{
     private final NetworkTableEntry frontRightAngleEncoder = table.getEntry("frontRightAngleEncoder");
     private final NetworkTableEntry frontLeftAngleEncoder = table.getEntry("frontLeftAngleEncoder");
 
-    private final NetworkTableEntry backRightEncoderOutput = table.getEntry("backRightEncoderOutput");
-    private final NetworkTableEntry backLeftEncoderOutput = table.getEntry("backLeftEncoderOutput");
-    private final NetworkTableEntry frontRightEncoderOutput = table.getEntry("frontRightEncoderOutput");
-    private final NetworkTableEntry frontLeftEncoderOutput = table.getEntry("frontLeftEncoderOutput");
     private final NetworkTableEntry isFieldCentric = table.getEntry("isFieldCentric");
 
     private final NetworkTable odometryTable = ntInstance.getTable("/common/Odometry");
@@ -121,20 +113,10 @@ public class SwerveDriveSubsystem extends SubsystemBase{
 
         odometryPose.setString(odometry.getPose().toString());
 
-        // backLeftAngleEncoder.setDouble(backLeft.getDistanceDriven());
-        // backRightAngleEncoder.setDouble(backRight.getDistanceDriven());
-        // frontLeftAngleEncoder.setDouble(frontLeft.getDistanceDriven());
-        // frontRightAngleEncoder.setDouble(frontRight.getDistanceDriven());
-
         backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
         backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
         frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
-
-        // backLeftEncoderOutput.setDouble(backLeft.getAngleVoltage());
-        // backRightEncoderOutput.setDouble(backRight.getAngleVoltage());
-        // frontLeftEncoderOutput.setDouble(frontLeft.getAngleVoltage());
-        // frontRightEncoderOutput.setDouble(frontRight.getAngleVoltage());
     }
 
     public void toggleFieldCentric() {
