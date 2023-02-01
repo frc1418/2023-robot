@@ -45,16 +45,21 @@ public final class Constants {
         public final static int FRONT_LEFT_ENCODER = 3;
         public final static double FRONT_LEFT_ENCODER_OFFSET = 0.705;
 
-        public final static Translation2d m_frontLeftLocation = new Translation2d(9.4, 9.4);
-        public final static Translation2d m_frontRightLocation = new Translation2d(9.4, -9.4);
-        public final static Translation2d m_backLeftLocation = new Translation2d(-9.4, 9.4);
-        public final static Translation2d m_backRightLocation = new Translation2d(-9.4, -9.4);
+        public final static Translation2d FRONT_LEFT_LOC = new Translation2d(9.4, 9.4);
+        public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(9.4, -9.4);
+        public final static Translation2d BACK_LEFT_LOC = new Translation2d(-9.4, 9.4);
+        public final static Translation2d BACK_RIGHT_LOC = new Translation2d(-9.4, -9.4);
 
-        public final static SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-          m_frontLeftLocation,
-          m_frontRightLocation,
-          m_backLeftLocation,
-          m_backRightLocation);
+        public final static SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
+            FRONT_LEFT_LOC,
+            FRONT_RIGHT_LOC,
+            BACK_LEFT_LOC,
+            BACK_RIGHT_LOC);
 
+    }
+
+    public final static class DriverConstants {
+        public final static double speedMultiplier = 5;
+        public final static double angleMultiplier = 1.0 / 32;
     }
 }

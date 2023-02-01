@@ -36,7 +36,7 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
     PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
         trajectory,
         odometry::getPose,
-        DrivetrainSubsystem.swerveKinematics,
+        DrivetrainSubsystem.SWERVE_KINEMATICS,
         speedControllerX,
         speedControllerY,
         angleController,
