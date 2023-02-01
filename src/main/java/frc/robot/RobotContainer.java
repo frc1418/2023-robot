@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainSubsystem;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
@@ -68,16 +69,16 @@ public class RobotContainer {
 
     private WheelSubsystem backRightWheel = new WheelSubsystem (
         backRightAngleMotor, backRightSpeedMotor, backRightEncoder,
-        DrivetrainSubsystem.m_backRightLocation);
+        DrivetrainSubsystem.BACK_RIGHT_LOC);
     public WheelSubsystem backLeftWheel = new WheelSubsystem (
       backLeftAngleMotor, backLeftSpeedMotor, backLeftEncoder,
-      DrivetrainSubsystem.m_backLeftLocation);
+      DrivetrainSubsystem.BACK_LEFT_LOC);
     private WheelSubsystem frontRightWheel = new WheelSubsystem (
       frontRightAngleMotor, frontRightSpeedMotor, frontRightEncoder,
-      DrivetrainSubsystem.m_frontRightLocation);
+      DrivetrainSubsystem.FRONT_RIGHT_LOC);
     private WheelSubsystem frontLeftWheel = new WheelSubsystem (
       frontLeftAngleMotor, frontLeftSpeedMotor, frontLeftEncoder,
-      DrivetrainSubsystem.m_frontLeftLocation);
+      DrivetrainSubsystem.FRONT_LEFT_LOC);
     
 
     Gyro gyro = new AHRS(SPI.Port.kMXP);
@@ -89,13 +90,13 @@ public class RobotContainer {
       backRightWheel.getSwerveModulePosition()
     };
 
-    private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(DrivetrainSubsystem.swerveKinematics, gyro.getRotation2d(), positions);
+    private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(DrivetrainSubsystem.SWERVE_KINEMATICS, gyro.getRotation2d(), positions);
 
     private Odometry odometry = new Odometry(gyro, driveOdometry, positions);
     
     private SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem(
         backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
-        DrivetrainSubsystem.swerveKinematics, odometry);
+        DrivetrainSubsystem.SWERVE_KINEMATICS, odometry);
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -168,9 +169,9 @@ public class RobotContainer {
           () -> {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
-                  applyDeadband(-leftJoystick.getY(), DrivetrainSubsystem.DRIFT_DEADBAND) * 5,
-                  applyDeadband(-leftJoystick.getX(),DrivetrainSubsystem.DRIFT_DEADBAND) * 5,
-                  applyDeadband(-rightJoystick.getX() / 12, DrivetrainSubsystem.ROTATION_DEADBAND));
+                  applyDeadband(-leftJoystick.getY(), DrivetrainSubsystem.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(-leftJoystick.getX(),DrivetrainSubsystem.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(-rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainSubsystem.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
