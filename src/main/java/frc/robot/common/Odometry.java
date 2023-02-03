@@ -1,8 +1,9 @@
 package frc.robot.common;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
@@ -10,13 +11,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public class Odometry {
     private final SwerveDriveOdometry odometry;
-    private final Gyro gyro;
+    private final AHRS gyro;
     private SwerveModulePosition[] modulePositions;
 
     private Pose2d pose;
 
     public Odometry(
-            Gyro gyro,
+            AHRS gyro,
             SwerveDriveOdometry odometry, SwerveModulePosition[] modulePositions) {
         this.gyro = gyro;
         this.odometry = odometry;
@@ -57,5 +58,43 @@ public class Odometry {
     }
     public Rotation2d getRotation2d() {
         return gyro.getRotation2d();//.unaryMinus();
+    }
+
+    public Rotation2d getPitch() {
+        // switched because of roborio placement
+        return Rotation2d.fromDegrees(gyro.getRoll());
+    }
+
+    public Rotation2d getRoll() {
+        // switched because of roborio placement
+        return Rotation2d.fromDegrees(gyro.getPitch());
+    }
+
+    public Rotation2d getInclineAngle() {
+        double y = getPitch().getRadians();
+        double x = getRoll().getRadians();
+
+        double rad = (Math.PI / 2) - Math.acos(Math.sqrt(
+            (Math.pow(Math.cos(y) * Math.sin(x), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2)) /
+            (Math.pow(Math.cos(y), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2))));
+        // System.out.println(rad * 180 / Math.PI);
+
+        // double rad = Math.atan(
+        //     y / (Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2))));
+        
+        return Rotation2d.fromRadians(rad).unaryMinus();
+    }
+
+    public Rotation2d getInclineDirection() {
+        double y = getPitch().getRadians();
+        double x = getRoll().getRadians();
+        if (y == 0 && x == 0)
+            return new Rotation2d();
+        else {
+            double rad = Math.atan(Math.tan(x) / Math.tan(y));
+            if (y < 0)
+                return Rotation2d.fromRadians(rad + Math.PI);//.unaryMinus();
+            return Rotation2d.fromRadians(rad);//.unaryMinus();
+        }
     }
 }

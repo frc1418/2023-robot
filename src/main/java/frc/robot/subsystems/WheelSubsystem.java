@@ -74,6 +74,12 @@ public class WheelSubsystem extends SubsystemBase{
         ntVelocity.setDouble(speedMotor.getEncoder().getVelocity());
 
         Rotation2d angle = optimizedState.angle;
+        setAngle(angle);
+        
+    }
+
+    public void setAngle(Rotation2d angle) {
+
         double pidOutput = anglePIDController.calculate(getEncoderPosition(), angle.getRotations());
         double clampedPidOutpt = MathUtil.clamp(pidOutput, -1, 1);
         
@@ -83,7 +89,7 @@ public class WheelSubsystem extends SubsystemBase{
             angleSetpoint = 0;
 
         angleMotor.set(angleSetpoint);
-        
+
     }
 
     public CANSparkMax getAngleMotor(){
