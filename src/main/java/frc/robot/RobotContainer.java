@@ -93,6 +93,15 @@ public class RobotContainer {
 
     AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+    private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
+    private final NetworkTable table = ntInstance.getTable("/components/Odometry");
+
+    private final NetworkTableEntry inclineAngle = table.getEntry("inclineAngle");
+    private final NetworkTableEntry inclineDirection = table.getEntry("inclineDirection");
+
+    private final NetworkTableEntry pitch = table.getEntry("pitch");
+    private final NetworkTableEntry roll = table.getEntry("roll");
+
     private SwerveModulePosition[] positions = new SwerveModulePosition[] {
       frontLeftWheel.getSwerveModulePosition(),
       frontRightWheel.getSwerveModulePosition(),
@@ -137,6 +146,11 @@ public class RobotContainer {
       // chooser.setDefaultOption("Charge Command", chargeCommand);
       // chooser.addOption("Command", chargeCommand);
       SmartDashboard.putData(chooser);
+
+      inclineAngle.setDefaultDouble(0);
+      inclineDirection.setDefaultDouble(0);
+      pitch.setDefaultDouble(0);
+      roll.setDefaultDouble(0);
 
       // Configure the button bindings
       configureButtonBindings();
@@ -207,8 +221,11 @@ public class RobotContainer {
       Joystick altJoystick = new Joystick(2);
 
       
+
       JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
+
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
+
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
 
       JoystickButton pivotUpButton = new JoystickButton(altJoystick, 4);
@@ -330,5 +347,13 @@ public class RobotContainer {
       frontRightSpeedMotor.setIdleMode(IdleMode.kCoast);
       backLeftSpeedMotor.setIdleMode(IdleMode.kCoast);
       backRightSpeedMotor.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void periodic() {
+      inclineAngle.setDouble(odometry.getInclineAngle().getDegrees());
+      inclineDirection.setDouble(odometry.getInclineDirection().getDegrees());
+
+      pitch.setDouble(odometry.getPitch().getDegrees());
+      roll.setDouble(odometry.getRoll().getDegrees());
     }
 }
