@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.lang.System.Logger.Level;
 import java.util.HashMap;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -14,13 +15,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
@@ -81,7 +85,16 @@ public class RobotContainer {
       DrivetrainConstants.FRONT_LEFT_LOC);
     
 
-    Gyro gyro = new AHRS(SPI.Port.kMXP);
+    AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
+    private final NetworkTable table = ntInstance.getTable("/components/Odometry");
+
+    private final NetworkTableEntry inclineAngle = table.getEntry("inclineAngle");
+    private final NetworkTableEntry inclineDirection = table.getEntry("inclineDirection");
+
+    private final NetworkTableEntry pitch = table.getEntry("pitch");
+    private final NetworkTableEntry roll = table.getEntry("roll");
 
     private SwerveModulePosition[] positions = new SwerveModulePosition[] {
       frontLeftWheel.getSwerveModulePosition(),
@@ -106,6 +119,8 @@ public class RobotContainer {
     private final SendableChooser<Command> chooser = new SendableChooser<>();
     private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
+    private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
+
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -114,6 +129,11 @@ public class RobotContainer {
       chooser.setDefaultOption("Charge Command", chargeCommand);
       chooser.addOption("Command", chargeCommand);
       SmartDashboard.putData(chooser);
+
+      inclineAngle.setDefaultDouble(0);
+      inclineDirection.setDefaultDouble(0);
+      pitch.setDefaultDouble(0);
+      roll.setDefaultDouble(0);
 
       // Configure the button bindings
       configureButtonBindings();
@@ -159,6 +179,11 @@ public class RobotContainer {
       Joystick rightJoystick = new Joystick(1);
 
       
+
+      JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
+
+      JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
+
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
 
 
@@ -180,6 +205,11 @@ public class RobotContainer {
             System.out.println("FIELD CENTRIC TOGGLED");
             swerveDrive.toggleFieldCentric();
           }, swerveDrive));
+
+      
+      balanceChargingStationButton.whileTrue(levelChargingStationCommand);
+
+      turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
     }
 
@@ -213,5 +243,13 @@ public class RobotContainer {
       frontRightSpeedMotor.setIdleMode(IdleMode.kCoast);
       backLeftSpeedMotor.setIdleMode(IdleMode.kCoast);
       backRightSpeedMotor.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void periodic() {
+      inclineAngle.setDouble(odometry.getInclineAngle().getDegrees());
+      inclineDirection.setDouble(odometry.getInclineDirection().getDegrees());
+
+      pitch.setDouble(odometry.getPitch().getDegrees());
+      roll.setDouble(odometry.getRoll().getDegrees());
     }
 }

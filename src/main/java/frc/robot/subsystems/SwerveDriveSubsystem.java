@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -79,6 +80,33 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         backLeft.drive(backLeftState);
         backRight.drive(backRightState);
 
+    }
+
+    public void strafe(Rotation2d direction, double speed) {
+        drive(speed * Math.cos(direction.getRadians()), speed * Math.sin(direction.getRadians()), 0);
+    }
+
+    public void turtle() {
+        frontRight.setAngle(Rotation2d.fromDegrees(45));
+        backLeft.setAngle(Rotation2d.fromDegrees(45));
+        
+        backRight.setAngle(Rotation2d.fromDegrees(-45));
+        frontLeft.setAngle(Rotation2d.fromDegrees(-45));
+    }
+    
+
+    public void resetEncoders() {
+        frontLeft.getEncoder().reset();
+        frontLeft.getAngleMotor().getEncoder().setPosition(0);
+
+        frontRight.getEncoder().reset();
+        frontRight.getAngleMotor().getEncoder().setPosition(0);
+
+        backLeft.getEncoder().reset();
+        backLeft.getAngleMotor().getEncoder().setPosition(0);
+
+        backRight.getEncoder().reset();
+        backRight.getAngleMotor().getEncoder().setPosition(0);
     }
 
     @Override
