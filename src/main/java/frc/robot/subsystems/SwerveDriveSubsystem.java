@@ -20,16 +20,16 @@ public class SwerveDriveSubsystem extends SubsystemBase{
     private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
     private final NetworkTable table = ntInstance.getTable("/components/drivetrain");
 
-    private final NetworkTableEntry backRightAngleEncoder = table.getEntry("backRightAngleEncoder");
-    private final NetworkTableEntry backLeftAngleEncoder = table.getEntry("backLeftAngleEncoder");
-    private final NetworkTableEntry frontRightAngleEncoder = table.getEntry("frontRightAngleEncoder");
-    private final NetworkTableEntry frontLeftAngleEncoder = table.getEntry("frontLeftAngleEncoder");
+    private final NetworkTableEntry ntBackRightAngleEncoder = table.getEntry("backRightAngleEncoder");
+    private final NetworkTableEntry ntBackLeftAngleEncoder = table.getEntry("backLeftAngleEncoder");
+    private final NetworkTableEntry ntFrontRightAngleEncoder = table.getEntry("frontRightAngleEncoder");
+    private final NetworkTableEntry ntFrontLeftAngleEncoder = table.getEntry("frontLeftAngleEncoder");
 
-    private final NetworkTableEntry isFieldCentric = table.getEntry("isFieldCentric");
+    private final NetworkTableEntry ntIsFieldCentric = table.getEntry("isFieldCentric");
 
     private final NetworkTable odometryTable = ntInstance.getTable("/common/Odometry");
-    private final NetworkTableEntry odometryPose = odometryTable.getEntry("odometryPose");
-    private final NetworkTableEntry velocity = table.getEntry("wheelvelocity");
+    private final NetworkTableEntry ntOdometryPose = odometryTable.getEntry("odometryPose");
+    private final NetworkTableEntry ntVelocity = table.getEntry("wheelvelocity");
 
 
 
@@ -47,7 +47,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         this.kinematics = kinematics;
         this.odometry = odometry;
 
-        this.isFieldCentric.setBoolean(fieldCentric);
+        this.ntIsFieldCentric.setBoolean(fieldCentric);
     }
 
 
@@ -63,18 +63,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        SwerveModuleState frontLeftState = moduleStates[0];
-        SwerveModuleState frontRightState = moduleStates[1];
-        SwerveModuleState backLeftState = moduleStates[2];
-        SwerveModuleState backRightState = moduleStates[3];
-
-        velocity.setDouble(frontLeft.getSpeedMotor().getEncoder().getVelocity());
-
-        frontLeft.drive(frontLeftState);
-        frontRight.drive(frontRightState);
-        backLeft.drive(backLeftState);
-        backRight.drive(backRightState);
-
+        drive(moduleStates);
     }
 
     public void drive (SwerveModuleState[] moduleStates) {
@@ -83,7 +72,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         SwerveModuleState backLeftState = moduleStates[2];
         SwerveModuleState backRightState = moduleStates[3];
 
-        velocity.setDouble(frontLeftState.speedMetersPerSecond);
+        ntVelocity.setDouble(frontLeftState.speedMetersPerSecond);
 
         frontLeft.drive(frontLeftState);
         frontRight.drive(frontRightState);
@@ -91,37 +80,22 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         backRight.drive(backRightState);
 
     }
-    
-
-    public void resetEncoders() {
-        frontLeft.getEncoder().reset();
-        frontLeft.getAngleMotor().getEncoder().setPosition(0);
-
-        frontRight.getEncoder().reset();
-        frontRight.getAngleMotor().getEncoder().setPosition(0);
-
-        backLeft.getEncoder().reset();
-        backLeft.getAngleMotor().getEncoder().setPosition(0);
-
-        backRight.getEncoder().reset();
-        backRight.getAngleMotor().getEncoder().setPosition(0);
-    }
 
     @Override
     public void periodic() {
         odometry.update(getPositions());
 
-        odometryPose.setString(odometry.getPose().toString());
+        ntOdometryPose.setString(odometry.getPose().toString());
 
-        backLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
-        backRightAngleEncoder.setDouble(backRight.getEncoderPosition());
-        frontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
-        frontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
+        ntBackLeftAngleEncoder.setDouble(backLeft.getEncoderPosition());
+        ntBackRightAngleEncoder.setDouble(backRight.getEncoderPosition());
+        ntFrontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
+        ntFrontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
     }
 
     public void toggleFieldCentric() {
         fieldCentric = !fieldCentric;
-        isFieldCentric.setBoolean(fieldCentric);
+        ntIsFieldCentric.setBoolean(fieldCentric);
     }
 
     public boolean getFieldCentric() {

@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.WheelConstants;
 
 public class WheelSubsystem extends SubsystemBase{
 
@@ -33,8 +34,8 @@ public class WheelSubsystem extends SubsystemBase{
     private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
     private final NetworkTable table = ntInstance.getTable("/components/drivetrain");
 
-    private final NetworkTableEntry speedTarget = table.getEntry("speedTarget");
-    private final NetworkTableEntry velocity = table.getEntry("wheelvelocity");
+    private final NetworkTableEntry ntSpeedTarget = table.getEntry("speedTarget");
+    private final NetworkTableEntry ntVelocity = table.getEntry("wheelvelocity");
 
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location) {
         this.angleMotor = angleMotor;
@@ -43,7 +44,7 @@ public class WheelSubsystem extends SubsystemBase{
         this.location = location;
 
         this.speedMotor.getEncoder().setPosition(0);
-        this.speedMotor.getEncoder().setPositionConversionFactor(0.33/8.33);
+        this.speedMotor.getEncoder().setPositionConversionFactor(WheelConstants.ROTATIONS_TO_METERS);
         this.speedMotor.getEncoder().setVelocityConversionFactor(this.speedMotor.getEncoder().getPositionConversionFactor() / 60.0);
         this.speedPIDController = this.speedMotor.getPIDController();
 
@@ -51,17 +52,14 @@ public class WheelSubsystem extends SubsystemBase{
         speedPIDController.setI(0.00);
         speedPIDController.setD(0.00);
         speedPIDController.setFF(0.259);
-        
-
-
 
         anglePIDController = new PIDController(4, 0, 0);
         anglePIDController.enableContinuousInput(0, 1);
         anglePIDController.setTolerance(1.0/360);
 
 
-        speedTarget.setDouble(0);
-        velocity.setDouble(0);
+        ntSpeedTarget.setDouble(0);
+        ntVelocity.setDouble(0);
     }
 
     public void drive (SwerveModuleState state) {
@@ -72,8 +70,8 @@ public class WheelSubsystem extends SubsystemBase{
         targetSpeed = optimizedState.speedMetersPerSecond;
         speedPIDController.setReference(targetSpeed, ControlType.kVelocity);
 
-        speedTarget.setDouble(targetSpeed);
-        velocity.setDouble(speedMotor.getEncoder().getVelocity());
+        ntSpeedTarget.setDouble(targetSpeed);
+        ntVelocity.setDouble(speedMotor.getEncoder().getVelocity());
 
         Rotation2d angle = optimizedState.angle;
         double pidOutput = anglePIDController.calculate(getEncoderPosition(), angle.getRotations());
@@ -99,7 +97,7 @@ public class WheelSubsystem extends SubsystemBase{
     public AnalogEncoder getEncoder(){
         return turningEncoder;
     }
-    public double gettargetSpeed() {
+    public double getTargetSpeed() {
         return targetSpeed;
     }
 

@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants.DrivetrainSubsystem;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -36,7 +36,7 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
     PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
         trajectory,
         odometry::getPose,
-        DrivetrainSubsystem.SWERVE_KINEMATICS,
+        DrivetrainConstants.SWERVE_KINEMATICS,
         speedControllerX,
         speedControllerY,
         angleController,

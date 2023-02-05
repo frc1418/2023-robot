@@ -17,10 +17,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
  */
 public final class Constants {
 
-    public final static class DrivetrainSubsystem {
+    public final static class DrivetrainConstants {
 
-        public static final double DRIFT_DEADBAND = 0.05;
-        public static final double ROTATION_DEADBAND = 0.002;
+        public static final double DRIFT_DEADBAND = 0.2;
+        public static final double ROTATION_DEADBAND = 0.006;
 
         public static final double WIDTH = 22.5;
         public static final double LENGTH = 22.5;
@@ -55,11 +55,14 @@ public final class Constants {
             FRONT_RIGHT_LOC,
             BACK_LEFT_LOC,
             BACK_RIGHT_LOC);
+    }
 
+    public final static class WheelConstants {
+        public final static double ROTATIONS_TO_METERS = 0.33/8.33;
     }
 
     public final static class DriverConstants {
-        public final static double speedMultiplier = 5;
-        public final static double angleMultiplier = 1.0 / 32;
+        public final static double speedMultiplier = 3;
+        public final static double angleMultiplier = 2.5 / 32;
     }
 }
