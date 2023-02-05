@@ -179,13 +179,9 @@ public class RobotContainer {
       Joystick rightJoystick = new Joystick(1);
 
       
-
       JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
-
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
-
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
-
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
@@ -205,7 +201,6 @@ public class RobotContainer {
             System.out.println("FIELD CENTRIC TOGGLED");
             swerveDrive.toggleFieldCentric();
           }, swerveDrive));
-
       
       balanceChargingStationButton.whileTrue(levelChargingStationCommand);
 

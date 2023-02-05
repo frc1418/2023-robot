@@ -93,21 +93,6 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         backRight.setAngle(Rotation2d.fromDegrees(-45));
         frontLeft.setAngle(Rotation2d.fromDegrees(-45));
     }
-    
-
-    public void resetEncoders() {
-        frontLeft.getEncoder().reset();
-        frontLeft.getAngleMotor().getEncoder().setPosition(0);
-
-        frontRight.getEncoder().reset();
-        frontRight.getAngleMotor().getEncoder().setPosition(0);
-
-        backLeft.getEncoder().reset();
-        backLeft.getAngleMotor().getEncoder().setPosition(0);
-
-        backRight.getEncoder().reset();
-        backRight.getAngleMotor().getEncoder().setPosition(0);
-    }
 
     @Override
     public void periodic() {
