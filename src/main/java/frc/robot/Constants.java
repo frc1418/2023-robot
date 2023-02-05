@@ -19,7 +19,7 @@ public final class Constants {
 
     public final static class DrivetrainConstants {
 
-        public static final double DRIFT_DEADBAND = 0.09;
+        public static final double DRIFT_DEADBAND = 0.2;
         public static final double ROTATION_DEADBAND = 0.006;
 
         public static final double WIDTH = 22.5;
