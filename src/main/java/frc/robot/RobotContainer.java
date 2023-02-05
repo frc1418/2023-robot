@@ -44,6 +44,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
 
@@ -128,6 +129,7 @@ public class RobotContainer {
 
     private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
+    private LimelightSubsystem limelight = new LimelightSubsystem();
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -138,6 +140,7 @@ public class RobotContainer {
     // private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
+    private final AlignWithSubstationCommand alignWithSubstationCommand = new AlignWithSubstationCommand(swerveDrive, limelight);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -222,9 +225,9 @@ public class RobotContainer {
 
       
 
-      JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
+      JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 3);
 
-      JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
+      JoystickButton turtleButton = new JoystickButton(rightJoystick, 1);
 
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
 
@@ -246,6 +249,8 @@ public class RobotContainer {
       Trigger telescopeToInButton = new Trigger(() -> altJoystick.getPOV() == 270);
 
       Trigger elevatorToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 45);
+      JoystickButton alignWithSubstationButton = new JoystickButton(leftJoystick, 3);
+
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
@@ -311,6 +316,8 @@ public class RobotContainer {
       armSubsystem.setDefaultCommand(new RunCommand(() -> {
         armSubsystem.setPivotPosition(armSubsystem.getPivotPosition());
       }, armSubsystem));
+      alignWithSubstationButton.whileTrue(alignWithSubstationCommand);
+      
     }
 
     /**
