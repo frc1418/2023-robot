@@ -67,7 +67,6 @@ public class Odometry {
     }
 
     public Pose2d getPose() {
-        // System.out.println(odometry.getPoseMeters());
         return odometry.getPoseMeters();
     }
 
@@ -100,10 +99,6 @@ public class Odometry {
         double rad = (Math.PI / 2) - Math.acos(Math.sqrt(
             (Math.pow(Math.cos(y) * Math.sin(x), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2)) /
             (Math.pow(Math.cos(y), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2))));
-        // System.out.println(rad * 180 / Math.PI);
-
-        // double rad = Math.atan(
-        //     y / (Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2))));
         
         return Rotation2d.fromRadians(rad).unaryMinus();
     }
