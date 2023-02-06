@@ -36,6 +36,7 @@ import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.GrabberConstants;
+import frc.robot.commands.AlignWithAprilTagCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.common.Odometry;
@@ -140,7 +141,7 @@ public class RobotContainer {
     // private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
-    private final AlignWithSubstationCommand alignWithSubstationCommand = new AlignWithSubstationCommand(swerveDrive, limelight);
+    private final AlignWithAprilTagCommand alignWithSubstationCommand = new AlignWithAprilTagCommand(swerveDrive, limelight);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
