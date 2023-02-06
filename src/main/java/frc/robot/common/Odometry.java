@@ -6,6 +6,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 
@@ -13,6 +16,15 @@ public class Odometry {
     private final SwerveDriveOdometry odometry;
     private final AHRS gyro;
     private SwerveModulePosition[] modulePositions;
+
+    private final NetworkTableInstance ntInstance = NetworkTableInstance.getDefault();
+    private final NetworkTable table = ntInstance.getTable("/components/Odometry");
+
+    private final NetworkTableEntry inclineAngle = table.getEntry("inclineAngle");
+    private final NetworkTableEntry inclineDirection = table.getEntry("inclineDirection");
+
+    private final NetworkTableEntry pitch = table.getEntry("pitch");
+    private final NetworkTableEntry roll = table.getEntry("roll");
 
     private Pose2d pose;
 
@@ -23,6 +35,11 @@ public class Odometry {
         this.odometry = odometry;
         this.modulePositions = modulePositions;
         this.pose = new Pose2d();
+
+        inclineAngle.setDefaultDouble(0);
+        inclineDirection.setDefaultDouble(0);
+        pitch.setDefaultDouble(0);
+        roll.setDefaultDouble(0);
     }
 
     public void update(SwerveModulePosition[] newPositions) {
@@ -33,6 +50,12 @@ public class Odometry {
         pose = odometry.update(gyroAngle, newPositions);
 
         modulePositions = newPositions;
+
+        inclineAngle.setDouble(getInclineAngle().getDegrees());
+        inclineDirection.setDouble(getInclineDirection().getDegrees());
+
+        pitch.setDouble(getPitch().getDegrees());
+        roll.setDouble(getRoll().getDegrees());
     }
 
     public void reset(Pose2d pose) {
