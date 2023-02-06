@@ -10,13 +10,6 @@ public class LevelChargingStationCommand extends SequentialCommandGroup {
 
     public LevelChargingStationCommand(Odometry odometry, SwerveDriveSubsystem swerveDriveSubsystem) {
 
-        // PIDCommand centerRobot = new PIDCommand(
-        //   new PIDController(1, 0, 0),
-        //   () -> odometry.getRoll().getDegrees(),
-        //   0,
-        //   (rot) -> swerveDriveSubsystem.drive(0, 0, rot),
-        //   swerveDriveSubsystem);
-
         System.out.println("LEVELING");
 
         PIDCommand balanceRobot = new PIDCommand(
