@@ -225,8 +225,4 @@ public class RobotContainer {
       backLeftSpeedMotor.setIdleMode(IdleMode.kCoast);
       backRightSpeedMotor.setIdleMode(IdleMode.kCoast);
     }
-
-    public void periodic() {
-      
-    }
 }
