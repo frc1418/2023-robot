@@ -11,7 +11,7 @@ import frc.robot.common.Odometry;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
-public class AlignWithSubstationCommand extends CommandBase {
+public class AlignWithAprilTagCommand extends CommandBase {
 
     PIDController speedXController;
     PIDController speedYController;
@@ -21,7 +21,7 @@ public class AlignWithSubstationCommand extends CommandBase {
     SwerveDriveSubsystem swerveDrive;
     LimelightSubsystem limelight;
 
-    public AlignWithSubstationCommand(SwerveDriveSubsystem swerveDrive, LimelightSubsystem limelight) {
+    public AlignWithAprilTagCommand(SwerveDriveSubsystem swerveDrive, LimelightSubsystem limelight) {
 
         this.swerveDrive = swerveDrive;
         this.limelight = limelight;
