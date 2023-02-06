@@ -192,11 +192,6 @@ public class RobotContainer {
 
       turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
-      
-      balanceChargingStationButton.whileTrue(levelChargingStationCommand);
-
-      turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
-
     }
 
     /**
