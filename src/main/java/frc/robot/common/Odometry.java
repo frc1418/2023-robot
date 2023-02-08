@@ -96,6 +96,10 @@ public class Odometry {
         double y = getPitch().getRadians();
         double x = getRoll().getRadians();
 
+        // vector math: treat pitch and roll values as 3d vectors
+        // find cross product for normal line of plane,
+        // use cosine angle rule for normal line and normal line's "shadow"
+        // (same x and y, but z is 0)
         double rad = (Math.PI / 2) - Math.acos(Math.sqrt(
             (Math.pow(Math.cos(y) * Math.sin(x), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2)) /
             (Math.pow(Math.cos(y), 2) + Math.pow(Math.sin(y) * Math.cos(x), 2))));
@@ -107,12 +111,14 @@ public class Odometry {
         double y = getPitch().getRadians();
         double x = getRoll().getRadians();
         if (y == 0 && x == 0)
+            // if robot is perfectly level, set direction to 0
             return new Rotation2d();
         else {
+            // otherwise, angle is arctan of pitch and roll values
             double rad = Math.atan(Math.tan(x) / Math.tan(y));
             if (y < 0)
-                return Rotation2d.fromRadians(rad + Math.PI);//.unaryMinus();
-            return Rotation2d.fromRadians(rad);//.unaryMinus();
+                return Rotation2d.fromRadians(rad + Math.PI);
+            return Rotation2d.fromRadians(rad);
         }
     }
 }
