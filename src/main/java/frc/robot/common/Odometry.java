@@ -4,11 +4,13 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.subsystems.LimelightSubsystem;
 
 
 
@@ -27,13 +29,15 @@ public class Odometry {
     private final NetworkTableEntry roll = table.getEntry("roll");
 
     private Pose2d pose;
+    private LimelightSubsystem limelight;
 
     public Odometry(
             AHRS gyro,
-            SwerveDriveOdometry odometry, SwerveModulePosition[] modulePositions) {
+            SwerveDriveOdometry odometry, SwerveModulePosition[] modulePositions, LimelightSubsystem limelight) {
         this.gyro = gyro;
         this.odometry = odometry;
         this.modulePositions = modulePositions;
+        this.limelight = limelight;
         this.pose = new Pose2d();
 
         inclineAngle.setDefaultDouble(0);
@@ -48,6 +52,11 @@ public class Odometry {
 
         // Update the pose
         pose = odometry.update(gyroAngle, newPositions);
+
+        if (limelight.getIsDetecting()){
+            reset(new Pose2d(new Translation2d(limelight.getYDistance(), -limelight.getXDistance()),
+                limelight.getRotationToTargetPlane().unaryMinus()));
+        }
 
         modulePositions = newPositions;
 

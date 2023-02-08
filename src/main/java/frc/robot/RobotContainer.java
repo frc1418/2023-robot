@@ -37,6 +37,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.GrabberConstants;
 import frc.robot.commands.AlignWithAprilTagCommand;
+import frc.robot.commands.AlignByAprilTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.common.Odometry;
@@ -113,7 +114,8 @@ public class RobotContainer {
 
     private SwerveDriveOdometry driveOdometry = new SwerveDriveOdometry(DrivetrainConstants.SWERVE_KINEMATICS, gyro.getRotation2d(), positions);
 
-    private Odometry odometry = new Odometry(gyro, driveOdometry, positions);
+    private LimelightSubsystem limelight = new LimelightSubsystem();
+    private Odometry odometry = new Odometry(gyro, driveOdometry, positions, limelight);
     
     private SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem(
         backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
@@ -141,7 +143,8 @@ public class RobotContainer {
     // private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
-    private final AlignWithAprilTagCommand alignWithSubstationCommand = new AlignWithAprilTagCommand(swerveDrive, limelight);
+    private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.9, 0);
+    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.9, 0.5);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -227,9 +230,7 @@ public class RobotContainer {
       
 
       JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 3);
-
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 1);
-
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
 
       JoystickButton pivotUpButton = new JoystickButton(altJoystick, 4);
@@ -251,6 +252,8 @@ public class RobotContainer {
 
       Trigger elevatorToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 45);
       JoystickButton alignWithSubstationButton = new JoystickButton(leftJoystick, 3);
+      JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 3);
+      JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 4);
 
 
       swerveDrive.setDefaultCommand(new RunCommand(
@@ -318,6 +321,9 @@ public class RobotContainer {
         armSubsystem.setPivotPosition(armSubsystem.getPivotPosition());
       }, armSubsystem));
       alignWithSubstationButton.whileTrue(alignWithSubstationCommand);
+
+      alignAtAprilTagButton.whileTrue(alignAtAprilTag);
+      alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
       
     }
 
