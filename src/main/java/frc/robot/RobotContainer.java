@@ -19,11 +19,15 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +41,10 @@ import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
 
@@ -101,6 +108,18 @@ public class RobotContainer {
     private SwerveDriveSubsystem swerveDrive = new SwerveDriveSubsystem(
         backRightWheel, backLeftWheel, frontRightWheel, frontLeftWheel,
         DrivetrainConstants.SWERVE_KINEMATICS, odometry);
+
+
+    private CANSparkMax pivotMotor = new CANSparkMax(100, MotorType.kBrushless);
+    private Talon telescopeMotor = new Talon(100);
+    private ArmSubsystem armSubsystem = new ArmSubsystem(pivotMotor, telescopeMotor);
+
+    private DoubleSolenoid leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 0);
+    private DoubleSolenoid rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 0);
+    private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid);
+
+    private CANSparkMax elevatorMotor = new CANSparkMax(100, MotorType.kBrushless);
+    private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -174,11 +193,24 @@ public class RobotContainer {
     private void configureButtonBindings() {
       Joystick leftJoystick = new Joystick(0);
       Joystick rightJoystick = new Joystick(1);
+      Joystick altJoystick = new Joystick(2);
 
       
       JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
+
+      JoystickButton pivotUpButton = new JoystickButton(altJoystick, 100);
+      JoystickButton pivotDownButton = new JoystickButton(altJoystick, 100);
+
+      JoystickButton telescopeOutButton = new JoystickButton(altJoystick, 100);
+      JoystickButton telescopeInButton = new JoystickButton(altJoystick, 100);
+
+      JoystickButton elevatorUpButton = new JoystickButton(altJoystick, 100);
+      JoystickButton elevatorDownButton = new JoystickButton(altJoystick, 100);
+
+      JoystickButton toggleGrabberButton = new JoystickButton(altJoystick, 100);
+
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
@@ -203,6 +235,16 @@ public class RobotContainer {
 
       turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
+      pivotUpButton.whileTrue(new InstantCommand(() -> armSubsystem.setPivotMotor(0.2), armSubsystem));
+      pivotDownButton.whileTrue(new InstantCommand(() -> armSubsystem.setPivotMotor(-0.2), armSubsystem));
+
+      elevatorUpButton.whileTrue(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(-0.2), elevatorSubsystem));
+      elevatorDownButton.whileTrue(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0.2), elevatorSubsystem));
+
+      telescopeOutButton.whileTrue(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0.2), armSubsystem));
+      telescopeInButton.whileTrue(new InstantCommand(() -> armSubsystem.setTelescopeMotor(-0.2), armSubsystem));
+
+      toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
     }
 
     /**
