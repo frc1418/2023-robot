@@ -147,10 +147,23 @@ public class RobotContainer {
       frontRightSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(false);
 
-      backRightEncoder.setPositionOffset(DrivetrainConstants.BACK_RIGHT_ENCODER_OFFSET);
-      backLeftEncoder.setPositionOffset(DrivetrainConstants.BACK_LEFT_ENCODER_OFFSET);
-      frontRightEncoder.setPositionOffset(DrivetrainConstants.FRONT_RIGHT_ENCODER_OFFSET);
-      frontLeftEncoder.setPositionOffset(DrivetrainConstants.FRONT_LEFT_ENCODER_OFFSET);
+      frontLeftWheel.getEncoder().setInverted(true);
+      frontRightWheel.getEncoder().setInverted(true);
+      backLeftWheel.getEncoder().setInverted(true);
+      backRightWheel.getEncoder().setInverted(true);
+
+
+      frontLeftAngleMotor.setInverted(false);
+      frontRightAngleMotor.setInverted(false);
+      backLeftAngleMotor.setInverted(false);
+      backRightAngleMotor.setInverted(false);
+
+      backRightSpeedMotor.setInverted(false);
+
+      backRightWheel.getEncoder().setZeroOffset(DrivetrainConstants.BACK_RIGHT_ENCODER_OFFSET);
+      backLeftWheel.getEncoder().setZeroOffset(DrivetrainConstants.BACK_LEFT_ENCODER_OFFSET);
+      frontRightWheel.getEncoder().setZeroOffset(DrivetrainConstants.FRONT_RIGHT_ENCODER_OFFSET);
+      frontLeftWheel.getEncoder().setZeroOffset(DrivetrainConstants.FRONT_LEFT_ENCODER_OFFSET);
     }
 
     /**
@@ -172,9 +185,9 @@ public class RobotContainer {
           () -> {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
-                  applyDeadband(-leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
-                  applyDeadband(-leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
-                  applyDeadband(-rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainConstants.ROTATION_DEADBAND));
+                  applyDeadband(leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainConstants.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
