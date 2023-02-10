@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 
@@ -24,7 +25,7 @@ public class WheelSubsystem extends SubsystemBase{
     private CANSparkMax speedMotor;
     private PIDController anglePIDController;
     private SparkMaxPIDController speedPIDController;
-    private AnalogEncoder turningEncoder;    
+    private SparkMaxAbsoluteEncoder turningEncoder;  
     
     Translation2d location;
 
@@ -40,8 +41,8 @@ public class WheelSubsystem extends SubsystemBase{
     public WheelSubsystem (CANSparkMax angleMotor, CANSparkMax speedMotor, AnalogEncoder turningEncoder, Translation2d location) {
         this.angleMotor = angleMotor;
         this.speedMotor = speedMotor;
-        this.turningEncoder = turningEncoder;
         this.location = location;
+        this.turningEncoder = angleMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
         this.speedMotor.getEncoder().setPosition(0);
         this.speedMotor.getEncoder().setPositionConversionFactor(WheelConstants.ROTATIONS_TO_METERS);
@@ -53,7 +54,7 @@ public class WheelSubsystem extends SubsystemBase{
         speedPIDController.setD(0.00);
         speedPIDController.setFF(0.259);
 
-        anglePIDController = new PIDController(4, 0, 0);
+        anglePIDController = new PIDController(1.5, 0, 0);
         anglePIDController.enableContinuousInput(0, 1);
         anglePIDController.setTolerance(1.0/360);
 
@@ -100,7 +101,7 @@ public class WheelSubsystem extends SubsystemBase{
         return speedMotor;
     }
 
-    public AnalogEncoder getEncoder(){
+    public SparkMaxAbsoluteEncoder getEncoder(){
         return turningEncoder;
     }
     public double getTargetSpeed() {
@@ -108,12 +109,13 @@ public class WheelSubsystem extends SubsystemBase{
     }
 
     public double getEncoderPosition() {
+        return turningEncoder.getPosition();
         // return turningEncoder.getAbsolutePosition();
-        double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
-        if (rawPos < 0)
-            return -rawPos;
-        else
-            return 1 - rawPos;
+        // double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
+        // if (rawPos < 0)
+        //     return -rawPos;
+        // else
+        //     return 1 - rawPos;
     }
 
     public double getangleSetpoint() {

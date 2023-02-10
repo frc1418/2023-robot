@@ -28,22 +28,22 @@ public final class Constants {
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
         public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.257;
+        public final static double BACK_RIGHT_ENCODER_OFFSET = 1 - (0.173 + 0.25);
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.015;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 0.420;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
         public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.734;
+        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.143;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.705;
+        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.082 + 0.25;
 
         public final static Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
         public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
