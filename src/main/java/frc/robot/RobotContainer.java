@@ -145,7 +145,6 @@ public class RobotContainer {
       backRightAngleMotor.setInverted(false);
 
       frontRightSpeedMotor.setInverted(true);
-      backRightSpeedMotor.setInverted(false);
 
       frontLeftWheel.getEncoder().setInverted(true);
       frontRightWheel.getEncoder().setInverted(true);
