@@ -11,6 +11,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
     private NetworkTableEntry ntRobotposeTargetspace = table.getEntry("botpose_targetspace");
+    private NetworkTableEntry ntCameraposeTargetspace = table.getEntry("camerapose_targetspace");
 
     // returns 0 if no target, 1, if target
     private NetworkTableEntry ntIsDetecting = table.getEntry("tv");
@@ -32,11 +33,12 @@ public class LimelightSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        double[] posArray = ntRobotposeTargetspace.getDoubleArray(new double[6]);
+        double[] botPosArray = ntRobotposeTargetspace.getDoubleArray(new double[6]);
+        double [] camPosArray = ntCameraposeTargetspace.getDoubleArray(new double[6]);
 
-        xToTarget = posArray[0];
-        yToTarget = posArray[2];
-        rotToTarget = posArray[4];
+        xToTarget = botPosArray[0];
+        yToTarget = botPosArray[2];
+        rotToTarget = camPosArray[4];
 
         distanceToTarget = Math.hypot(xToTarget, yToTarget);
         angleToTarget = Rotation2d.fromRadians(Math.atan2(xToTarget, yToTarget));
@@ -58,15 +60,15 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public Rotation2d getRotationToTargetPlane() {
         Rotation2d rot = Rotation2d.fromDegrees(rotToTarget - 90 + angleToTarget.getDegrees());
-        System.out.println(rotToTarget);
-        return rot;
+        // System.out.println(rotToTarget);
+        return Rotation2d.fromDegrees(rotToTarget);
     }
 
     public boolean getIsDetecting() {
-        double id = ntID.getDouble(Integer.MAX_VALUE);
-        boolean isDetecting = ntIsDetecting.getInteger(0) == 1 && ntID.getDouble(Integer.MAX_VALUE) >= 1 && ntID.getDouble(Integer.MAX_VALUE) <= 8;
-        if (isDetecting){
-            // System.out.println("DETECTING " + ntID.getDouble(1000));
+        int id = (int) ntID.getInteger(Integer.MAX_VALUE);
+        boolean isDetecting = ntIsDetecting.getInteger(0) == 1 && id >= 1 && id <= 8;
+        if (isDetecting && id != 6){
+            System.out.println("DETECTING " + id);
         }
         return isDetecting;
     }
