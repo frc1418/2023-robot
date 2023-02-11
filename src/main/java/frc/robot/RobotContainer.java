@@ -145,6 +145,7 @@ public class RobotContainer {
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.9, 0);
     private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.9, 0.5);
+    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.9, -0.5);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -324,6 +325,7 @@ public class RobotContainer {
 
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
+      alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag);
       
     }
 

@@ -37,8 +37,8 @@ public class AlignByAprilTag extends CommandBase {
         this.odometry = odometry;
         this.targetX = targetX;
         this.targetY = targetY;
-        speedXController = new PIDController(1.1, 0, 0);
-        speedYController = new PIDController(1.1, 0, 0);
+        speedXController = new PIDController(1.5, 0, 0);
+        speedYController = new PIDController(1.5, 0, 0);
         speedRotController = new PIDController(0.001, 0, 0);
 
         addRequirements(swerveDrive);
@@ -66,11 +66,11 @@ public class AlignByAprilTag extends CommandBase {
         // }
         x = speedXController.calculate(odometry.getPose().getX(), targetX);
         y = speedYController.calculate(odometry.getPose().getY(), targetY);
-        // rot = speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), 0);
+        rot = speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), 0);
        
 
         // if(limelight.getIsDetecting()){
-            swerveDrive.drive(x, y, 0);
+            swerveDrive.drive(x, y, rot);
         // }
     }
 
