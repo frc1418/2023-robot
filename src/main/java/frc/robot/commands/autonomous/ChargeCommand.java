@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    private String TRAJECTORY_NAME = "chargeAndTurn";
+    private String TRAJECTORY_NAME = "spinningFigureEight";
 
   /**
    * Creates a new ExampleCommand.
@@ -32,12 +32,12 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    PathPlannerTrajectory charge = PathPlanner.generatePath(
-      new PathConstraints(2.5, 1),
-      new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
-      new PathPoint(new Translation2d(2, 0), new Rotation2d(0), Rotation2d.fromDegrees(10))
-    );
-    //PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(2.5, 1));
+    PathPlannerTrajectory charge = //PathPlanner.generatePath(
+    //   new PathConstraints(2.5, 1),
+    //   new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
+    //   new PathPoint(new Translation2d(2, 0), new Rotation2d(0), Rotation2d.fromDegrees(90))
+    // );
+      PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(3, 2.5));
 
     // System.out.println(charge.toString());
     addCommands(
