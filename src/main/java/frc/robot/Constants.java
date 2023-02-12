@@ -28,7 +28,7 @@ public final class Constants {
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
         public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.241;
+        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.257;
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;

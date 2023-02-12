@@ -146,7 +146,7 @@ public class RobotContainer {
       // backRightAngleMotor.setInverted(true);
 
       frontRightSpeedMotor.setInverted(true);
-      backRightSpeedMotor.setInverted(true);
+      backRightSpeedMotor.setInverted(false);
 
       backRightEncoder.setPositionOffset(DrivetrainConstants.BACK_RIGHT_ENCODER_OFFSET);
       backLeftEncoder.setPositionOffset(DrivetrainConstants.BACK_LEFT_ENCODER_OFFSET);
