@@ -29,9 +29,9 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
 
     odometry.zeroHeading();
 
-    PIDController speedControllerX = new PIDController(1.5, 0, 0.00);
-    PIDController speedControllerY = new PIDController(1.5, 0, 0.000);
-    PIDController angleController = new PIDController(0, 0, 0);
+    PIDController speedControllerX = new PIDController(1.3, 0, 0.00);
+    PIDController speedControllerY = new PIDController(1.3, 0, 0.000);
+    PIDController angleController = new PIDController(1.8, 0, 0);
 
     PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
         trajectory,

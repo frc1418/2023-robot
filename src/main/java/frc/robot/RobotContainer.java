@@ -112,7 +112,6 @@ public class RobotContainer {
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
 
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
       this.robot = robot;
@@ -143,7 +142,7 @@ public class RobotContainer {
       // frontLeftAngleMotor.setInverted(true);
       // frontRightAngleMotor.setInverted(true);
       // backLeftAngleMotor.setInverted(true);
-      // backRightAngleMotor.setInverted(true);
+      backRightAngleMotor.setInverted(false);
 
       frontRightSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(false);
