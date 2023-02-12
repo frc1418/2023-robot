@@ -12,13 +12,18 @@ import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    private String TRAJECTORY_NAME = "overChargingStation";
+    private String TRAJECTORY_NAME = "chargeAndTurn";
 
   /**
    * Creates a new ExampleCommand.
@@ -27,9 +32,17 @@ public class ChargeCommand extends SequentialCommandGroup {
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Trajectory> trajectories) {
 
-    PathPlannerTrajectory charge = PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(2.5, 1));
+    PathPlannerTrajectory charge = PathPlanner.generatePath(
+      new PathConstraints(2.5, 1),
+      new PathPoint(new Translation2d(0, 0), new Rotation2d(0), new Rotation2d(0)),
+      new PathPoint(new Translation2d(2, 0), new Rotation2d(0), Rotation2d.fromDegrees(10))
+    );
+    //PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(2.5, 1));
 
-    addCommands(new FollowTrajectoryCommand(charge, odometry, swerveDriveSubsystem));
+    // System.out.println(charge.toString());
+    addCommands(
+      new FollowTrajectoryCommand(charge, odometry, swerveDriveSubsystem)
+      );
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
