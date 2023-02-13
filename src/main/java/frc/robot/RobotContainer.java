@@ -212,7 +212,6 @@ public class RobotContainer {
       JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 1);
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 3);
       JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 2);
-      // JoystickButton fieldCentricButton = new JoystickButton(leftJoystick, 3);
 
       JoystickButton pivotUpButton = new JoystickButton(altJoystick, 4);
       JoystickButton pivotDownButton = new JoystickButton(altJoystick, 1);
