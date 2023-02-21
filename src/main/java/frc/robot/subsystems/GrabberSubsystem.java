@@ -13,6 +13,7 @@ public class GrabberSubsystem extends SubsystemBase {
     }
 
     public void toggle(){
+        System.out.println(leftSolenoid.get());
         leftSolenoid.toggle();
         rightSolenoid.toggle();
     }
