@@ -28,17 +28,17 @@ public final class Constants {
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
         public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 1 - (0.173 + 0.25);
+        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.828 - 0.25;
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.420;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 0.419;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
         public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.143;
+        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.142;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
@@ -58,11 +58,29 @@ public final class Constants {
     }
 
     public final static class WheelConstants {
-        public final static double ROTATIONS_TO_METERS = 0.33/8.33;
+        public final static double ROTATIONS_TO_METERS = 0.24/5.08;
+    }
+
+    public final static class ArmConstants {
+        public final static int PIVOT_MOTOR_ID = 10;
+        public final static int TELESCOPE_MOTOR_ID = 11;
+        public final static double pivotOffset = 0.022;
+    }
+
+    public final static class GrabberConstants {
+        public final static int LEFT_SOLENOID_IN = 0;
+        public final static int LEFT_SOLENOID_OUT = 1;
+
+        public final static int RIGHT_SOLENOID_IN = 2;
+        public final static int RIGHT_SOLENOID_OUT = 3;
+    }
+
+    public final static class ElevatorConstants {
+        public final static int ELEVATOR_MOTOR_ID = 9;
     }
 
     public final static class DriverConstants {
         public final static double speedMultiplier = 3;
-        public final static double angleMultiplier = 3;
+        public final static double angleMultiplier = 3.0 / 32;
     }
 }
