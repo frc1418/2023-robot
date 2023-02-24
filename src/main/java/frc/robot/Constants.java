@@ -38,12 +38,12 @@ public final class Constants {
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
         public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.142;
+        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.141;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.082 + 0.25;
+        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.073 + 0.25;
 
         public final static Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
         public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
@@ -65,14 +65,19 @@ public final class Constants {
         public final static int PIVOT_MOTOR_ID = 10;
         public final static int TELESCOPE_MOTOR_ID = 11;
         public final static double pivotOffset = 0.022;
+
+        public final static double startingPivotG = 1.518;
+        public final static double pivotGPerTelescopeMeter = 1.6;
+        public final static double telescopeRotationToMeters = -0.09 / 32768;
     }
 
     public final static class GrabberConstants {
-        public final static int LEFT_SOLENOID_IN = 0;
-        public final static int LEFT_SOLENOID_OUT = 1;
+        public final static int PNEUMATICS_HUB_ID = 23;
+        public final static int LEFT_SOLENOID_REVERSE = 2;
+        public final static int LEFT_SOLENOID_FORWARD = 3;
 
-        public final static int RIGHT_SOLENOID_IN = 2;
-        public final static int RIGHT_SOLENOID_OUT = 3;
+        public final static int RIGHT_SOLENOID_REVERSE = 0;
+        public final static int RIGHT_SOLENOID_FORWARD = 1;
     }
 
     public final static class ElevatorConstants {
@@ -81,6 +86,6 @@ public final class Constants {
 
     public final static class DriverConstants {
         public final static double speedMultiplier = 3;
-        public final static double angleMultiplier = 3.0 / 32;
+        public final static double angleMultiplier = 3;
     }
 }
