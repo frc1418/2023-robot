@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -13,8 +14,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     DigitalInput bottomLimitSwitch = new DigitalInput(4);
     
     private TalonFX elevatorMotor;
+
+
     public ElevatorSubsystem(TalonFX elevatorMotor) {
         this.elevatorMotor = elevatorMotor;
+
+        this.elevatorMotor.selectProfileSlot(0, 0);
+        this.elevatorMotor.config_kP(0, 0);
+        this.elevatorMotor.config_kI(0, 0);
+        this.elevatorMotor.config_kD(0, 0);
+        this.elevatorMotor.config_kF(0, 0);
     }
 
     public void setElevatorMotor(double speed) {
@@ -30,6 +39,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
         else
             elevatorMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void setElevatorHeight(double pos) {
+
+
     }
     
 }
