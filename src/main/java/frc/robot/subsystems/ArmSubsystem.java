@@ -33,11 +33,17 @@ public class ArmSubsystem extends SubsystemBase {
     private final NetworkTableEntry ntTelescopeLength = table.getEntry("telescopeLength");
 
     private PIDController pivotPidController = new PIDController(18, 0, 0);
-    private ArmFeedforward armFeedforward = new ArmFeedforward(0, 2.318, 0);
+    private ArmFeedforward armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG, 0);
 
     public ArmSubsystem(CANSparkMax pivotMotor, TalonFX telescopeMotor) {
         this.pivotMotor = pivotMotor;
         this.telescopeMotor = telescopeMotor;
+
+        this.telescopeMotor.selectProfileSlot(0, 0);
+        this.telescopeMotor.config_kP(0, 0);
+        this.telescopeMotor.config_kI(0, 0);
+        this.telescopeMotor.config_kD(0, 0);
+        this.telescopeMotor.config_kF(0, 0);
         
         this.pivotEncoder = pivotMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
         this.pivotEncoder.setZeroOffset(ArmConstants.pivotOffset);
@@ -51,12 +57,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setPivotMotor(double speed) {
-        
         pivotMotor.set(speed);
     }
 
     public void setTelescopeMotor(double speed){
         telescopeMotor.set(ControlMode.Current, speed);
+    }
+
+    public void setTelescopePosition(double pos) {
+        telescopeMotor.set(ControlMode.Position, pos);
     }
 
     public void setPivotPosition(double pos) {
@@ -75,8 +84,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void updateTelescopeLength() {
-        ntTelescopeLength.setDouble(-0.09 * telescopeMotor.getSensorCollection().getIntegratedSensorPosition() / 32768);
-        armFeedforward = new ArmFeedforward(0, 1.518 + 1.6*ntTelescopeLength.getDouble(0), 0);
+        ntTelescopeLength.setDouble(ArmConstants.telescopeRotationToMeters * telescopeMotor.getSensorCollection().getIntegratedSensorPosition());
+        armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG + ArmConstants.pivotGPerTelescopeMeter*ntTelescopeLength.getDouble(0), 0);
     }
 
     public void resetTelescopeEncoder() {
