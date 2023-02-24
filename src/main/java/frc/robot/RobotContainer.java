@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import java.lang.System.Logger.Level;
 import java.util.HashMap;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -17,9 +16,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -28,22 +24,20 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.GrabberConstants;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
-import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
 import frc.robot.subsystems.ArmSubsystem;
@@ -119,8 +113,8 @@ public class RobotContainer {
     private TalonFX telescopeMotor = new TalonFX(ArmConstants.TELESCOPE_MOTOR_ID);
     private ArmSubsystem armSubsystem = new ArmSubsystem(pivotMotor, telescopeMotor);
 
-    private DoubleSolenoid leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.LEFT_SOLENOID_IN, GrabberConstants.LEFT_SOLENOID_OUT);
-    private DoubleSolenoid rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_SOLENOID_IN, GrabberConstants.RIGHT_SOLENOID_OUT);
+    private DoubleSolenoid leftSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.LEFT_SOLENOID_FORWARD, GrabberConstants.LEFT_SOLENOID_REVERSE);
+    private DoubleSolenoid rightSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_SOLENOID_FORWARD, GrabberConstants.RIGHT_SOLENOID_REVERSE);
     private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid);
 
     private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
@@ -229,6 +223,9 @@ public class RobotContainer {
 
       JoystickButton toggleGrabberButton = new JoystickButton(altJoystick, 9);
 
+      Trigger pivotToTopButton = new Trigger(() -> altJoystick.getPOV() == 0);
+      Trigger pivotToBottomButton = new Trigger(() -> altJoystick.getPOV() == 180);
+
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
@@ -252,17 +249,17 @@ public class RobotContainer {
 
       turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
-      pivotUpButton.whileTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
+      pivotUpButton.whileTrue(new RunCommand(() -> armSubsystem.setPivotMotor(0.2), armSubsystem));
       pivotUpButton.onFalse(new InstantCommand(() -> armSubsystem.setPivotMotor(0), armSubsystem));
 
       pivotDownButton.whileTrue(new RunCommand(() -> armSubsystem.setPivotMotorVoltage(-0.1), armSubsystem));
       pivotDownButton.onFalse(new InstantCommand(() -> armSubsystem.setPivotMotor(0), armSubsystem));
 
-      elevatorUpButton.whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorMotor(0.8), elevatorSubsystem));
+      elevatorUpButton.whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorMotor(0.9), elevatorSubsystem));
       elevatorUpButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
 
       elevatorDownButton.whileTrue(new RunCommand(() -> {
-        elevatorSubsystem.setElevatorMotor(-0.7);
+        elevatorSubsystem.setElevatorMotor(-0.9);
       }, elevatorSubsystem));
       elevatorDownButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
 
@@ -273,6 +270,9 @@ public class RobotContainer {
       telescopeInButton.onFalse(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0), armSubsystem));
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
+
+      pivotToTopButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
+      pivotToBottomButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.8), armSubsystem));
     }
 
     /**
@@ -292,7 +292,7 @@ public class RobotContainer {
     }
 
     public Odometry getOdometry() {
-      return null;
+      return odometry;
     }
 
     public void coastDrive() {
