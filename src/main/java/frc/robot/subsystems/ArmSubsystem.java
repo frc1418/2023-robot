@@ -32,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final NetworkTableEntry ntPivotPosition = table.getEntry("pivotPosition");
     private final NetworkTableEntry ntTelescopeLength = table.getEntry("telescopeLength");
 
-    private PIDController pivotPidController = new PIDController(18, 0, 0);
+    private PIDController pivotPidController = new PIDController(18, 2, 0);//new PIDController(18, 0, 0);
     private ArmFeedforward armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG, 0);
 
     public ArmSubsystem(CANSparkMax pivotMotor, TalonFX telescopeMotor) {
@@ -40,7 +40,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.telescopeMotor = telescopeMotor;
 
         this.telescopeMotor.selectProfileSlot(0, 0);
-        this.telescopeMotor.config_kP(0, 0);
+        this.telescopeMotor.config_kP(0, 1);
         this.telescopeMotor.config_kI(0, 0);
         this.telescopeMotor.config_kD(0, 0);
         this.telescopeMotor.config_kF(0, 0);
@@ -49,6 +49,9 @@ public class ArmSubsystem extends SubsystemBase {
         this.pivotEncoder.setZeroOffset(ArmConstants.pivotOffset);
 
         pivotPidController.enableContinuousInput(0, 1);
+
+        this.telescopeMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+
     }
 
     public void setPivotMotorVoltage(double speed) {
@@ -61,11 +64,14 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setTelescopeMotor(double speed){
-        telescopeMotor.set(ControlMode.Current, speed);
+        System.out.println(speed);
+        telescopeMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setTelescopePosition(double pos) {
-        telescopeMotor.set(ControlMode.Position, pos);
+        System.out.println(pos);
+        // telescopeMotor.set(ControlMode.Position, -0.5/ArmConstants.telescopeRotationToMeters);
+        telescopeMotor.set(ControlMode.Position, -pos /ArmConstants.telescopeRotationToMeters);
     }
 
     public void setPivotPosition(double pos) {
@@ -91,6 +97,10 @@ public class ArmSubsystem extends SubsystemBase {
     public void resetTelescopeEncoder() {
         telescopeMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
         ntTelescopeLength.setDouble(0);
+    }
+
+    public double getPivotPosition() {
+        return ntPivotPosition.getDouble(0);
     }
     
 }

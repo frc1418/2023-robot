@@ -160,7 +160,6 @@ public class RobotContainer {
       // frontLeftAngleMotor.setInverted(true);
       // frontRightAngleMotor.setInverted(true);
       // backLeftAngleMotor.setInverted(true);
-      backRightAngleMotor.setInverted(false);
 
       frontRightSpeedMotor.setInverted(true);
 
@@ -226,6 +225,11 @@ public class RobotContainer {
       Trigger pivotToTopButton = new Trigger(() -> altJoystick.getPOV() == 0);
       Trigger pivotToBottomButton = new Trigger(() -> altJoystick.getPOV() == 180);
 
+      Trigger telescopeToOuterButton = new Trigger(() -> altJoystick.getPOV() == 90);
+      Trigger telescopeToInButton = new Trigger(() -> altJoystick.getPOV() == 270);
+
+      Trigger elevatorToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 45);
+
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
@@ -263,16 +267,33 @@ public class RobotContainer {
       }, elevatorSubsystem));
       elevatorDownButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
 
-      telescopeOutButton.whileTrue(new RunCommand(() -> armSubsystem.setTelescopeMotor(35), armSubsystem));
+      telescopeOutButton.whileTrue(new RunCommand(() -> {
+        armSubsystem.setTelescopeMotor(0.2);
+      }, armSubsystem));
       telescopeOutButton.onFalse(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0), armSubsystem));
 
-      telescopeInButton.whileTrue(new RunCommand(() -> armSubsystem.setTelescopeMotor(-35), armSubsystem));
+      telescopeInButton.whileTrue(new RunCommand(() -> armSubsystem.setTelescopeMotor(-0.2), armSubsystem));
       telescopeInButton.onFalse(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0), armSubsystem));
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
       pivotToTopButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
-      pivotToBottomButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.8), armSubsystem));
+      pivotToBottomButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.88), armSubsystem));
+
+      telescopeToOuterButton.onTrue(new RunCommand(() -> {
+        armSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint);
+      }, armSubsystem));
+
+      telescopeToInButton.onTrue(new RunCommand(() -> {
+        armSubsystem.setTelescopePosition(0.25);
+      }, armSubsystem));
+
+      elevatorToMiddleButton.onTrue(new RunCommand(() -> elevatorSubsystem.setElevatorHeight(0), elevatorSubsystem));
+
+
+      armSubsystem.setDefaultCommand(new RunCommand(() -> {
+        armSubsystem.setPivotPosition(armSubsystem.getPivotPosition());
+      }, armSubsystem));
     }
 
     /**
@@ -293,6 +314,10 @@ public class RobotContainer {
 
     public Odometry getOdometry() {
       return odometry;
+    }
+
+    public SwerveDriveSubsystem getSwerveDriveSubsystem() {
+      return swerveDrive;
     }
 
     public void coastDrive() {

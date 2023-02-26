@@ -64,20 +64,24 @@ public final class Constants {
     public final static class ArmConstants {
         public final static int PIVOT_MOTOR_ID = 10;
         public final static int TELESCOPE_MOTOR_ID = 11;
-        public final static double pivotOffset = 0.022;
+        public final static double pivotOffset = 0.687;
 
-        public final static double startingPivotG = 1.518;
-        public final static double pivotGPerTelescopeMeter = 1.6;
+        public final static double startingPivotG = 1.4;//2.01;
+        public final static double pivotGPerTelescopeMeter = 0.5;
         public final static double telescopeRotationToMeters = -0.09 / 32768;
+
+        public final static double telescopeOuterSetpoint = 0.614;
+
+        public static final int CLICKS_PER_ROTAITON = 2048;
     }
 
     public final static class GrabberConstants {
         public final static int PNEUMATICS_HUB_ID = 23;
-        public final static int LEFT_SOLENOID_REVERSE = 2;
-        public final static int LEFT_SOLENOID_FORWARD = 3;
+        public final static int LEFT_SOLENOID_REVERSE = 3;
+        public final static int LEFT_SOLENOID_FORWARD = 2;
 
-        public final static int RIGHT_SOLENOID_REVERSE = 0;
-        public final static int RIGHT_SOLENOID_FORWARD = 1;
+        public final static int RIGHT_SOLENOID_REVERSE = 1;
+        public final static int RIGHT_SOLENOID_FORWARD = 0;
     }
 
     public final static class ElevatorConstants {

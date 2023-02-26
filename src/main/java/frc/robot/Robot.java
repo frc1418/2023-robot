@@ -61,6 +61,10 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     ntIsEnabled.setBoolean(false);
     m_robotContainer.coastDrive();
+
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, new Rotation2d(0)));
+    m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
   @Override
