@@ -16,6 +16,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -36,7 +39,6 @@ import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.GrabberConstants;
-import frc.robot.commands.AlignWithAprilTagCommand;
 import frc.robot.commands.AlignByAprilTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
@@ -132,7 +134,6 @@ public class RobotContainer {
 
     private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
-    private LimelightSubsystem limelight = new LimelightSubsystem();
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -252,7 +253,7 @@ public class RobotContainer {
       Trigger telescopeToInButton = new Trigger(() -> altJoystick.getPOV() == 270);
 
       Trigger elevatorToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 45);
-      JoystickButton alignWithSubstationButton = new JoystickButton(leftJoystick, 3);
+      JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 3);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 4);
 
@@ -321,7 +322,6 @@ public class RobotContainer {
       armSubsystem.setDefaultCommand(new RunCommand(() -> {
         armSubsystem.setPivotPosition(armSubsystem.getPivotPosition());
       }, armSubsystem));
-      alignWithSubstationButton.whileTrue(alignWithSubstationCommand);
 
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
