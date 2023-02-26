@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2Configuration;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -39,6 +42,10 @@ public class SwerveDriveSubsystem extends SubsystemBase{
     
     public boolean fieldCentric = false;
 
+    private PIDController rotationController = new PIDController(0.04, 0, 0);
+
+    private double lockedRot;
+
     public SwerveDriveSubsystem (WheelSubsystem backRight, WheelSubsystem backLeft, WheelSubsystem frontRight, WheelSubsystem frontLeft, SwerveDriveKinematics kinematics, Odometry odometry) {
         this.backRight = backRight;
         this.backLeft = backLeft;
@@ -49,11 +56,18 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         this.odometry = odometry;
 
         this.ntIsFieldCentric.setBoolean(fieldCentric);
+
+        this.lockedRot = odometry.getHeading();
     }
 
 
     public void drive (double x, double y, double rot) {
-        
+
+        if(rot == 0){
+            rot = -rotationController.calculate(odometry.getHeading(), lockedRot);
+        } else {
+            lockedRot = odometry.getHeading();
+        }
 
         ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
@@ -122,6 +136,10 @@ public class SwerveDriveSubsystem extends SubsystemBase{
             backLeft.getSwerveModulePosition(),
             backRight.getSwerveModulePosition()
           };
+    }
+
+    public void resetLockRot() {
+        lockedRot = odometry.getHeading();
     }
 
 }
