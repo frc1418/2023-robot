@@ -125,6 +125,10 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         ntIsFieldCentric.setBoolean(fieldCentric);
     }
 
+    public void setFieldCentric(boolean fieldCentric) {
+        this.fieldCentric = fieldCentric;
+    }
+
     public boolean getFieldCentric() {
         return fieldCentric;
     }
