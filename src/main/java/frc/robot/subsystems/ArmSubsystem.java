@@ -64,18 +64,18 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setTelescopeMotor(double speed){
-        System.out.println(speed);
+        // System.out.println(speed);
         telescopeMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setTelescopePosition(double pos) {
-        System.out.println(pos);
+        // System.out.println(pos);
         // telescopeMotor.set(ControlMode.Position, -0.5/ArmConstants.telescopeRotationToMeters);
         telescopeMotor.set(ControlMode.Position, -pos /ArmConstants.telescopeRotationToMeters);
     }
 
     public void setPivotPosition(double pos) {
-        System.out.println(ntPivotPosition.getDouble(0));
+        // System.out.println(ntPivotPosition.getDouble(0));
         pivotMotor.setVoltage(armFeedforward.calculate(pos, 0) + pivotPidController.calculate(ntPivotPosition.getDouble(0), pos));
     }
 

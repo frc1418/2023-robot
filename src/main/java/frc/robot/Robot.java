@@ -63,7 +63,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.coastDrive();
 
     m_robotContainer.getOdometry().zeroHeading();
-    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, new Rotation2d(0)));
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
     m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
@@ -75,8 +76,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     ntIsEnabled.setBoolean(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // m_robotContainer.getOdometry().zeroHeading();
-    // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, new Rotation2d(0)));
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -100,7 +102,8 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.getOdometry().zeroHeading();
-    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, new Rotation2d(0)));
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
     m_robotContainer.configureObjects();
   }
 

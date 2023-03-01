@@ -52,10 +52,13 @@ public class Odometry {
 
         // Update the pose
         pose = odometry.update(gyroAngle, newPositions);
+        // System.out.println(this.getPose().getRotation().getDegrees());
 
         if (limelight.getIsDetecting()){
             reset(new Pose2d(new Translation2d(limelight.getYDistance(), -limelight.getXDistance()),
-                limelight.getRotationToTargetPlane().unaryMinus()));
+            this.getPose().getRotation()));
+
+        
         }
 
         modulePositions = newPositions;
@@ -73,6 +76,10 @@ public class Odometry {
 
     public void zeroHeading() {
         gyro.reset();
+    }
+
+    public void setAngleOffset(double offset) {
+        gyro.setAngleAdjustment(offset);
     }
 
     public Pose2d getPose() {

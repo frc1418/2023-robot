@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -22,6 +24,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private double xToTarget;
     private double yToTarget;
     private double rotToTarget;
+    private double targetRotation;
 
     private Rotation2d angleToTarget = new Rotation2d();
     
@@ -39,6 +42,20 @@ public class LimelightSubsystem extends SubsystemBase {
         xToTarget = botPosArray[0];
         yToTarget = botPosArray[2];
         rotToTarget = camPosArray[4];
+
+        if(DriverStation.getAlliance() == Alliance.Blue){
+            if(ntID.getDouble(0) == 6 || ntID.getDouble(0) == 7 || ntID.getDouble(0) == 8){
+                targetRotation = 180;
+            } else if (ntID.getDouble(0) == 4){
+                targetRotation = 0;
+            }
+        } else {
+            if(ntID.getDouble(0) == 3 || ntID.getDouble(0) == 2 || ntID.getDouble(0) == 1){
+                targetRotation = 180;
+            } else if (ntID.getDouble(0) == 5){
+                targetRotation = 0;
+            }
+        }
 
         distanceToTarget = Math.hypot(xToTarget, yToTarget);
         angleToTarget = Rotation2d.fromRadians(Math.atan2(xToTarget, yToTarget));
@@ -68,9 +85,13 @@ public class LimelightSubsystem extends SubsystemBase {
         int id = (int) ntID.getInteger(Integer.MAX_VALUE);
         boolean isDetecting = ntIsDetecting.getInteger(0) == 1 && id >= 1 && id <= 8;
         if (isDetecting && id != 6){
-            System.out.println("DETECTING " + id);
+            // System.out.println("DETECTING " + id);
         }
         return isDetecting;
+    }
+
+    public double getTargetRotation() {
+        return targetRotation;
     }
 
 }
