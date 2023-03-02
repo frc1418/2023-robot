@@ -147,6 +147,8 @@ public class RobotContainer {
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -1);//1.1);
     private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.58, -1);
     private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.58, -1);
+    private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
+    private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -231,7 +233,7 @@ public class RobotContainer {
 
       
 
-      JoystickButton balanceChargingStationButton = new JoystickButton(rightJoystick, 3);
+      JoystickButton balanceChargingStationButton = new JoystickButton(leftJoystick, 1);
       JoystickButton turtleButton = new JoystickButton(rightJoystick, 1);
       JoystickButton fieldCentricButton = new JoystickButton(rightJoystick, 2);
 
@@ -246,7 +248,8 @@ public class RobotContainer {
 
       JoystickButton toggleGrabberButton = new JoystickButton(altJoystick, 9);
 
-      Trigger pivotToTopButton = new Trigger(() -> altJoystick.getPOV() == 0);
+      Trigger pivotToTopPegButton = new Trigger(() -> altJoystick.getPOV() == 0);
+      Trigger pivotToSubstationButton = new Trigger(() -> altJoystick.getPOV() == 45);
       Trigger pivotToBottomButton = new Trigger(() -> altJoystick.getPOV() == 180);
 
       Trigger telescopeToOuterButton = new Trigger(() -> altJoystick.getPOV() == 90);
@@ -257,6 +260,8 @@ public class RobotContainer {
       JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 4);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
+      JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
+      JoystickButton alignRightSubstationButton = new JoystickButton(altJoystick, 4);
 
 
       swerveDrive.setDefaultCommand(new RunCommand(
@@ -306,7 +311,8 @@ public class RobotContainer {
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
-      pivotToTopButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
+      pivotToTopPegButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.01), armSubsystem));
+      pivotToSubstationButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
       pivotToBottomButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.88), armSubsystem));
 
       telescopeToOuterButton.onTrue(new RunCommand(() -> {
@@ -331,6 +337,8 @@ public class RobotContainer {
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
       alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag);
+      alignLeftSubstationButton.whileTrue(alignLeftSubstation);
+      alignRightSubstationButton.whileTrue(alignRightSubstation);
       
     }
 

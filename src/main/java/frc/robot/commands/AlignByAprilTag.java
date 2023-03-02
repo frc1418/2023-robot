@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.ejml.data.MatrixSparse;
+
 import com.kauailabs.navx.IMUProtocol.YPRUpdate;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -45,14 +47,12 @@ public class AlignByAprilTag extends CommandBase {
         this.odometry = odometry;
         this.targetX = targetX;
         this.targetY = targetY;
-        speedXController = new PIDController(1.7, 0, 0);
-        speedYController = new PIDController(1, 0, 0);
+        // speedXController = new PIDController(1.7, 0, 0);
+        // speedYController = new PIDController(1, 0, 0);
+       
+        speedController = new ProfiledPIDController(1.2, 0, 0, new Constraints(0,0));
         speedRotController = new PIDController(0.05, 0, 0);
-        speedController = new ProfiledPIDController(1, 0, 0, new Constraints(1.5,0.2));
-
         speedRotController.enableContinuousInput(-180, 180);
-
-        
 
         addRequirements(swerveDrive);
 
@@ -75,7 +75,11 @@ public class AlignByAprilTag extends CommandBase {
             new Translation2d(odometry.getPose().getY(), odometry.getPose().getX()),
             odometry.getPose().getRotation().unaryMinus());
 
-        Pose2d targetPose = new Pose2d(new Translation2d(targetX, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
+        Pose2d targetPose;
+        if(limelight.getTargetRotation() == 180)
+            targetPose = new Pose2d(new Translation2d(targetX, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
+        else
+            targetPose = new Pose2d(new Translation2d(-targetX, -targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
 
         // System.out.println("X DIFFERENCE: " + (robotPose.getX()));
         // System.out.println("Y DIFFERENCE: " + (robotPose.getY()));
@@ -89,28 +93,23 @@ public class AlignByAprilTag extends CommandBase {
         double dy =  robotPose.getY() - targetPose.getY();
 
         double distance = Math.hypot(dx, dy);
-        double angle = Math.atan2(dx, dy) * 180 / Math.PI; //targetPose.getRotation().getDegrees() - robotPose.getRotation().getDegrees();
-        // if (limelight.getIsDetecting()){
-        //     odometry.reset(new Pose2d(new Translation2d(limelight.getXDistance(), limelight.getYDistance()),
-        //         limelight.getRotation()));
-        // }
-        // System.out.println(targetX);
+        double angleToTarget = Math.atan2(dx, dy) * 180 / Math.PI;
 
-        x = 0;//speedXController.calculate(odometry.getPose().getY(), targetX);
-        y = 0;//speedYController.calculate(odometry.getPose().get^X(), targetY);
         rot = -speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), limelight.getTargetRotation());
         
         double speed = speedController.calculate(distance, 0);
 
-        // System.out.println("DX: " + dx);
-        // System.out.println("DY: " + dy);
+        if(limelight.getTargetRotation() == 0)
+            speed *= -1;
+
         System.out.println("DISTANCE: " + distance);
 
-        // if(limelight.getIsDetecting()){
-            // System.out.println(angle);
-            swerveDrive.strafe(Rotation2d.fromDegrees(180+angle), speed);
-            // swerveDrive.drive(y, x, rot);
-        // }
+        Rotation2d direction = Rotation2d.fromDegrees(180 + angleToTarget - odometry.getHeading() + limelight.getTargetRotation());
+
+        x = direction.getCos() * speed;
+        y = direction.getSin() * speed;
+
+        swerveDrive.drive(x, y, rot);
     }
 
     // Called once the command ends or is interrupted.
