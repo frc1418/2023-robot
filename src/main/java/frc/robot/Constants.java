@@ -67,10 +67,10 @@ public final class Constants {
         public final static double pivotOffset = 0.687;
 
         public final static double startingPivotG = 1.4;//2.01;
-        public final static double pivotGPerTelescopeMeter = 0.5;
+        public final static double pivotGPerTelescopeMeter = 0.8;
         public final static double telescopeRotationToMeters = -0.09 / 32768;
 
-        public final static double telescopeOuterSetpoint = 0.614;
+        public final static double telescopeOuterSetpoint = 0.8;
 
         public static final int CLICKS_PER_ROTAITON = 2048;
     }

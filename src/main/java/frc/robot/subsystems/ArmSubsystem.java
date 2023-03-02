@@ -32,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final NetworkTableEntry ntPivotPosition = table.getEntry("pivotPosition");
     private final NetworkTableEntry ntTelescopeLength = table.getEntry("telescopeLength");
 
-    private PIDController pivotPidController = new PIDController(18, 2, 0);//new PIDController(18, 0, 0);
+    private PIDController pivotPidController = new PIDController(19, 3, 0);//new PIDController(18, 0, 0);
     private ArmFeedforward armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG, 0);
 
     public ArmSubsystem(CANSparkMax pivotMotor, TalonFX telescopeMotor) {
