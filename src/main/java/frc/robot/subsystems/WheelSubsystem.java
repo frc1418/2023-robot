@@ -54,7 +54,7 @@ public class WheelSubsystem extends SubsystemBase{
         speedPIDController.setD(0.00);
         speedPIDController.setFF(0.259);
 
-        anglePIDController = new PIDController(1.5, 0, 0);
+        anglePIDController = new PIDController(1.5, 0, 0.04);
         anglePIDController.enableContinuousInput(0, 1);
         anglePIDController.setTolerance(1.0/360);
 
