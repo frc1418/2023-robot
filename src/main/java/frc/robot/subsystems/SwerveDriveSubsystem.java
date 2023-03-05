@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix.sensors.Pigeon2Configuration;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.common.Odometry;
 
@@ -64,7 +67,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
     public void drive (double x, double y, double rot) {
 
         if(rot == 0){
-            rot = -rotationController.calculate(odometry.getHeading(), lockedRot);
+            rot = rotationController.calculate(odometry.getHeading(), lockedRot);
         } else {
             lockedRot = odometry.getHeading();
         }
@@ -73,8 +76,14 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
 
         if (fieldCentric) {
+            System.out.println("FIELD CENTRIC");
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, odometry.getRotation2d());
         }
+
+        drive(speeds);
+    }
+
+    public void drive(ChassisSpeeds speeds){
         // Convert to module states
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
 
@@ -118,6 +127,10 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         ntBackRightAngleEncoder.setDouble(backRight.getEncoderPosition());
         ntFrontLeftAngleEncoder.setDouble(frontLeft.getEncoderPosition());
         ntFrontRightAngleEncoder.setDouble(frontRight.getEncoderPosition());
+
+        if(DriverStation.isAutonomousEnabled()){
+            lockedRot = odometry.getHeading();
+        }
     }
 
     public void toggleFieldCentric() {
