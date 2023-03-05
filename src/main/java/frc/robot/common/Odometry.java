@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.LimelightSubsystem;
 
 
@@ -54,12 +55,12 @@ public class Odometry {
         pose = odometry.update(gyroAngle, newPositions);
         // System.out.println(this.getPose().getRotation().getDegrees());
 
-        if (limelight.getIsDetecting()){
+        if (limelight.getIsDetecting() && DriverStation.isTeleop()){
             if(limelight.getTargetRotation() == 180)
                 reset(new Pose2d(new Translation2d(limelight.getYDistance(), -limelight.getXDistance()),
                     this.getPose().getRotation()));
             else
-                reset(new Pose2d(new Translation2d(-limelight.getYDistance(), limelight.getXDistance()),
+                reset(new Pose2d(new Translation2d(limelight.getYDistance(), -limelight.getXDistance()),
                     this.getPose().getRotation()));
 
         }
@@ -98,7 +99,7 @@ public class Odometry {
         return -gyro.getRate();
     }
     public Rotation2d getRotation2d() {
-        return gyro.getRotation2d();//.unaryMinus();
+        return gyro.getRotation2d();
     }
 
     public Rotation2d getPitch() {

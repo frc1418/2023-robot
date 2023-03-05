@@ -8,11 +8,19 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** An example command that uses an example subsystem. */
@@ -23,15 +31,28 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
    * @param subsystem The subsystem used by this command.
    */
   public FollowTrajectoryCommand(
-        PathPlannerTrajectory trajectory,
+        String trajectoryName,
         Odometry odometry,
-        SwerveDriveSubsystem swerveDriveSubsystem) {
+        SwerveDriveSubsystem swerveDriveSubsystem, HashMap<String, Command> eventMap) {
 
-    odometry.zeroHeading();
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryName, new PathConstraints(2.5, 2.5));
 
-    PIDController speedControllerX = new PIDController(1.3, 0, 0.00);
-    PIDController speedControllerY = new PIDController(1.3, 0, 0.000);
-    PIDController angleController = new PIDController(1.8, 0, 0);
+    PIDController speedControllerX = new PIDController(0.001, 0, 0);
+    PIDController speedControllerY = new PIDController(0.001,0,0);//1.3, 0, 0.000);
+    PIDController angleController = new PIDController(0.9,0,0);//1.8, 0, 0);
+
+    PIDConstants angleConstants = new PIDConstants(0.9, 0, 0);
+    PIDConstants translationConstants = new PIDConstants(0.001, 0, 0);
+
+
+    SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(odometry::getPose,
+      odometry::reset,
+      translationConstants,
+      angleConstants,
+      swerveDriveSubsystem::drive,
+      eventMap,
+      false,
+      swerveDriveSubsystem);
 
     PPSwerveControllerCommand swerveControllerCommand = new PPSwerveControllerCommand(
         trajectory,
@@ -41,16 +62,18 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
         speedControllerY,
         angleController,
         swerveDriveSubsystem::drive,
+        false,
         swerveDriveSubsystem);
 
     
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
 
-    addCommands(
-      new InstantCommand(() -> odometry.reset(trajectory.getInitialHolonomicPose())),
-      swerveControllerCommand,
-      new InstantCommand(() -> swerveDriveSubsystem.drive(0, 0, 0))
-    );
+      addCommands(
+        new InstantCommand(() -> odometry.reset(trajectory.getInitialHolonomicPose())),
+        autoBuilder.fullAuto(trajectory),
+        new PrintCommand("DONE"),
+        new InstantCommand(() -> swerveDriveSubsystem.drive(0, 0, 0))
+      );
     }
 }

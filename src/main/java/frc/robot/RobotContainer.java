@@ -19,6 +19,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.concurrent.Event;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -32,6 +33,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
@@ -42,14 +45,17 @@ import frc.robot.Constants.GrabberConstants;
 import frc.robot.commands.AlignByAprilTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
+import frc.robot.commands.autonomous.ChargeCommand;
+import frc.robot.commands.autonomous.LeftUpperConeAutonomous;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.TelescopeSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
 
 /**
@@ -126,7 +132,8 @@ public class RobotContainer {
 
     private CANSparkMax pivotMotor = new CANSparkMax(ArmConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
     private TalonFX telescopeMotor = new TalonFX(ArmConstants.TELESCOPE_MOTOR_ID);
-    private ArmSubsystem armSubsystem = new ArmSubsystem(pivotMotor, telescopeMotor);
+    private PivotSubsystem pivotSubsystem = new PivotSubsystem(pivotMotor);
+    private TelescopeSubsystem telescopeSubsystem = new TelescopeSubsystem(telescopeMotor, pivotSubsystem);
 
     private DoubleSolenoid leftSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.LEFT_SOLENOID_FORWARD, GrabberConstants.LEFT_SOLENOID_REVERSE);
     private DoubleSolenoid rightSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_SOLENOID_FORWARD, GrabberConstants.RIGHT_SOLENOID_REVERSE);
@@ -145,17 +152,24 @@ public class RobotContainer {
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -1);//1.1);
-    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.58, -1);
-    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.58, -1);
-    private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
-    private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
+    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.58, -1);
+    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.58, -1);
+    private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
+    private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
+
+
+    private HashMap<String, Command> eventMap = new HashMap<>();
+
+    private final ChargeCommand chargeCommand = new ChargeCommand(swerveDrive, odometry, eventMap);
+    private final LeftUpperConeAutonomous leftUpperConeAutonomous = new LeftUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
       this.robot = robot;
 
-      // chooser.setDefaultOption("Charge Command", chargeCommand);
-      // chooser.addOption("Command", chargeCommand);
+      chooser.addOption("Command", chargeCommand);
+      chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
+      chooser.setDefaultOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -166,27 +180,15 @@ public class RobotContainer {
       // Configure the button bindings
       configureButtonBindings();
       configureObjects();
+      buildAutoEventMap();
     }
 
     public void configureObjects() {
-      // frontLeftAngleMotor.setInverted(true);
-      // backLeftAngleMotor.setInverted(true);
 
-      // frontLeftAngleMotor.setIdleMode(IdleMode.kBrake);
-      // frontRightAngleMotor.setIdleMode(IdleMode.kBrake);
-      // backLeftAngleMotor.setIdleMode(IdleMode.kBrake);
-      // backRightAngleMotor.setIdleMode(IdleMode.kBrake);
-
-      // frontLeftSpeedMotor.setIdleMode(IdleMode.kBrake);
-      // frontRightSpeedMotor.setIdleMode(IdleMode.kBrake);
-      // backLeftSpeedMotor.setIdleMode(IdleMode.kBrake);
-      // backRightSpeedMotor.setIdleMode(IdleMode.kBrake);
-
-      // frontLeftAngleMotor.setInverted(true);
-      // frontRightAngleMotor.setInverted(true);
-      // backLeftAngleMotor.setInverted(true);
-
-      frontRightSpeedMotor.setInverted(true);
+      frontRightSpeedMotor.setInverted(false);
+      frontLeftSpeedMotor.setInverted(true);
+      backRightSpeedMotor.setInverted(true);
+      backLeftSpeedMotor.setInverted(true);
 
       frontLeftWheel.getEncoder().setInverted(true);
       frontRightWheel.getEncoder().setInverted(true);
@@ -199,19 +201,10 @@ public class RobotContainer {
       backLeftAngleMotor.setInverted(false);
       backRightAngleMotor.setInverted(false);
 
-      backRightSpeedMotor.setInverted(false);
-
       backRightWheel.getEncoder().setZeroOffset(DrivetrainConstants.BACK_RIGHT_ENCODER_OFFSET);
       backLeftWheel.getEncoder().setZeroOffset(DrivetrainConstants.BACK_LEFT_ENCODER_OFFSET);
       frontRightWheel.getEncoder().setZeroOffset(DrivetrainConstants.FRONT_RIGHT_ENCODER_OFFSET);
       frontLeftWheel.getEncoder().setZeroOffset(DrivetrainConstants.FRONT_LEFT_ENCODER_OFFSET);
-      // frontRightSpeedMotor.setInverted(true);
-      // backRightSpeedMotor.setInverted(true);
-
-      // backRightEncoder.setPositionOffset(DrivetrainConstants.BACK_RIGHT_ENCODER_OFFSET);
-      // backLeftEncoder.setPositionOffset(DrivetrainConstants.BACK_LEFT_ENCODER_OFFSET);
-      // frontRightEncoder.setPositionOffset(DrivetrainConstants.FRONT_RIGHT_ENCODER_OFFSET);
-      // frontLeftEncoder.setPositionOffset(DrivetrainConstants.FRONT_LEFT_ENCODER_OFFSET);
 
       elevatorMotor.setInverted(true);
       telescopeMotor.setInverted(true);
@@ -261,16 +254,16 @@ public class RobotContainer {
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
       JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
-      JoystickButton alignRightSubstationButton = new JoystickButton(altJoystick, 4);
+      JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
-                  applyDeadband(leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
-                  applyDeadband(leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
-                  applyDeadband(rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainConstants.ROTATION_DEADBAND));
+                  applyDeadband(-leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(-leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  applyDeadband(-rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainConstants.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
             }
@@ -287,11 +280,11 @@ public class RobotContainer {
 
       turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
-      pivotUpButton.whileTrue(new RunCommand(() -> armSubsystem.setPivotMotor(0.2), armSubsystem));
-      pivotUpButton.onFalse(new InstantCommand(() -> armSubsystem.setPivotMotor(0), armSubsystem));
+      pivotUpButton.whileTrue(new RunCommand(() -> pivotSubsystem.setPivotMotor(0.2), pivotSubsystem));
+      pivotUpButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotMotor(0), pivotSubsystem));
 
-      pivotDownButton.whileTrue(new RunCommand(() -> armSubsystem.setPivotMotorVoltage(-0.1), armSubsystem));
-      pivotDownButton.onFalse(new InstantCommand(() -> armSubsystem.setPivotMotor(0), armSubsystem));
+      pivotDownButton.whileTrue(new RunCommand(() -> pivotSubsystem.setPivotMotorVoltage(-0.1), pivotSubsystem));
+      pivotDownButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotMotor(0), pivotSubsystem));
 
       elevatorUpButton.whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorMotor(0.9), elevatorSubsystem));
       elevatorUpButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
@@ -301,38 +294,36 @@ public class RobotContainer {
       }, elevatorSubsystem));
       elevatorDownButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
 
-      telescopeOutButton.whileTrue(new RunCommand(() -> {
-        armSubsystem.setTelescopeMotor(0.2);
-      }, armSubsystem));
-      telescopeOutButton.onFalse(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0), armSubsystem));
+      telescopeOutButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(0.5), telescopeSubsystem));
+      telescopeOutButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
-      telescopeInButton.whileTrue(new RunCommand(() -> armSubsystem.setTelescopeMotor(-0.2), armSubsystem));
-      telescopeInButton.onFalse(new InstantCommand(() -> armSubsystem.setTelescopeMotor(0), armSubsystem));
+      telescopeInButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(-0.5), telescopeSubsystem));
+      telescopeInButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
-      pivotToTopPegButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.01), armSubsystem));
-      pivotToSubstationButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0), armSubsystem));
-      pivotToBottomButton.onTrue(new RunCommand(() -> armSubsystem.setPivotPosition(0.88), armSubsystem));
+      pivotToTopPegButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(0.01), pivotSubsystem));
+      pivotToSubstationButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(0), pivotSubsystem));
+      pivotToBottomButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.pivotDownPosition), pivotSubsystem));
 
       telescopeToOuterButton.onTrue(new RunCommand(() -> {
-        armSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint);
-      }, armSubsystem));
+        telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint);
+      }, telescopeSubsystem));
 
       telescopeToMiddleButton.onTrue(new RunCommand(() -> {
-        armSubsystem.setTelescopePosition(0.25);
-      }, armSubsystem));
+        telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeMiddleSetpoint);
+      }, telescopeSubsystem));
 
       telescopeToInButton.onTrue(new RunCommand(() -> {
-        armSubsystem.setTelescopePosition(0.03);
-      }, armSubsystem));
+        telescopeSubsystem.setTelescopePosition(0.03);
+      }, telescopeSubsystem));
 
       elevatorToMiddleButton.onTrue(new RunCommand(() -> elevatorSubsystem.setElevatorHeight(0), elevatorSubsystem));
 
 
-      armSubsystem.setDefaultCommand(new RunCommand(() -> {
-        armSubsystem.setPivotPosition(armSubsystem.getPivotPosition());
-      }, armSubsystem));
+      pivotSubsystem.setDefaultCommand(new RunCommand(() -> {
+        pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition());
+      }, pivotSubsystem));
 
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
@@ -350,7 +341,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
       // An ExampleCommand will run in autonomous
       // odometry.zeroHeading();
-      return null;
+      return chooser.getSelected();
     }
 
     public double applyDeadband(double val, double deadband){
@@ -384,5 +375,17 @@ public class RobotContainer {
 
       pitch.setDouble(odometry.getPitch().getDegrees());
       roll.setDouble(odometry.getRoll().getDegrees());
+    }
+
+    public void buildAutoEventMap(){
+
+      eventMap.put("pickUpBall",
+        new SequentialCommandGroup(
+          new InstantCommand(() -> grabberSubsystem.grab()),
+          new WaitCommand(0.1),
+          new RunCommand(() -> pivotSubsystem.setPivotPosition(0.99))));
+
+      eventMap.put("telescopeOut",
+        new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint)));
     }
 }
