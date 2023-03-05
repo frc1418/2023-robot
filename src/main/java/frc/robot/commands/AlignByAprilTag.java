@@ -50,7 +50,7 @@ public class AlignByAprilTag extends CommandBase {
         // speedXController = new PIDController(1.7, 0, 0);
         // speedYController = new PIDController(1, 0, 0);
        
-        speedController = new ProfiledPIDController(1.2, 0, 0, new Constraints(0,0));
+        speedController = new ProfiledPIDController(1, 0, 0, new Constraints(0,0));
         speedRotController = new PIDController(0.05, 0, 0);
         speedRotController.enableContinuousInput(-180, 180);
 
@@ -73,13 +73,13 @@ public class AlignByAprilTag extends CommandBase {
 
         Pose2d robotPose = new Pose2d(
             new Translation2d(odometry.getPose().getY(), odometry.getPose().getX()),
-            odometry.getPose().getRotation().unaryMinus());
+            odometry.getPose().getRotation());
 
         Pose2d targetPose;
         if(limelight.getTargetRotation() == 180)
             targetPose = new Pose2d(new Translation2d(targetX, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
         else
-            targetPose = new Pose2d(new Translation2d(-targetX, -targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
+            targetPose = new Pose2d(new Translation2d(targetX, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
 
         // System.out.println("X DIFFERENCE: " + (robotPose.getX()));
         // System.out.println("Y DIFFERENCE: " + (robotPose.getY()));
@@ -95,14 +95,16 @@ public class AlignByAprilTag extends CommandBase {
         double distance = Math.hypot(dx, dy);
         double angleToTarget = Math.atan2(dx, dy) * 180 / Math.PI;
 
-        rot = -speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), limelight.getTargetRotation());
+        System.out.println(odometry.getPose().getRotation().getDegrees());
+        System.out.println(limelight.getTargetRotation());
+        rot = speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), limelight.getTargetRotation());
         
-        double speed = speedController.calculate(distance, 0);
+        double speed = -speedController.calculate(distance, 0);
 
         if(limelight.getTargetRotation() == 0)
-            speed *= -1;
+            speed *= 1;
 
-        System.out.println("DISTANCE: " + distance);
+        // System.out.println("DISTANCE: " + distance);
 
         Rotation2d direction = Rotation2d.fromDegrees(180 + angleToTarget - odometry.getHeading() + limelight.getTargetRotation());
 
