@@ -11,14 +11,25 @@ public class GrabberSubsystem extends SubsystemBase {
     public GrabberSubsystem(DoubleSolenoid leftSolenoid, DoubleSolenoid rightSolenoid) {
         this.leftSolenoid = leftSolenoid;
         this.rightSolenoid = rightSolenoid;
-        leftSolenoid.set(Value.kReverse);
-        rightSolenoid.set(Value.kReverse);
+        leftSolenoid.set(Value.kForward);
+        rightSolenoid.set(Value.kForward);
     }
 
     public void toggle(){
         leftSolenoid.toggle();
         rightSolenoid.toggle();
         System.out.println(leftSolenoid.get());
+    }
+
+    public void grab(){
+        leftSolenoid.set(Value.kReverse);
+        rightSolenoid.set(Value.kReverse);
+    }
+
+    public void open() {
+        leftSolenoid.set(Value.kForward);
+        rightSolenoid.set(Value.kForward);
+        
     }
     
 }

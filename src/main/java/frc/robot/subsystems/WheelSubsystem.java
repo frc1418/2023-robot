@@ -49,10 +49,10 @@ public class WheelSubsystem extends SubsystemBase{
         this.speedMotor.getEncoder().setVelocityConversionFactor(this.speedMotor.getEncoder().getPositionConversionFactor() / 60.0);
         this.speedPIDController = this.speedMotor.getPIDController();
 
-        speedPIDController.setP(0);
+        speedPIDController.setP(0.0001);
         speedPIDController.setI(0.00);
         speedPIDController.setD(0.00);
-        speedPIDController.setFF(0.259);
+        speedPIDController.setFF(0.235);
 
         anglePIDController = new PIDController(1.5, 0, 0.04);
         anglePIDController.enableContinuousInput(0, 1);

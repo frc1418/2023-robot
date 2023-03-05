@@ -61,7 +61,7 @@ public class Odometry {
                 reset(new Pose2d(new Translation2d(-limelight.getYDistance(), limelight.getXDistance()),
                     this.getPose().getRotation()));
             else
-                reset(new Pose2d(new Translation2d(-limelight.getYDistance(), limelight.getXDistance()),
+                reset(new Pose2d(new Translation2d(limelight.getYDistance(), -limelight.getXDistance()),
                     this.getPose().getRotation()));
 
         }
@@ -100,7 +100,7 @@ public class Odometry {
         return -gyro.getRate();
     }
     public Rotation2d getRotation2d() {
-        return gyro.getRotation2d();//.unaryMinus();
+        return gyro.getRotation2d();
     }
 
     public Rotation2d getPitch() {

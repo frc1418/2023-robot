@@ -58,7 +58,7 @@ public final class Constants {
     }
 
     public final static class WheelConstants {
-        public final static double ROTATIONS_TO_METERS = 0.24/5.08;
+        public final static double ROTATIONS_TO_METERS = 0.245/5.08;
     }
 
     public final static class ArmConstants {
@@ -66,13 +66,16 @@ public final class Constants {
         public final static int TELESCOPE_MOTOR_ID = 11;
         public final static double pivotOffset = 0.687;
 
-        public final static double startingPivotG = 1.4;//2.01;
+        public final static double startingPivotG = 0.8;//2.01;
         public final static double pivotGPerTelescopeMeter = 0.8;
         public final static double telescopeRotationToMeters = -0.09 / 32768;
 
-        public final static double telescopeOuterSetpoint = 0.8;
-
         public static final int CLICKS_PER_ROTAITON = 2048;
+
+        public final static double telescopeOuterSetpoint = 0.77;
+        public static double telescopeMiddleSetpoint = 0.4;
+
+        public static double pivotDownPosition = 0.81;
     }
 
     public final static class GrabberConstants {
