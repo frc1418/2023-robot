@@ -20,7 +20,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
 
-public class LeftUpperConeAutonomous extends SequentialCommandGroup {
+public class RightUpperConeAutonomous extends SequentialCommandGroup {
 
     GrabberSubsystem grabberSubsystem;
     SwerveDriveSubsystem swerveDriveSubsystem;
@@ -28,7 +28,7 @@ public class LeftUpperConeAutonomous extends SequentialCommandGroup {
     PivotSubsystem pivotSubsystem;
     TelescopeSubsystem telescopeSubsystem;
 
-    public LeftUpperConeAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
+    public RightUpperConeAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
             TelescopeSubsystem telescopeSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
 
         this.grabberSubsystem = grabberSubsystem;
@@ -41,7 +41,7 @@ public class LeftUpperConeAutonomous extends SequentialCommandGroup {
 
         addCommands(
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
-            new FollowTrajectoryCommand("leftToLeftBall", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5)),
+            new FollowTrajectoryCommand("rightToRightBall", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(1.75, 2.5)),
             new InstantCommand(() -> grabberSubsystem.open())
         );
     }
