@@ -33,9 +33,9 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
   public FollowTrajectoryCommand(
         String trajectoryName,
         Odometry odometry,
-        SwerveDriveSubsystem swerveDriveSubsystem, HashMap<String, Command> eventMap) {
+        SwerveDriveSubsystem swerveDriveSubsystem, HashMap<String, Command> eventMap, PathConstraints pathConstraints) {
 
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryName, new PathConstraints(2.5, 2.5));
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryName, pathConstraints);
 
     PIDController speedControllerX = new PIDController(0.001, 0, 0);
     PIDController speedControllerY = new PIDController(0.001,0,0);//1.3, 0, 0.000);
