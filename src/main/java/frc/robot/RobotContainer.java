@@ -47,6 +47,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.commands.autonomous.LeftUpperConeAutonomous;
+import frc.robot.commands.autonomous.RightUpperConeAutonomous;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -152,16 +153,17 @@ public class RobotContainer {
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -1);//1.1);
-    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.58, -1);
-    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.58, -1);
-    private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
-    private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
+    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.62, -1);
+    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.62, -1);
+    // private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
+    // private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
 
 
     private HashMap<String, Command> eventMap = new HashMap<>();
 
     private final ChargeCommand chargeCommand = new ChargeCommand(swerveDrive, odometry, eventMap);
     private final LeftUpperConeAutonomous leftUpperConeAutonomous = new LeftUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
+    private final RightUpperConeAutonomous rightUpperConeAutonomous = new RightUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -169,7 +171,8 @@ public class RobotContainer {
 
       chooser.addOption("Command", chargeCommand);
       chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
-      chooser.setDefaultOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
+      chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
+      chooser.setDefaultOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -235,6 +238,7 @@ public class RobotContainer {
 
       JoystickButton telescopeOutButton = new JoystickButton(altJoystick, 2);
       JoystickButton telescopeInButton = new JoystickButton(altJoystick, 3);
+      JoystickButton telescopeSubstation = new JoystickButton(altJoystick, 8);
 
       JoystickButton elevatorUpButton = new JoystickButton(altJoystick, 6);
       JoystickButton elevatorDownButton = new JoystickButton(altJoystick, 5);
@@ -253,8 +257,8 @@ public class RobotContainer {
       JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 4);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
-      JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
-      JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
+      // JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
+      // JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
 
       swerveDrive.setDefaultCommand(new RunCommand(
@@ -300,6 +304,8 @@ public class RobotContainer {
       telescopeInButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(-0.5), telescopeSubsystem));
       telescopeInButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
+      telescopeSubstation.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.6), telescopeSubsystem));
+
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
       pivotToTopPegButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(0.01), pivotSubsystem));
@@ -328,8 +334,8 @@ public class RobotContainer {
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
       alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag);
-      alignLeftSubstationButton.whileTrue(alignLeftSubstation);
-      alignRightSubstationButton.whileTrue(alignRightSubstation);
+      // alignLeftSubstationButton.whileTrue(alignLeftSubstation);
+      // alignRightSubstationButton.whileTrue(alignRightSubstation);
       
     }
 

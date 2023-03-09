@@ -33,14 +33,14 @@ public class DeliverUpperConeCommand extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> grabberSubsystem.grab()),
-            new WaitCommand(0.1),
+            new WaitCommand(0.2),
             new WaitCommand(5)
                 .deadlineWith(
                     new WaitUntilCommand(() -> Math.abs(telescopeSubsystem.getTelescopePosition() - ArmConstants.telescopeOuterSetpoint) < 0.05)
                         .andThen(new InstantCommand(() -> grabberSubsystem.toggle()))
                             .deadlineWith(
                                 new RunCommand(() -> pivotSubsystem.setPivotPosition(0.015)),
-                                new WaitUntilCommand(() -> pivotSubsystem.getPivotInRange(0.015, 0.015))
+                                new WaitUntilCommand(() -> pivotSubsystem.getPivotInRange(0.015, 0.012))
                                     .andThen(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint))))
                         .andThen(new WaitCommand(0.5)
                             .andThen(new ParallelCommandGroup(

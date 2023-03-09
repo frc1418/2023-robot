@@ -37,7 +37,7 @@ public class ChargeCommand extends SequentialCommandGroup {
 
     // System.out.println(charge.toString());
     addCommands(
-      new FollowTrajectoryCommand(TRAJECTORY_NAME, odometry, swerveDriveSubsystem, eventMap)
+      new FollowTrajectoryCommand(TRAJECTORY_NAME, odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5))
       );
 
     // Use addRequirements() here to declare subsystem dependencies.

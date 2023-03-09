@@ -72,7 +72,7 @@ public final class Constants {
 
         public static final int CLICKS_PER_ROTAITON = 2048;
 
-        public final static double telescopeOuterSetpoint = 0.77;
+        public final static double telescopeOuterSetpoint = 0.99;
         public static double telescopeMiddleSetpoint = 0.4;
 
         public static double pivotDownPosition = 0.81;
