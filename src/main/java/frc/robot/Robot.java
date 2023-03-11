@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -19,15 +24,20 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  NetworkTableInstance nt = NetworkTableInstance.getDefault();
+  NetworkTable table = nt.getTable("robot");
+  NetworkTableEntry ntIsEnabled = table.getEntry("isEnabled");
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    ntIsEnabled.setBoolean(false);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer(this);
   }
 
   /**
@@ -48,7 +58,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    ntIsEnabled.setBoolean(false);
+    m_robotContainer.coastDrive();
+
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -56,7 +74,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    ntIsEnabled.setBoolean(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.setAutoLights();
+    // m_robotContainer.getOdometry().zeroHeading();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -70,6 +91,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    ntIsEnabled.setBoolean(true);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -77,11 +99,18 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    m_robotContainer.configureObjects();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.periodic();
+  }
 
   @Override
   public void testInit() {
