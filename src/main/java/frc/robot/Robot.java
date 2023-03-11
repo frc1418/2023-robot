@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     ntIsEnabled.setBoolean(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.setAutoLights();
     // m_robotContainer.getOdometry().zeroHeading();
 
     // schedule the autonomous command (example)

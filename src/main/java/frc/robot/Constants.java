@@ -95,4 +95,15 @@ public final class Constants {
         public final static double speedMultiplier = 3;
         public final static double angleMultiplier = 3;
     }
+
+    public final static class LightConstants {
+        public final static int BLINKIN_CHANNEL = 0;
+        
+        public final static double RED = 0.61;
+        public final static double BLUE = 0.87;
+        public final static double PINK = 0.57;
+        public final static double GREEN = 0.77;
+        public final static double WHITE = 0.93;
+        public final static double GOLD = 0.67;
+    }
 }

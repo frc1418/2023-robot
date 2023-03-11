@@ -16,6 +16,7 @@ import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
