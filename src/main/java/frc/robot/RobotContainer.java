@@ -59,7 +59,6 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
 import frc.robot.subsystems.WheelSubsystem;
-import frc.robot.subsystems.LightSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -143,7 +142,6 @@ public class RobotContainer {
     private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid);
 
     private final LightSubsystem m_LightSubsytem = new LightSubsystem(grabberSubsystem);
-
 
     private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
