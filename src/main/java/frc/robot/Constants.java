@@ -19,7 +19,7 @@ public final class Constants {
 
     public final static class DrivetrainConstants {
 
-        public static final double DRIFT_DEADBAND = 0.09;
+        public static final double DRIFT_DEADBAND = 0.1;
         public static final double ROTATION_DEADBAND = 0.006;
 
         public static final double WIDTH = 22.5;
@@ -28,22 +28,22 @@ public final class Constants {
         public final static int BACK_RIGHT_SPEED_ID = 4;
         public final static int BACK_RIGHT_ANGLE_ID = 3;
         public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.257;
+        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.829 - 0.25;
 
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.015;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 0.418;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
         public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.734;
+        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.142;
 
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.705;
+        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.081 + 0.25;
 
         public final static Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
         public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
@@ -58,7 +58,34 @@ public final class Constants {
     }
 
     public final static class WheelConstants {
-        public final static double ROTATIONS_TO_METERS = 0.33/8.33;
+        public final static double ROTATIONS_TO_METERS = 0.24/5.08;
+    }
+
+    public final static class ArmConstants {
+        public final static int PIVOT_MOTOR_ID = 10;
+        public final static int TELESCOPE_MOTOR_ID = 11;
+        public final static double pivotOffset = 0.687;
+
+        public final static double startingPivotG = 1.4;//2.01;
+        public final static double pivotGPerTelescopeMeter = 0.8;
+        public final static double telescopeRotationToMeters = -0.09 / 32768;
+
+        public final static double telescopeOuterSetpoint = 0.8;
+
+        public static final int CLICKS_PER_ROTAITON = 2048;
+    }
+
+    public final static class GrabberConstants {
+        public final static int PNEUMATICS_HUB_ID = 23;
+        public final static int LEFT_SOLENOID_REVERSE = 3;
+        public final static int LEFT_SOLENOID_FORWARD = 2;
+
+        public final static int RIGHT_SOLENOID_REVERSE = 1;
+        public final static int RIGHT_SOLENOID_FORWARD = 0;
+    }
+
+    public final static class ElevatorConstants {
+        public final static int ELEVATOR_MOTOR_ID = 9;
     }
 
     public final static class DriverConstants {
