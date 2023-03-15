@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightDirections;
 
 public class LimelightSubsystem extends SubsystemBase {
 
@@ -24,7 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
     private double xToTarget;
     private double yToTarget;
     private double rotToTarget;
-    private double targetRotation;
+    private LimelightDirections targetRotation;
 
     private Rotation2d angleToTarget = new Rotation2d();
     
@@ -45,15 +46,15 @@ public class LimelightSubsystem extends SubsystemBase {
 
         if(DriverStation.getAlliance() == Alliance.Blue){
             if(ntID.getDouble(0) == 6 || ntID.getDouble(0) == 7 || ntID.getDouble(0) == 8){
-                targetRotation = 180;
+                targetRotation = LimelightDirections.GRID_SIDE;
             } else if (ntID.getDouble(0) == 4){
-                targetRotation = 0;
+                targetRotation = LimelightDirections.SUBSTATION_SIDE;
             }
         } else {
             if(ntID.getDouble(0) == 3 || ntID.getDouble(0) == 2 || ntID.getDouble(0) == 1){
-                targetRotation = 180;
+                targetRotation = LimelightDirections.GRID_SIDE;
             } else if (ntID.getDouble(0) == 5){
-                targetRotation = 0;
+                targetRotation = LimelightDirections.SUBSTATION_SIDE;
             }
         }
 
@@ -90,7 +91,7 @@ public class LimelightSubsystem extends SubsystemBase {
         return isDetecting;
     }
 
-    public double getTargetRotation() {
+    public LimelightDirections getTargetRotation() {
         return targetRotation;
     }
 

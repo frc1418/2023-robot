@@ -1,23 +1,13 @@
 package frc.robot.commands;
 
-import org.ejml.data.MatrixSparse;
-
-import com.kauailabs.navx.IMUProtocol.YPRUpdate;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.LimelightDirections;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
@@ -54,7 +44,7 @@ public class AlignByAprilTag extends CommandBase {
         speedRotController = new PIDController(0.05, 0, 0);
         speedRotController.enableContinuousInput(-180, 180);
 
-        addRequirements(swerveDrive);
+        addRequirements(swerveDrive, limelight);
 
     }
 
@@ -76,10 +66,10 @@ public class AlignByAprilTag extends CommandBase {
             odometry.getPose().getRotation().unaryMinus());
 
         Pose2d targetPose;
-        if(limelight.getTargetRotation() == 180)
-            targetPose = new Pose2d(new Translation2d(targetX, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
+        if(limelight.getTargetRotation() == LimelightDirections.GRID_SIDE)
+            targetPose = new Pose2d(new Translation2d(targetX, -targetY), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
         else
-            targetPose = new Pose2d(new Translation2d(-targetX, -targetY), Rotation2d.fromDegrees(limelight.getTargetRotation()));
+            targetPose = new Pose2d(new Translation2d(targetX*1.5, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
 
         // System.out.println("X DIFFERENCE: " + (robotPose.getX()));
         // System.out.println("Y DIFFERENCE: " + (robotPose.getY()));
@@ -95,19 +85,24 @@ public class AlignByAprilTag extends CommandBase {
         double distance = Math.hypot(dx, dy);
         double angleToTarget = Math.atan2(dx, dy) * 180 / Math.PI;
 
-        rot = -speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), limelight.getTargetRotation());
+        rot = speedRotController.calculate(odometry.getPose().getRotation().getDegrees(), limelight.getTargetRotation().angle());
         
         double speed = speedController.calculate(distance, 0);
 
-        if(limelight.getTargetRotation() == 0)
-            speed *= -1;
+        if(limelight.getTargetRotation() == LimelightDirections.SUBSTATION_SIDE)
+            speed *= 1;
 
         System.out.println("DISTANCE: " + distance);
 
-        Rotation2d direction = Rotation2d.fromDegrees(180 + angleToTarget - odometry.getHeading() + limelight.getTargetRotation());
+        Rotation2d direction = Rotation2d.fromDegrees(180 + angleToTarget - odometry.getHeading() + limelight.getTargetRotation().angle());
 
         x = direction.getCos() * speed;
         y = direction.getSin() * speed;
+
+        if(limelight.getTargetRotation() == LimelightDirections.GRID_SIDE){
+            y *= -1;
+            x *= -1;
+        }
 
         swerveDrive.drive(x, y, rot);
     }
