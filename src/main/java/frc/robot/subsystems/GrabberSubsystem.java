@@ -9,9 +9,11 @@ public class GrabberSubsystem extends SubsystemBase {
     private DoubleSolenoid leftSolenoid;
     private DoubleSolenoid rightSolenoid;
     private boolean grabberClosed = false;
-    public GrabberSubsystem(DoubleSolenoid leftSolenoid, DoubleSolenoid rightSolenoid) {
+    private LEDSubsystem ledSubsystem;
+    public GrabberSubsystem(DoubleSolenoid leftSolenoid, DoubleSolenoid rightSolenoid, LEDSubsystem ledSubsystem) {
         this.leftSolenoid = leftSolenoid;
         this.rightSolenoid = rightSolenoid;
+        this.ledSubsystem = ledSubsystem;
         leftSolenoid.set(Value.kForward);
         rightSolenoid.set(Value.kForward);
     }
@@ -20,17 +22,16 @@ public class GrabberSubsystem extends SubsystemBase {
         leftSolenoid.toggle();
         rightSolenoid.toggle();
         System.out.println(leftSolenoid.get());
-        if (grabberClosed)
-            grabberClosed = false;
-        else
-            grabberClosed = true;
-
+        grabberClosed = !grabberClosed;
+        if (grabberClosed) 
+            ledSubsystem.clawClosedColor();
     }
 
     public void grab(){
         leftSolenoid.set(Value.kReverse);
         rightSolenoid.set(Value.kReverse);
         grabberClosed = true;
+        ledSubsystem.clawClosedColor();
     }
 
     public void open() {

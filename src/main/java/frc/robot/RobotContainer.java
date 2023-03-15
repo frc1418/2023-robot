@@ -52,7 +52,7 @@ import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
@@ -137,14 +137,15 @@ public class RobotContainer {
     private PivotSubsystem pivotSubsystem = new PivotSubsystem(pivotMotor);
     private TelescopeSubsystem telescopeSubsystem = new TelescopeSubsystem(telescopeMotor, pivotSubsystem);
 
+    private LEDSubsystem ledSubsystem = new LEDSubsystem();
+
     private DoubleSolenoid leftSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.LEFT_SOLENOID_FORWARD, GrabberConstants.LEFT_SOLENOID_REVERSE);
     private DoubleSolenoid rightSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_SOLENOID_FORWARD, GrabberConstants.RIGHT_SOLENOID_REVERSE);
-    private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid);
-
-    private final LightSubsystem m_LightSubsytem = new LightSubsystem(grabberSubsystem);
-
+    private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid, ledSubsystem);
+    
     private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
+
 
     // LOAD TRAJECTORIES
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
@@ -154,7 +155,7 @@ public class RobotContainer {
     private final SendableChooser<Command> chooser = new SendableChooser<>();
     // private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
 
-    private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive, m_LightSubsytem);
+    private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive, ledSubsystem);
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -1);//1.1);
     private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.62, -1);
     private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.62, -1);
@@ -260,6 +261,10 @@ public class RobotContainer {
       JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 4);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
+
+
+      Trigger wantCone = new Trigger(() -> altJoystick.getRawAxis(2) > 0.2);
+      Trigger wantCube = new Trigger(() -> altJoystick.getRawAxis(1) > 0.2);
       // JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
       // JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
@@ -267,7 +272,6 @@ public class RobotContainer {
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
             if (robot.isTeleopEnabled()) {
-              m_LightSubsytem.teleopLights();
               swerveDrive.drive(
                   applyDeadband(-leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
                   applyDeadband(-leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
@@ -330,7 +334,6 @@ public class RobotContainer {
 
       elevatorToMiddleButton.onTrue(new RunCommand(() -> elevatorSubsystem.setElevatorHeight(0), elevatorSubsystem));
 
-
       pivotSubsystem.setDefaultCommand(new RunCommand(() -> {
         pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition());
       }, pivotSubsystem));
@@ -340,6 +343,10 @@ public class RobotContainer {
       alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag);
       // alignLeftSubstationButton.whileTrue(alignLeftSubstation);
       // alignRightSubstationButton.whileTrue(alignRightSubstation);
+
+      wantCone.onTrue(new RunCommand(() -> ledSubsystem.coneColor()));
+      wantCube.onTrue(new RunCommand(() -> ledSubsystem.cubeColor()));
+
       
     }
   
@@ -356,8 +363,8 @@ public class RobotContainer {
       return chooser.getSelected();
     }
 
-    public void setAutoLights() {
-      m_LightSubsytem.normalLights();
+    public void startLEDs() {
+      ledSubsystem.startColor();
     }
 
     public double applyDeadband(double val, double deadband){
@@ -391,6 +398,8 @@ public class RobotContainer {
 
       pitch.setDouble(odometry.getPitch().getDegrees());
       roll.setDouble(odometry.getRoll().getDegrees());
+
+      ledSubsystem.runLEDs();
     }
 
     public void buildAutoEventMap(){
@@ -404,4 +413,5 @@ public class RobotContainer {
       eventMap.put("telescopeOut",
         new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint)));
     }
+
 }

@@ -96,14 +96,26 @@ public final class Constants {
         public final static double angleMultiplier = 3;
     }
 
-    public final static class LightConstants {
+    public final static class LEDConstants {
         public final static int BLINKIN_CHANNEL = 0;
-        
-        public final static double RED = 0.61;
-        public final static double BLUE = 0.87;
-        public final static double PINK = 0.57;
-        public final static double GREEN = 0.77;
-        public final static double WHITE = 0.93;
-        public final static double GOLD = 0.67;
+    }
+
+    public enum LEDColors {
+        CONE(0.69), // YELLOW
+        CUBE(0.91), // PURPLE
+        RED_ALLIANCE(0.61), //RED
+        BLUE_ALLIANCE(0.87), //BLUE
+        BALANCING(0.57), //PINK
+        BALANCED(0.77), //GREEN
+        CLAW_CLOSED (0.93); //WHITE
+
+        private double color;
+        LEDColors(double color){
+            this.color = color;
+        }
+
+        public double getColor(){
+            return color;
+        }
     }
 }

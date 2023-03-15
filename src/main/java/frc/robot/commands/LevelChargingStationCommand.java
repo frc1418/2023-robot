@@ -4,13 +4,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.common.Odometry;
-import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class LevelChargingStationCommand extends SequentialCommandGroup {
     
 
-    public LevelChargingStationCommand(Odometry odometry, SwerveDriveSubsystem swerveDriveSubsystem, LightSubsystem lightSubsystem) {
+    public LevelChargingStationCommand(Odometry odometry, SwerveDriveSubsystem swerveDriveSubsystem, LEDSubsystem ledSubsystem) {
         System.out.println("LEVELING");
 
         PIDCommand balanceRobot = new PIDCommand(
@@ -21,9 +21,9 @@ public class LevelChargingStationCommand extends SequentialCommandGroup {
                 System.out.println("BALANCING: " + x);
                 swerveDriveSubsystem.strafe(odometry.getInclineDirection(), x);
                 if (x > 0.05)  
-                    lightSubsystem.balancingLights();
+                    ledSubsystem.balancingColor();
                 else
-                    lightSubsystem.balancedLights();
+                    ledSubsystem.balancedColor();
             },
             swerveDriveSubsystem);
 
