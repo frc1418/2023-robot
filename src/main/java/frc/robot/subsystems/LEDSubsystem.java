@@ -9,7 +9,7 @@ import frc.robot.Constants.LEDColors;
 public class LEDSubsystem {
     Spark blinkin;
 
-    public LEDColors ledColor;
+    private LEDColors ledColor;
 
     public LEDSubsystem() {
         blinkin = new Spark(LEDConstants.BLINKIN_CHANNEL);
