@@ -13,12 +13,12 @@ public class LevelChargingStationCommand extends SequentialCommandGroup {
         System.out.println("LEVELING");
 
         PIDCommand balanceRobot = new PIDCommand(
-            new PIDController(0.03, 0, 0),
+            new PIDController(0.035, 0, 0.008),
             () -> odometry.getInclineAngle().getDegrees(),
             0,
             (x) -> {
                 System.out.println("BALANCING: " + x);
-                swerveDriveSubsystem.strafe(odometry.getInclineDirection(), x);
+                swerveDriveSubsystem.strafe(odometry.getInclineDirection(), -x);
             },
             swerveDriveSubsystem);
 
