@@ -92,4 +92,19 @@ public final class Constants {
         public final static double speedMultiplier = 3;
         public final static double angleMultiplier = 3;
     }
+
+
+    public enum LimelightDirections {
+        GRID_SIDE(180), SUBSTATION_SIDE(0);
+
+        private int angle;
+        LimelightDirections(int angle){
+            this.angle = angle;
+        }
+
+        public int angle(){
+            return angle;
+        }
+
+    }
 }
