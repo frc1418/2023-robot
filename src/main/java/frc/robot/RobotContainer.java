@@ -263,8 +263,8 @@ public class RobotContainer {
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
 
 
-      Trigger wantCone = new Trigger(() -> altJoystick.getRawAxis(2) > 0.2);
-      Trigger wantCube = new Trigger(() -> altJoystick.getRawAxis(1) > 0.2);
+      Trigger wantCone = new Trigger(() -> applyDeadband(altJoystick.getRawAxis(2), DrivetrainConstants.BUTTON_DEADBAND) > 0);
+      Trigger wantCube = new Trigger(() -> applyDeadband(altJoystick.getRawAxis(1), DrivetrainConstants.BUTTON_DEADBAND) > 0);
       // JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
       // JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
@@ -411,5 +411,4 @@ public class RobotContainer {
       eventMap.put("telescopeOut",
         new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint)));
     }
-
 }
