@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.common.Odometry;
-import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 import java.util.HashMap;
@@ -72,7 +72,6 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
     addRequirements(swerveDriveSubsystem);
 
       addCommands(
-        
         new InstantCommand(() -> odometry.reset(trajectory.getInitialHolonomicPose())),
         autoBuilder.fullAuto(trajectory),
         new PrintCommand("DONE"),
