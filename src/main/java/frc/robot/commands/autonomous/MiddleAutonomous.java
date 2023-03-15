@@ -5,22 +5,20 @@ import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.commands.DeliverUpperConeCommand;
 import frc.robot.commands.FollowTrajectoryCommand;
+import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.common.Odometry;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
 
-public class RightUpperConeAutonomous extends SequentialCommandGroup {
+public class MiddleAutonomous extends SequentialCommandGroup {
 
     GrabberSubsystem grabberSubsystem;
     SwerveDriveSubsystem swerveDriveSubsystem;
@@ -28,9 +26,9 @@ public class RightUpperConeAutonomous extends SequentialCommandGroup {
     PivotSubsystem pivotSubsystem;
     TelescopeSubsystem telescopeSubsystem;
 
-    public RightUpperConeAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
-            TelescopeSubsystem telescopeSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
-
+    public MiddleAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
+        TelescopeSubsystem telescopeSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
+            
         this.grabberSubsystem = grabberSubsystem;
         this.swerveDriveSubsystem = swerveDriveSubsystem;
         this.odometry = odometry;
@@ -41,8 +39,11 @@ public class RightUpperConeAutonomous extends SequentialCommandGroup {
 
         addCommands(
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
-            new FollowTrajectoryCommand("rightToRightBallNoTurn", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(1.75, 2.5)),
-            new InstantCommand(() -> grabberSubsystem.open())
+            new ParallelCommandGroup(
+                new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03)),
+                new FollowTrajectoryCommand("middleToChargingStation", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5))
+            ),
+            new LevelChargingStationCommand(odometry, swerveDriveSubsystem)
         );
     }
     

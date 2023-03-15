@@ -43,7 +43,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
     private SwerveDriveKinematics kinematics;
     private Odometry odometry;
     
-    public boolean fieldCentric = false;
+    public boolean fieldCentric = true;
 
     private PIDController rotationController = new PIDController(0.04, 0, 0);
 

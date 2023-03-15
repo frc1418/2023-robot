@@ -44,7 +44,7 @@ public class DeliverUpperConeCommand extends SequentialCommandGroup {
                                     .andThen(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint))))
                         .andThen(new WaitCommand(0.5)
                             .andThen(new ParallelCommandGroup(
-                                new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.4)),
+                                new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.45)),
                                 new WaitUntilCommand(() -> telescopeSubsystem.getTelescopePosition() < 0.6)
                                     .andThen(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.pivotDownPosition)))))))
             

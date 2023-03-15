@@ -47,6 +47,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.commands.autonomous.LeftUpperConeAutonomous;
+import frc.robot.commands.autonomous.MiddleAutonomous;
 import frc.robot.commands.autonomous.RightUpperConeAutonomous;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
@@ -147,14 +148,10 @@ public class RobotContainer {
     private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
     private final HashMap<String, Trajectory> trajectories = trajectoryLoader.loadTrajectories();
 
-    // SENDABLE CHOOSER
-    private final SendableChooser<Command> chooser = new SendableChooser<>();
-    // private final Command chargeCommand = new ChargeCommand(swerveDrive, odometry, trajectories);
-
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive);
-    private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -1);//1.1);
-    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.62, -1);
-    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.62, -1);
+    private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -0.77);//1.1);
+    private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.5, -0.77);
+    private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.74, -0.77);
     // private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
     // private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
 
@@ -164,6 +161,10 @@ public class RobotContainer {
     private final ChargeCommand chargeCommand = new ChargeCommand(swerveDrive, odometry, eventMap);
     private final LeftUpperConeAutonomous leftUpperConeAutonomous = new LeftUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final RightUpperConeAutonomous rightUpperConeAutonomous = new RightUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
+    private final MiddleAutonomous middleAutonomous = new MiddleAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
+
+    // SENDABLE CHOOSER
+    private final SendableChooser<Command> chooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
@@ -172,7 +173,8 @@ public class RobotContainer {
       chooser.addOption("Command", chargeCommand);
       chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
       chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
-      chooser.setDefaultOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
+      chooser.addOption("Middle Autonomous", middleAutonomous);
+      chooser.setDefaultOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -304,7 +306,7 @@ public class RobotContainer {
       telescopeInButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(-0.5), telescopeSubsystem));
       telescopeInButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
-      telescopeSubstation.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.6), telescopeSubsystem));
+      telescopeSubstation.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.23), telescopeSubsystem));
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
