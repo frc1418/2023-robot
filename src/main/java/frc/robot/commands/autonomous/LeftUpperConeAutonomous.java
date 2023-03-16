@@ -42,7 +42,9 @@ public class LeftUpperConeAutonomous extends SequentialCommandGroup {
         addCommands(
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
             new FollowTrajectoryCommand("leftToLeftBall", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5)),
-            new InstantCommand(() -> grabberSubsystem.open())
+            new InstantCommand(() -> grabberSubsystem.open()),
+            new WaitCommand(0.5),
+            new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03))
         );
     }
     

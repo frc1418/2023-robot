@@ -69,7 +69,7 @@ public class AlignByAprilTag extends CommandBase {
         if(limelight.getTargetRotation() == LimelightDirections.GRID_SIDE)
             targetPose = new Pose2d(new Translation2d(targetX, -targetY), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
         else
-            targetPose = new Pose2d(new Translation2d(targetX*1.5, targetY), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
+            targetPose = new Pose2d(new Translation2d(targetX*1, targetY*1.3), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
 
         // System.out.println("X DIFFERENCE: " + (robotPose.getX()));
         // System.out.println("Y DIFFERENCE: " + (robotPose.getY()));

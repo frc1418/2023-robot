@@ -18,6 +18,8 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -35,6 +37,13 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
         Odometry odometry,
         SwerveDriveSubsystem swerveDriveSubsystem, HashMap<String, Command> eventMap, PathConstraints pathConstraints) {
 
+    if(trajectoryName.equals("leftToLeftBall")){
+      if(DriverStation.getAlliance() == Alliance.Blue){
+        trajectoryName += "BLUE";
+      } else {
+        trajectoryName += "RED";
+      }
+    }
     PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryName, pathConstraints);
 
     PIDController speedControllerX = new PIDController(0.001, 0, 0);
