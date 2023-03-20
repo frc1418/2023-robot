@@ -76,7 +76,7 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         // ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
 
         if (fieldCentric) {
-            System.out.println("FIELD CENTRIC");
+            // System.out.println("FIELD CENTRIC");
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, odometry.getRotation2d());
         }
 
