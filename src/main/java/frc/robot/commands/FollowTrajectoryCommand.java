@@ -39,9 +39,14 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
 
     if(trajectoryName.equals("leftToLeftBall")){
       if(DriverStation.getAlliance() == Alliance.Blue){
+        System.out.println("BLUE AUTONOMOUS");
         trajectoryName += "BLUE";
-      } else {
+        
+      } else if (DriverStation.getAlliance() == Alliance.Red){
+        System.out.println("RED AUTONOMOUS");
         trajectoryName += "RED";
+      } else {
+        throw new Error("NO ALLIANCE COLOR");
       }
     }
     PathPlannerTrajectory trajectory = PathPlanner.loadPath(trajectoryName, pathConstraints);

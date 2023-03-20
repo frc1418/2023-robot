@@ -41,8 +41,7 @@ public class RightUpperConeAutonomous extends SequentialCommandGroup {
 
         addCommands(
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
-            new FollowTrajectoryCommand("rightToRightBallNoTurn", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(1.75, 2.5)),
-            new InstantCommand(() -> grabberSubsystem.open())
+            new FollowTrajectoryCommand("rightBack", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(1.75, 2.5))
         );
     }
     

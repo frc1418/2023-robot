@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -38,6 +39,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer(this);
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
   }
 
   /**
@@ -98,10 +102,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    m_robotContainer.getOdometry().zeroHeading();
-    m_robotContainer.getOdometry().setAngleOffset(180);
-    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    m_robotContainer.getSwerveDriveSubsystem().setFieldCentric(true);
     m_robotContainer.configureObjects();
   }
 
@@ -109,6 +110,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_robotContainer.periodic();
+    System.out.println("ALLIANCE COLOR: " + DriverStation.getAlliance());
   }
 
   @Override
