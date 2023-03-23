@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_robotContainer.periodic();
-    System.out.println("ALLIANCE COLOR: " + DriverStation.getAlliance());
+    // System.out.println("ALLIANCE COLOR: " + DriverStation.getAlliance());
   }
 
   @Override
