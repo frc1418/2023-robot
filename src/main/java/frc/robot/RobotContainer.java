@@ -48,6 +48,8 @@ import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.commands.autonomous.LeftUpperConeAutonomous;
 import frc.robot.commands.autonomous.MiddleAutonomous;
+import frc.robot.commands.autonomous.MiddleAutonomousMiddleCone;
+import frc.robot.commands.autonomous.MiddleAutonomousNoCone;
 import frc.robot.commands.autonomous.RightUpperConeAutonomous;
 import frc.robot.common.Odometry;
 import frc.robot.common.TrajectoryLoader;
@@ -162,6 +164,8 @@ public class RobotContainer {
     private final LeftUpperConeAutonomous leftUpperConeAutonomous = new LeftUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final RightUpperConeAutonomous rightUpperConeAutonomous = new RightUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final MiddleAutonomous middleAutonomous = new MiddleAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, odometry, eventMap);
+    private final MiddleAutonomousNoCone middleAutonomousNoCone = new MiddleAutonomousNoCone(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, odometry, eventMap);
+    private final MiddleAutonomousMiddleCone middleAutonomousMiddleCone = new MiddleAutonomousMiddleCone(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, odometry, eventMap);
 
     // SENDABLE CHOOSER
     private final SendableChooser<Command> chooser = new SendableChooser<>();
@@ -174,7 +178,9 @@ public class RobotContainer {
       chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
       chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
       chooser.addOption("Middle Autonomous", middleAutonomous);
-      chooser.setDefaultOption("Middle Autonomous", middleAutonomous);
+      chooser.addOption("Middle Autonomous No Cone", middleAutonomousNoCone);
+      chooser.addOption("Middle Autonomous Middle Cone", middleAutonomousMiddleCone);
+      chooser.setDefaultOption("Middle Autonomous Middle Cone", middleAutonomousMiddleCone);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -398,5 +404,12 @@ public class RobotContainer {
 
       eventMap.put("telescopeOut",
         new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint)));
+    }
+
+    public void zeroSuperstructure() {
+      elevatorSubsystem.setElevatorMotor(0);
+      telescopeSubsystem.setTelescopeMotor(0);
+      pivotSubsystem.setPivotMotor(0);
+
     }
 }
