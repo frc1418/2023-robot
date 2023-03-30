@@ -19,6 +19,7 @@ import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
@@ -31,9 +32,10 @@ public class MiddleAutonomousMiddleCone extends SequentialCommandGroup {
     PivotSubsystem pivotSubsystem;
     TelescopeSubsystem telescopeSubsystem;
     ElevatorSubsystem elevatorSubsystem;
+    LedSubsystem ledSubsystem;
 
     public MiddleAutonomousMiddleCone(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
-        TelescopeSubsystem telescopeSubsystem, ElevatorSubsystem elevatorSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
+        TelescopeSubsystem telescopeSubsystem, ElevatorSubsystem elevatorSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, LedSubsystem ledSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
             
         this.grabberSubsystem = grabberSubsystem;
         this.swerveDriveSubsystem = swerveDriveSubsystem;
@@ -56,7 +58,7 @@ public class MiddleAutonomousMiddleCone extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> swerveDriveSubsystem.setFieldCentric(false)),
                     new PrintCommand("LEVELING"),
-                    new LevelChargingStationCommand(odometry, swerveDriveSubsystem)
+                    new LevelChargingStationCommand(odometry, swerveDriveSubsystem, ledSubsystem)
                 )));
     }
     
