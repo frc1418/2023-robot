@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.LedColor;
 import frc.robot.commands.DeliverUpperConeCommand;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
@@ -30,9 +32,10 @@ public class MiddleAutonomousNoCone extends SequentialCommandGroup {
     PivotSubsystem pivotSubsystem;
     TelescopeSubsystem telescopeSubsystem;
     ElevatorSubsystem elevatorSubsystem;
+    LedSubsystem ledSubsystem;
 
     public MiddleAutonomousNoCone(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
-        TelescopeSubsystem telescopeSubsystem, ElevatorSubsystem elevatorSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
+        TelescopeSubsystem telescopeSubsystem, ElevatorSubsystem elevatorSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, LedSubsystem ledSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
             
         this.grabberSubsystem = grabberSubsystem;
         this.swerveDriveSubsystem = swerveDriveSubsystem;
@@ -55,7 +58,7 @@ public class MiddleAutonomousNoCone extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new InstantCommand(() -> swerveDriveSubsystem.setFieldCentric(false)),
                     new PrintCommand("LEVELING"),
-                    new LevelChargingStationCommand(odometry, swerveDriveSubsystem)
+                    new LevelChargingStationCommand(odometry, swerveDriveSubsystem, ledSubsystem)
                 )));
     }
     

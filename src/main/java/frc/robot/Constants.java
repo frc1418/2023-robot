@@ -97,6 +97,29 @@ public final class Constants {
         public final static double angleMultiplier = 3;
     }
 
+    public final static class LedConstants {
+        public final static int BLINKIN_CHANNEL = 0;
+    }
+
+    public enum LedColor {
+        BALANCING(0.57), //PINK
+        DOCKED(0.77), //GREEN
+        GRABBER_OPEN(0.67), //GOLD
+        GRABBER_CLOSED(0.93), //WHITE 
+        BLUE_ALLIANCE(0.87), //BLUE
+        RED_ALLIANCE(0.61); //RED
+
+        private double color;
+
+        LedColor(double color) {
+            this.color = color;
+        }
+        
+        public double color() {
+            return color;
+        }
+
+    }
 
     public enum LimelightDirections {
         GRID_SIDE(180), SUBSTATION_SIDE(0);
