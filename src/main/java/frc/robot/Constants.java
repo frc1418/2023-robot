@@ -33,7 +33,7 @@ public final class Constants {
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.418;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 0.420;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
@@ -43,7 +43,7 @@ public final class Constants {
         public final static int FRONT_LEFT_SPEED_ID = 8;
         public final static int FRONT_LEFT_ANGLE_ID = 7;
         public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.081 + 0.25;
+        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.082 + 0.25;
 
         public final static Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
         public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
