@@ -149,12 +149,12 @@ public class RobotContainer {
     private DoubleSolenoid rightSolenoid = new DoubleSolenoid(GrabberConstants.PNEUMATICS_HUB_ID, PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_SOLENOID_FORWARD, GrabberConstants.RIGHT_SOLENOID_REVERSE);
     private GrabberSubsystem grabberSubsystem = new GrabberSubsystem(leftSolenoid, rightSolenoid, ledSubsystem);
 
-    private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.ELEVATOR_MOTOR_ID);
+    private CANSparkMax elevatorMotor = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_ID, MotorType.kBrushless);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
 
     // LOAD TRAJECTORIES
-    private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
-    private final HashMap<String, Trajectory> trajectories = trajectoryLoader.loadTrajectories();
+    // private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
+    // private final HashMap<String, Trajectory> trajectories = trajectoryLoader.loadTrajectories();
 
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive, ledSubsystem);
     private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -0.77);//1.1);
@@ -226,7 +226,7 @@ public class RobotContainer {
       elevatorMotor.setInverted(true);
       telescopeMotor.setInverted(true);
       pivotMotor.setIdleMode(IdleMode.kBrake);
-      elevatorMotor.setNeutralMode(NeutralMode.Brake);
+      elevatorMotor.setIdleMode(IdleMode.kBrake);
       telescopeMotor.setNeutralMode(NeutralMode.Brake);
     }
 
@@ -267,7 +267,6 @@ public class RobotContainer {
       Trigger telescopeToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 270);
       JoystickButton telescopeToInButton = new JoystickButton(altJoystick, 7);
 
-      Trigger elevatorToMiddleButton = new Trigger(() -> altJoystick.getPOV() == 45);
       JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 4);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
@@ -340,9 +339,6 @@ public class RobotContainer {
       telescopeToInButton.onTrue(new RunCommand(() -> {
         telescopeSubsystem.setTelescopePosition(0.03);
       }, telescopeSubsystem));
-
-      elevatorToMiddleButton.onTrue(new RunCommand(() -> elevatorSubsystem.setElevatorHeight(0), elevatorSubsystem));
-
 
       pivotSubsystem.setDefaultCommand(new RunCommand(() -> {
         pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition());
