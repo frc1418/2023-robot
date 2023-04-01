@@ -52,7 +52,7 @@ public class WheelSubsystem extends SubsystemBase{
         speedPIDController.setP(0.0001);
         speedPIDController.setI(0.00);
         speedPIDController.setD(0.00);
-        speedPIDController.setFF(0.235);
+        speedPIDController.setFF(0.25);
 
         anglePIDController = new PIDController(1.5, 0, 0.04);
         anglePIDController.enableContinuousInput(0, 1);
@@ -133,5 +133,9 @@ public class WheelSubsystem extends SubsystemBase{
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(
             speedMotor.getEncoder().getPosition(), Rotation2d.fromRotations(getEncoderPosition()));
+    }
+
+    public double getVelocity(){
+        return speedMotor.getEncoder().getVelocity();
     }
 }
