@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.getOdometry().zeroHeading();
     m_robotContainer.getOdometry().setAngleOffset(180);
     m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
   /**
@@ -66,21 +67,29 @@ public class Robot extends TimedRobot {
     ntIsEnabled.setBoolean(false);
     m_robotContainer.coastDrive();
 
-    m_robotContainer.getOdometry().zeroHeading();
-    m_robotContainer.getOdometry().setAngleOffset(180);
-    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
-    m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
+    // m_robotContainer.getOdometry().zeroHeading();
+    // m_robotContainer.getOdometry().setAngleOffset(180);
+    // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    // m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // m_robotContainer.getOdometry().zeroHeading();
+    // m_robotContainer.getOdometry().setAngleOffset(180);
+    // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    // m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     ntIsEnabled.setBoolean(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().zeroHeading();
+    m_robotContainer.getOdometry().setAngleOffset(180);
+    m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+    m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -103,7 +112,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getSwerveDriveSubsystem().setFieldCentric(true);
-    m_robotContainer.configureObjects();
+    // m_robotContainer.configureObjects();
+    m_robotContainer.zeroSuperstructure();
   }
 
   /** This function is called periodically during operator control. */
