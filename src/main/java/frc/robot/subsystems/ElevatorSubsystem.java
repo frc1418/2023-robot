@@ -22,44 +22,33 @@ public class ElevatorSubsystem extends SubsystemBase {
     DigitalInput topLimitSwitch = new DigitalInput(3);
     DigitalInput bottomLimitSwitch = new DigitalInput(4);
     
-    private TalonFX elevatorMotor;
+    private CANSparkMax elevatorMotor;
 
 
-    public ElevatorSubsystem(TalonFX elevatorMotor) {
+    public ElevatorSubsystem(CANSparkMax elevatorMotor) {
         this.elevatorMotor = elevatorMotor;
 
-        this.elevatorMotor.selectProfileSlot(0, 0);
-        this.elevatorMotor.config_kP(0, 0);
-        this.elevatorMotor.config_kI(0, 0);
-        this.elevatorMotor.config_kD(0, 0);
-        this.elevatorMotor.config_kF(0, 0);
+        elevatorMotor.getPIDController().setP(0);
+        elevatorMotor.getPIDController().setI(0);
+        elevatorMotor.getPIDController().setD(0);
     }
 
     public void setElevatorMotor(double speed) {
         if (bottomLimitSwitch.get() && speed < 0)
         {
             System.out.println("NO MORE DOWN");
-            elevatorMotor.set(ControlMode.PercentOutput, 0);
+            elevatorMotor.set(0);
         }
         else if (topLimitSwitch.get() && speed > 0)
         {
             System.out.println("NO MORE UP");
-            elevatorMotor.set(ControlMode.PercentOutput, 0);
+            elevatorMotor.set(0);
         }
         else
         {
             System.out.println("MOVING");
-            elevatorMotor.set(ControlMode.PercentOutput, speed);
+            elevatorMotor.set(speed);
         }
-    }
-
-    public void setElevatorHeight(double pos) {
-
-        double offset = Math.cos(2*Math.PI*ntArmAngle.getDouble(0)) * ntArmLength.getDouble(0);
-
-        elevatorMotor.set(ControlMode.Position, pos - offset);
-
-
     }
     
 }
