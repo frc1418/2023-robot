@@ -98,7 +98,7 @@ public final class Constants {
     }
 
     public final static class AutoConstants {
-        public final static double autoPivotDown = 0.79;
+        public final static double autoPivotDown = 0.77;
         public final static double autoPivotUp = 0.015;
         public final static double pivotDeadband = 0.012;
 

@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.ElevatorConstants;
@@ -404,7 +405,7 @@ public class RobotContainer {
         new SequentialCommandGroup(
           new InstantCommand(() -> grabberSubsystem.grab()),
           new WaitCommand(0.1),
-          new RunCommand(() -> pivotSubsystem.setPivotPosition(0.99))));
+          new RunCommand(() -> pivotSubsystem.setPivotPosition(0.995))));
 
       eventMap.put("telescopeOut",
         new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint)));
