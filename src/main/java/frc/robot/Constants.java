@@ -33,7 +33,7 @@ public final class Constants {
         public final static int BACK_LEFT_SPEED_ID = 2;
         public final static int BACK_LEFT_ANGLE_ID = 1;
         public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 0.420;
+        public final static double BACK_LEFT_ENCODER_OFFSET = 1-0.512;
 
         public final static int FRONT_RIGHT_SPEED_ID = 6;
         public final static int FRONT_RIGHT_ANGLE_ID = 5;
@@ -98,7 +98,7 @@ public final class Constants {
     }
 
     public final static class AutoConstants {
-        public final static double autoPivotDown = 0.77;
+        public final static double autoPivotDown = 0.75;
         public final static double autoPivotUp = 0.015;
         public final static double pivotDeadband = 0.012;
 
