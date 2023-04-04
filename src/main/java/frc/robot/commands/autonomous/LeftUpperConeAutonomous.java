@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -28,7 +29,7 @@ public class LeftUpperConeAutonomous extends SequentialCommandGroup {
     PivotSubsystem pivotSubsystem;
     TelescopeSubsystem telescopeSubsystem;
 
-    public LeftUpperConeAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
+    public LeftUpperConeAutonomous(Alliance alliance, GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
             TelescopeSubsystem telescopeSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
 
         this.grabberSubsystem = grabberSubsystem;
@@ -41,7 +42,7 @@ public class LeftUpperConeAutonomous extends SequentialCommandGroup {
 
         addCommands(
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
-            new FollowTrajectoryCommand("leftToLeftBall", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5)),
+            new FollowTrajectoryCommand(alliance, "leftToLeftBall", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5)),
             new InstantCommand(() -> swerveDriveSubsystem.drive(0, 0, 0)),
             new InstantCommand(() -> grabberSubsystem.open()),
             new WaitCommand(0.5),

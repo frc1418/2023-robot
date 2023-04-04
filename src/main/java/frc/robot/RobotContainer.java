@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,7 +55,6 @@ import frc.robot.commands.autonomous.MiddleAutonomousMiddleCone;
 import frc.robot.commands.autonomous.MiddleAutonomousNoCone;
 import frc.robot.commands.autonomous.RightUpperConeAutonomous;
 import frc.robot.common.Odometry;
-import frc.robot.common.TrajectoryLoader;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
@@ -167,7 +167,8 @@ public class RobotContainer {
     private HashMap<String, Command> eventMap = new HashMap<>();
 
     private final ChargeCommand chargeCommand = new ChargeCommand(swerveDrive, odometry, eventMap);
-    private final LeftUpperConeAutonomous leftUpperConeAutonomous = new LeftUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
+    private final LeftUpperConeAutonomous leftUpperConeAutonomousBlue = new LeftUpperConeAutonomous(Alliance.Blue, grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
+    private final LeftUpperConeAutonomous leftUpperConeAutonomousRed = new LeftUpperConeAutonomous(Alliance.Red, grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final RightUpperConeAutonomous rightUpperConeAutonomous = new RightUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final MiddleAutonomous middleAutonomous = new MiddleAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
     private final MiddleAutonomousNoCone middleAutonomousNoCone = new MiddleAutonomousNoCone(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
@@ -181,7 +182,8 @@ public class RobotContainer {
       this.robot = robot;
 
       chooser.addOption("Command", chargeCommand);
-      chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous);
+      chooser.addOption("BLUE Left Upper Cone Autonomous", leftUpperConeAutonomousBlue);
+      chooser.addOption("RED Left Upper Cone Autonomous", leftUpperConeAutonomousRed);
       chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
       chooser.addOption("Middle Autonomous", middleAutonomous);
       chooser.addOption("Middle Autonomous No Cone", middleAutonomousNoCone);
