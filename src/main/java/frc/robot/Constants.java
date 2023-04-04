@@ -74,7 +74,7 @@ public final class Constants {
 
         public final static double telescopeOuterSetpoint = 0.86;
         public final static double telescopeMiddleSetpoint = 0.3;
-        public final static double telescopeSubstationSetpoint = 0.4986;
+        public final static double telescopeSubstationSetpoint = 0.568;
 
         public static double pivotDownPosition = 0.81;
     }
