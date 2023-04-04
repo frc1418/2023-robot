@@ -317,6 +317,8 @@ public class RobotContainer {
       telescopeOutButton.whileTrue(new RunCommand(() -> {
         if(telescopeSubsystem.getTelescopePosition() < ArmConstants.telescopeOuterSetpoint)
           telescopeSubsystem.setTelescopeMotor(0.5);
+        else
+          telescopeSubsystem.setTelescopeMotor(0);
       }, telescopeSubsystem));
       telescopeOutButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
