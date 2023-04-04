@@ -76,7 +76,7 @@ public final class Constants {
         public final static double telescopeMiddleSetpoint = 0.3;
         public final static double telescopeSubstationSetpoint = 0.4986;
 
-        public static double pivotDownPosition = 0.79;
+        public static double pivotDownPosition = 0.81;
     }
 
     public final static class GrabberConstants {
@@ -95,6 +95,16 @@ public final class Constants {
     public final static class DriverConstants {
         public final static double speedMultiplier = 3;
         public final static double angleMultiplier = 3;
+    }
+
+    public final static class AutoConstants {
+        public final static double autoPivotDown = 0.79;
+        public final static double autoPivotUp = 0.015;
+        public final static double pivotDeadband = 0.012;
+
+        public final static double autoTelescopeIn = 0.45;
+        public final static double autoTelescopeWait = 0.6;
+        public final static double telescopeDeadband = 0.05;
     }
 
     public final static class LedConstants {

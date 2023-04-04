@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 /** An example command that uses an example subsystem. */
 public class ChargeCommand extends SequentialCommandGroup {
 
-    private String TRAJECTORY_NAME = "leftToLeftBall";
+    private String TRAJECTORY_NAME = "middleToChargingStation";
 
   /**
    * Creates a new ExampleCommand.
