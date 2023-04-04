@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -178,6 +179,10 @@ public class RobotContainer {
     // SENDABLE CHOOSER
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
+
+    SlewRateLimiter limitX = new SlewRateLimiter(6);
+    SlewRateLimiter limitY = new SlewRateLimiter(6);
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer(RobotBase robot) {
       this.robot = robot;
@@ -189,7 +194,7 @@ public class RobotContainer {
       chooser.addOption("Middle Autonomous", middleAutonomous);
       chooser.addOption("Middle Autonomous No Cone", middleAutonomousNoCone);
       chooser.addOption("Middle Autonomous Middle Cone", middleAutonomousMiddleCone);
-      chooser.setDefaultOption("Middle Autonomous Middle Cone", middleAutonomousMiddleCone);
+      chooser.setDefaultOption("RED Left Upper Cone Autonomous", leftUpperConeAutonomousRed);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -208,7 +213,7 @@ public class RobotContainer {
       frontRightSpeedMotor.setInverted(false);
       frontLeftSpeedMotor.setInverted(true);
       backRightSpeedMotor.setInverted(true);
-      backLeftSpeedMotor.setInverted(true);
+      backLeftSpeedMotor.setInverted(false);
 
       frontLeftWheel.getEncoder().setInverted(true);
       frontRightWheel.getEncoder().setInverted(true);
@@ -281,8 +286,8 @@ public class RobotContainer {
           () -> {
             if (robot.isTeleopEnabled()) {
               swerveDrive.drive(
-                  applyDeadband(-leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
-                  applyDeadband(-leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier,
+                  limitX.calculate(applyDeadband(-leftJoystick.getY(), DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier),
+                  limitY.calculate(applyDeadband(-leftJoystick.getX(),DrivetrainConstants.DRIFT_DEADBAND) * DriverConstants.speedMultiplier),
                   applyDeadband(-rightJoystick.getX() * DriverConstants.angleMultiplier, DrivetrainConstants.ROTATION_DEADBAND));
             } else {
               swerveDrive.drive(0, 0, 0);
@@ -316,13 +321,13 @@ public class RobotContainer {
 
       telescopeOutButton.whileTrue(new RunCommand(() -> {
         if(telescopeSubsystem.getTelescopePosition() < ArmConstants.telescopeOuterSetpoint)
-          telescopeSubsystem.setTelescopeMotor(0.5);
+          telescopeSubsystem.setTelescopeMotor(0.6);
         else
           telescopeSubsystem.setTelescopeMotor(0);
       }, telescopeSubsystem));
       telescopeOutButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
-      telescopeInButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(-0.5), telescopeSubsystem));
+      telescopeInButton.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopeMotor(-0.6), telescopeSubsystem));
       telescopeInButton.onFalse(new InstantCommand(() -> telescopeSubsystem.setTelescopeMotor(0), telescopeSubsystem));
 
       telescopeSubstation.whileTrue(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeSubstationSetpoint), telescopeSubsystem));
@@ -342,7 +347,7 @@ public class RobotContainer {
       }, telescopeSubsystem));
 
       telescopeToInButton.onTrue(new RunCommand(() -> {
-        telescopeSubsystem.setTelescopePosition(0.03);
+        telescopeSubsystem.setTelescopePosition(0.06);
       }, telescopeSubsystem));
 
       pivotSubsystem.setDefaultCommand(new RunCommand(() -> {
