@@ -24,7 +24,7 @@ public class TelescopeSubsystem extends SubsystemBase {
         this.telescopeMotor.selectProfileSlot(0, 0);
         this.telescopeMotor.config_kP(0, 1.2);
         this.telescopeMotor.config_kI(0, 0);
-        this.telescopeMotor.config_kD(0, 0.3);
+        this.telescopeMotor.config_kD(0, 0.5);
         this.telescopeMotor.config_kF(0, 0);
         
         this.telescopeMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
