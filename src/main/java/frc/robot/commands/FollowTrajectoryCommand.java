@@ -38,7 +38,7 @@ public class FollowTrajectoryCommand extends SequentialCommandGroup {
       angleConstants,
       swerveDriveSubsystem::drive,
       eventMap,
-      false,
+      true,
       swerveDriveSubsystem);
     
     addRequirements(swerveDriveSubsystem);
