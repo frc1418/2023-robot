@@ -14,6 +14,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -52,10 +54,11 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LevelChargingStationCommand;
 import frc.robot.commands.autonomous.ChargeCommand;
 import frc.robot.commands.autonomous.LeftUpperConeAutonomous;
-import frc.robot.commands.autonomous.MiddleAutonomous;
+import frc.robot.commands.autonomous.MiddleUpperConeAutonomous;
 import frc.robot.commands.autonomous.MiddleAutonomousMiddleCone;
 import frc.robot.commands.autonomous.MiddleAutonomousNoCone;
 import frc.robot.commands.autonomous.RightUpperConeAutonomous;
+import frc.robot.commands.autonomous.UpperConeAutonomous;
 import frc.robot.common.Odometry;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -172,9 +175,10 @@ public class RobotContainer {
     private final LeftUpperConeAutonomous leftUpperConeAutonomousBlue = new LeftUpperConeAutonomous(Alliance.Blue, grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final LeftUpperConeAutonomous leftUpperConeAutonomousRed = new LeftUpperConeAutonomous(Alliance.Red, grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
     private final RightUpperConeAutonomous rightUpperConeAutonomous = new RightUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, swerveDrive, odometry, eventMap);
-    private final MiddleAutonomous middleAutonomous = new MiddleAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
+    private final MiddleUpperConeAutonomous middleAutonomous = new MiddleUpperConeAutonomous(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
     private final MiddleAutonomousNoCone middleAutonomousNoCone = new MiddleAutonomousNoCone(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
     private final MiddleAutonomousMiddleCone middleAutonomousMiddleCone = new MiddleAutonomousMiddleCone(grabberSubsystem, pivotSubsystem, telescopeSubsystem, elevatorSubsystem, swerveDrive, ledSubsystem, odometry, eventMap);
+    private final UpperConeAutonomous upperConeAutonomous = new UpperConeAutonomous(pivotSubsystem, telescopeSubsystem, grabberSubsystem, elevatorSubsystem);
 
     // SENDABLE CHOOSER
     private final SendableChooser<Command> chooser = new SendableChooser<>();
@@ -191,10 +195,11 @@ public class RobotContainer {
       chooser.addOption("BLUE Left Upper Cone Autonomous", leftUpperConeAutonomousBlue);
       chooser.addOption("RED Left Upper Cone Autonomous", leftUpperConeAutonomousRed);
       chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous);
-      chooser.addOption("Middle Autonomous", middleAutonomous);
+      chooser.addOption("Middle Autonomous Upper Cone", middleAutonomous);
       chooser.addOption("Middle Autonomous No Cone", middleAutonomousNoCone);
       chooser.addOption("Middle Autonomous Middle Cone", middleAutonomousMiddleCone);
-      chooser.setDefaultOption("RED Left Upper Cone Autonomous", leftUpperConeAutonomousRed);
+      chooser.addOption("Just Upper Cone Autonomous :(", upperConeAutonomous);
+      chooser.setDefaultOption("Middle Autonomous", middleAutonomous);
       SmartDashboard.putData(chooser);
 
       inclineAngle.setDefaultDouble(0);
@@ -236,6 +241,8 @@ public class RobotContainer {
       pivotMotor.setIdleMode(IdleMode.kBrake);
       elevatorMotor.setIdleMode(IdleMode.kBrake);
       telescopeMotor.setNeutralMode(NeutralMode.Brake);
+
+      coastDrive();
     }
 
     /**
@@ -281,6 +288,7 @@ public class RobotContainer {
       // JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
       // JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
+      JoystickButton resetGyroButton = new JoystickButton(rightJoystick, 8);
 
       swerveDrive.setDefaultCommand(new RunCommand(
           () -> {
@@ -360,6 +368,11 @@ public class RobotContainer {
       // alignLeftSubstationButton.whileTrue(alignLeftSubstation);
       // alignRightSubstationButton.whileTrue(alignRightSubstation);
       
+      resetGyroButton.onTrue(new InstantCommand(() -> {
+        odometry.zeroHeading();
+        swerveDrive.resetLockRot();
+        odometry.reset(new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), Rotation2d.fromDegrees(180)));
+      }, swerveDrive));
     }
 
     /**

@@ -23,7 +23,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.TelescopeSubsystem;
 
-public class MiddleAutonomous extends SequentialCommandGroup {
+public class MiddleUpperConeAutonomous extends SequentialCommandGroup {
 
     GrabberSubsystem grabberSubsystem;
     SwerveDriveSubsystem swerveDriveSubsystem;
@@ -33,7 +33,7 @@ public class MiddleAutonomous extends SequentialCommandGroup {
     ElevatorSubsystem elevatorSubsystem;
     LedSubsystem ledSubsystem;
 
-    public MiddleAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
+    public MiddleUpperConeAutonomous(GrabberSubsystem grabberSubsystem, PivotSubsystem pivotSubsystem,
         TelescopeSubsystem telescopeSubsystem, ElevatorSubsystem elevatorSubsystem, SwerveDriveSubsystem swerveDriveSubsystem, LedSubsystem ledSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
             
         this.grabberSubsystem = grabberSubsystem;
