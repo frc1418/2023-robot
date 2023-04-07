@@ -14,7 +14,7 @@ public class LevelChargingStationCommand extends SequentialCommandGroup {
         System.out.println("LEVELING");
 
         PIDCommand balanceRobot = new PIDCommand(
-            new PIDController(0.025, 0, 0.008),
+            new PIDController(0.026, 0, 0.008),
             () -> odometry.getInclineAngle().getDegrees(),
             0,
             (x) -> {
