@@ -275,7 +275,7 @@ public class RobotContainer {
       JoystickButton toggleGrabberButton = new JoystickButton(altJoystick, 9);
 
       Trigger pivotToTopPegButton = new Trigger(() -> altJoystick.getPOV() == 0);
-      Trigger pivotToSubstationButton = new Trigger(() -> altJoystick.getPOV() == 45);
+      // Trigger pivotToSubstationButton = new Trigger(() -> altJoystick.getPOV() == 45);
       Trigger pivotToBottomButton = new Trigger(() -> altJoystick.getPOV() == 180);
 
       Trigger telescopeToOuterButton = new Trigger(() -> altJoystick.getPOV() == 90);
@@ -313,11 +313,17 @@ public class RobotContainer {
 
       turtleButton.whileTrue(new RunCommand(() -> swerveDrive.turtle(), swerveDrive));
 
-      pivotUpButton.whileTrue(new RunCommand(() -> pivotSubsystem.setPivotMotor(0.2), pivotSubsystem));
+      pivotUpButton.whileTrue(new RunCommand(() -> {
+        pivotSubsystem.setPivotMotor(0.2);
+        updatePivotTarget();
+      }, pivotSubsystem));
       pivotUpButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition()), pivotSubsystem));
 
-      pivotDownButton.whileTrue(new RunCommand(() -> pivotSubsystem.setPivotMotorVoltage(-0.1), pivotSubsystem));
-      pivotDownButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition()), pivotSubsystem));
+      pivotDownButton.whileTrue(new RunCommand(() -> {
+        pivotSubsystem.setPivotMotorVoltage(-0.1);
+        updatePivotTarget();
+      }, pivotSubsystem));
+      // pivotDownButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition()), pivotSubsystem));
 
       elevatorUpButton.whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorMotor(0.9), elevatorSubsystem));
       elevatorUpButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
@@ -342,9 +348,9 @@ public class RobotContainer {
 
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
-      pivotToTopPegButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(0.01), pivotSubsystem));
-      pivotToSubstationButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(0), pivotSubsystem));
-      pivotToBottomButton.onTrue(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.pivotDownPosition), pivotSubsystem));
+      pivotToTopPegButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(0.01), pivotSubsystem));
+      // pivotToSubstationButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(0), pivotSubsystem));
+      pivotToBottomButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(ArmConstants.pivotDownPosition), pivotSubsystem));
 
       telescopeToOuterButton.onTrue(new RunCommand(() -> {
         telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint);
@@ -359,7 +365,7 @@ public class RobotContainer {
       }, telescopeSubsystem));
 
       pivotSubsystem.setDefaultCommand(new RunCommand(() -> {
-        pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition());
+        pivotSubsystem.setPivotPosition(pivotSubsystem.getTargetPivot());
       }, pivotSubsystem));
 
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
@@ -436,5 +442,9 @@ public class RobotContainer {
       telescopeSubsystem.setTelescopeMotor(0);
       pivotSubsystem.setPivotMotor(0);
 
+    }
+
+    public void updatePivotTarget(){
+      pivotSubsystem.setTargetPivot(pivotSubsystem.getPivotPosition());
     }
 }
