@@ -46,7 +46,7 @@ public class DeliverMiddleConeCommand extends SequentialCommandGroup {
                             .andThen(new ParallelCommandGroup(
                                 new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03)),
                                 new WaitUntilCommand(() -> telescopeSubsystem.getTelescopePosition() < 0.2)
-                                    .andThen(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.pivotDownPosition)))))))
+                                    .andThen(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.elevatorUpPivotDownPosition)))))))
             
             // new WaitUntilCommand(() -> Math.abs(pivotSubsystem.getPivotPosition() - 0.01) < 0.02)
             //     .andThen(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint))),

@@ -50,6 +50,7 @@ public class MiddleUpperConeAutonomous extends SequentialCommandGroup {
             new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
             new WaitCommand(3.2).deadlineWith(
                 new ParallelCommandGroup(
+                    new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.pivotDownPosition)),
                     new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03)),
                     new FollowTrajectoryCommand("middleToChargingStation", odometry, swerveDriveSubsystem, eventMap, new PathConstraints(4, 4))
                 )),

@@ -75,6 +75,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    m_robotContainer.updatePivotTarget();
     // m_robotContainer.getOdometry().zeroHeading();
     // m_robotContainer.getOdometry().setAngleOffset(180);
     // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));

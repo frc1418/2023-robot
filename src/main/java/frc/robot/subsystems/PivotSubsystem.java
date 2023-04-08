@@ -25,6 +25,8 @@ public class PivotSubsystem extends SubsystemBase {
     private PIDController pivotPidController = new PIDController(19, 3, 0);//new PIDController(18, 0, 0);
     private ArmFeedforward armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG, 0);
 
+    private double targetPos;
+
     public PivotSubsystem(CANSparkMax pivotMotor) {
         this.pivotMotor = pivotMotor;
         
@@ -32,6 +34,8 @@ public class PivotSubsystem extends SubsystemBase {
         this.pivotEncoder.setZeroOffset(ArmConstants.pivotOffset);
 
         pivotPidController.enableContinuousInput(0, 1);
+
+        targetPos = pivotEncoder.getPosition();
     }
 
     public void setPivotMotorVoltage(double speed) {
@@ -68,5 +72,13 @@ public class PivotSubsystem extends SubsystemBase {
 
     public boolean getPivotInRange(double setpoint, double buffer){
         return Math.abs(getPivotPosition() - setpoint) < buffer || Math.abs(getPivotPosition() - setpoint) > 1 - buffer;
+    }
+
+    public void setTargetPivot(double targetPos) {
+        this.targetPos = targetPos;
+    }
+
+    public double getTargetPivot(){
+        return targetPos;
     }
 }

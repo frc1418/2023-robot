@@ -76,7 +76,8 @@ public final class Constants {
         public final static double telescopeMiddleSetpoint = 0.3;
         public final static double telescopeSubstationSetpoint = 0.568;
 
-        public static double pivotDownPosition = 0.81;
+        public static double elevatorUpPivotDownPosition = 0.81;
+        public static double pivotDownPosition = 0.83;
     }
 
     public final static class GrabberConstants {
