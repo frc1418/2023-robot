@@ -15,134 +15,131 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+@SuppressWarnings("unused")
 public final class Constants {
 
-    public final static class DrivetrainConstants {
+  public enum LedColor {
+    BALANCING(0.57), // PINK
+    DOCKED(0.77), // GREEN
+    GRABBER_OPEN(0.67), // GOLD
+    GRABBER_CLOSED(0.93), // WHITE
+    BLUE_ALLIANCE(0.87), // BLUE
+    RED_ALLIANCE(0.61); // RED
 
-        public static final double DRIFT_DEADBAND = 0.1;
-        public static final double ROTATION_DEADBAND = 0.006;
+    private final double color;
 
-        public static final double WIDTH = 22.5;
-        public static final double LENGTH = 22.5;
-
-        public final static int BACK_RIGHT_SPEED_ID = 4;
-        public final static int BACK_RIGHT_ANGLE_ID = 3;
-        public final static int BACK_RIGHT_ENCODER = 0;
-        public final static double BACK_RIGHT_ENCODER_OFFSET = 0.829 - 0.25;
-
-        public final static int BACK_LEFT_SPEED_ID = 2;
-        public final static int BACK_LEFT_ANGLE_ID = 1;
-        public final static int BACK_LEFT_ENCODER = 1;
-        public final static double BACK_LEFT_ENCODER_OFFSET = 1-0.512;
-
-        public final static int FRONT_RIGHT_SPEED_ID = 6;
-        public final static int FRONT_RIGHT_ANGLE_ID = 5;
-        public final static int FRONT_RIGHT_ENCODER = 2;
-        public final static double FRONT_RIGHT_ENCODER_OFFSET = 0.142;
-
-        public final static int FRONT_LEFT_SPEED_ID = 8;
-        public final static int FRONT_LEFT_ANGLE_ID = 7;
-        public final static int FRONT_LEFT_ENCODER = 3;
-        public final static double FRONT_LEFT_ENCODER_OFFSET = 0.082 + 0.25;
-
-        public final static Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
-        public final static Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
-        public final static Translation2d BACK_LEFT_LOC = new Translation2d(-0.265, 0.265);
-        public final static Translation2d BACK_RIGHT_LOC = new Translation2d(-0.265, -0.265);
-
-        public final static SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
-            FRONT_LEFT_LOC,
-            FRONT_RIGHT_LOC,
-            BACK_LEFT_LOC,
-            BACK_RIGHT_LOC);
+    LedColor(double color) {
+      this.color = color;
     }
 
-    public final static class WheelConstants {
-        public final static double ROTATIONS_TO_METERS = 0.245/5.08;
+    public double color() {
+      return color;
+    }
+  }
+
+  public enum LimelightDirections {
+    GRID_SIDE(180),
+    SUBSTATION_SIDE(0);
+
+    private final int angle;
+
+    LimelightDirections(int angle) {
+      this.angle = angle;
     }
 
-    public final static class ArmConstants {
-        public final static int PIVOT_MOTOR_ID = 10;
-        public final static int TELESCOPE_MOTOR_ID = 11;
-        public final static double pivotOffset = 0.687;
-
-        public final static double startingPivotG = 0.8;//2.01;
-        public final static double pivotGPerTelescopeMeter = 0.8;
-        public final static double telescopeRotationToMeters = -0.09 / 32768;
-
-        public static final int CLICKS_PER_ROTAITON = 2048;
-
-        public final static double telescopeOuterSetpoint = 0.9;
-        public final static double telescopeMiddleSetpoint = 0.3;
-        public final static double telescopeSubstationSetpoint = 0.568;
-
-        public static double elevatorUpPivotDownPosition = 0.81;
-        public static double pivotDownPosition = 0.83;
+    public int angle() {
+      return angle;
     }
+  }
 
-    public final static class GrabberConstants {
-        public final static int PNEUMATICS_HUB_ID = 23;
-        public final static int LEFT_SOLENOID_REVERSE = 3;
-        public final static int LEFT_SOLENOID_FORWARD = 2;
+  public static final class DrivetrainConstants {
 
-        public final static int RIGHT_SOLENOID_REVERSE = 1;
-        public final static int RIGHT_SOLENOID_FORWARD = 0;
-    }
+    public static final double DRIFT_DEADBAND = 0.1;
+    public static final double ROTATION_DEADBAND = 0.006;
 
-    public final static class ElevatorConstants {
-        public final static int ELEVATOR_MOTOR_ID = 9;
-    }
+    public static final int BACK_RIGHT_SPEED_ID = 4;
+    public static final int BACK_RIGHT_ANGLE_ID = 3;
+    public static final double BACK_RIGHT_ENCODER_OFFSET = 0.829 - 0.25;
 
-    public final static class DriverConstants {
-        public final static double speedMultiplier = 3;
-        public final static double angleMultiplier = 3;
-    }
+    public static final int BACK_LEFT_SPEED_ID = 2;
+    public static final int BACK_LEFT_ANGLE_ID = 1;
+    public static final double BACK_LEFT_ENCODER_OFFSET = 1 - 0.512;
 
-    public final static class AutoConstants {
-        public final static double autoPivotDown = 0.75;
-        public final static double autoPivotUp = 0.015;
-        public final static double pivotDeadband = 0.012;
+    public static final int FRONT_RIGHT_SPEED_ID = 6;
+    public static final int FRONT_RIGHT_ANGLE_ID = 5;
+    public static final double FRONT_RIGHT_ENCODER_OFFSET = 0.142;
 
-        public final static double autoTelescopeIn = 0.45;
-        public final static double autoTelescopeWait = 0.6;
-        public final static double telescopeDeadband = 0.05;
-    }
+    public static final int FRONT_LEFT_SPEED_ID = 8;
+    public static final int FRONT_LEFT_ANGLE_ID = 7;
+    public static final double FRONT_LEFT_ENCODER_OFFSET = 0.082 + 0.25;
 
-    public final static class LedConstants {
-        public final static int BLINKIN_CHANNEL = 0;
-    }
+    public static final Translation2d FRONT_LEFT_LOC = new Translation2d(0.265, 0.265);
+    public static final Translation2d FRONT_RIGHT_LOC = new Translation2d(0.265, -0.265);
+    public static final Translation2d BACK_LEFT_LOC = new Translation2d(-0.265, 0.265);
+    public static final Translation2d BACK_RIGHT_LOC = new Translation2d(-0.265, -0.265);
 
-    public enum LedColor {
-        BALANCING(0.57), //PINK
-        DOCKED(0.77), //GREEN
-        GRABBER_OPEN(0.67), //GOLD
-        GRABBER_CLOSED(0.93), //WHITE 
-        BLUE_ALLIANCE(0.87), //BLUE
-        RED_ALLIANCE(0.61); //RED
+    public static final SwerveDriveKinematics SWERVE_KINEMATICS =
+        new SwerveDriveKinematics(FRONT_LEFT_LOC, FRONT_RIGHT_LOC, BACK_LEFT_LOC, BACK_RIGHT_LOC);
+  }
 
-        private double color;
+  public static final class WheelConstants {
+    public static final double ROTATIONS_TO_METERS = 0.245 / 5.08;
+  }
 
-        LedColor(double color) {
-            this.color = color;
-        }
-        
-        public double color() {
-            return color;
-        }
+  public static final class ArmConstants {
+    public static final int PIVOT_MOTOR_ID = 10;
+    public static final int TELESCOPE_MOTOR_ID = 11;
+    public static final double pivotOffset = 0.687;
 
-    }
+    public static final double startingPivotG = 0.8; // 2.01;
+    public static final double pivotGPerTelescopeMeter = 0.8;
+    public static final double telescopeRotationToMeters = -0.09 / 32768;
 
-    public enum LimelightDirections {
-        GRID_SIDE(180), SUBSTATION_SIDE(0);
+    public static final double telescopeOuterSetpoint = 0.9;
+    public static final double telescopeMiddleSetpoint = 0.3;
+    public static final double telescopeBottomSetpoint = 0.3;
+    public static final double telescopeSubstationSetpoint = 0.568;
 
-        private int angle;
-        LimelightDirections(int angle){
-            this.angle = angle;
-        }
+    public static final double elevatorUpPivotDownPosition = 0.81;
+    public static final double pivotDownPosition = 0.83;
 
-        public int angle(){
-            return angle;
-        }
+    public static final double topConePosition = 0.015;
+    public static final double middleConePosition = 0.015;
+    public static final double bottomConePosition = 0.015;
+    public static final double substationConePosition = 0.015;
+  }
 
-    }
+  public static final class GrabberConstants {
+    public static final int PNEUMATICS_HUB_ID = 23;
+    public static final int LEFT_SOLENOID_REVERSE = 3;
+    public static final int LEFT_SOLENOID_FORWARD = 2;
+
+    public static final int RIGHT_SOLENOID_REVERSE = 1;
+    public static final int RIGHT_SOLENOID_FORWARD = 0;
+  }
+
+  public static final class ElevatorConstants {
+    public static final int ELEVATOR_MOTOR_ID = 9;
+  }
+
+  public static final class DriverConstants {
+    public static final double speedMultiplier = 3;
+    public static final double angleMultiplier = 3;
+  }
+
+  public static final class AutoConstants {
+
+    public static final double autoTelescopeIn = 0.45;
+  }
+
+  public static final class LedConstants {
+    public static final int BLINKIN_CHANNEL = 0;
+  }
+
+  public enum ConePosition {
+    TOP,
+    MIDDLE,
+    BOTTOM,
+    SUBSTATION
+  }
 }
