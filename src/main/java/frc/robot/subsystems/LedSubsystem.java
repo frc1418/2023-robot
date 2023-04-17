@@ -7,46 +7,39 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedColor;
 
 public class LedSubsystem extends SubsystemBase {
 
-    public LedColor color;
-    private Spark blinkin;
+  public LedColor color;
 
-    public LedSubsystem(Spark blinkin) {
-        this.blinkin = blinkin;
-        
-        setAllianceColor();
-    }
+  public LedSubsystem(Spark blinkin) {
 
-    @Override
-    public void periodic() {
-        blinkin.set(color.color());
-    }
+    setAllianceColor();
 
-    public void setAllianceColor() {
-    if (DriverStation.getAlliance() == Alliance.Blue)
-        color = LedColor.BLUE_ALLIANCE;
-    else 
-        color = LedColor.RED_ALLIANCE;
-    }
+    setDefaultCommand(runOnce(() -> blinkin.set(color.color())));
+  }
 
-    public void setBalancingColor() {
-        color = LedColor.BALANCING;
-    }
+  public void setAllianceColor() {
+    if (DriverStation.getAlliance() == Alliance.Blue) color = LedColor.BLUE_ALLIANCE;
+    else color = LedColor.RED_ALLIANCE;
+  }
 
-    public void setDockedColor() {
-        color = LedColor.DOCKED;
-    }
+  public Command showBalancingColorCommand() {
+    return runOnce(() -> color = LedColor.BALANCING);
+  }
 
-    public void setGrabberOpen() {
-        color = LedColor.GRABBER_OPEN;
-    }
+  public Command showDockedColorCommand() {
+    return runOnce(() -> color = LedColor.DOCKED);
+  }
 
-    public void setGrabberClosed() {
-        color = LedColor.GRABBER_CLOSED;
-    }
+  public Command showGrabberOpenCommand() {
+    return runOnce(() -> color = LedColor.GRABBER_OPEN);
+  }
 
+  public Command showGrabberClosedCommand() {
+    return runOnce(() -> color = LedColor.GRABBER_CLOSED);
+  }
 }

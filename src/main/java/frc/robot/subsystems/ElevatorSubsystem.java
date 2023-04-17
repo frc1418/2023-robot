@@ -1,54 +1,37 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
-
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    NetworkTableInstance nt = NetworkTableInstance.getDefault();
-    NetworkTable ntArm = nt.getTable("/components/arm");
-    NetworkTableEntry ntArmAngle = nt.getEntry("pivotPosition");
-    NetworkTableEntry ntArmLength = nt.getEntry("telescopeLength");
+  private final CANSparkMax elevatorMotor;
 
+  // TODO plug these limit switches into the spark max directly
+  final DigitalInput topLimitSwitch = new DigitalInput(3);
+  final DigitalInput bottomLimitSwitch = new DigitalInput(4);
 
-    DigitalInput topLimitSwitch = new DigitalInput(3);
-    DigitalInput bottomLimitSwitch = new DigitalInput(4);
-    
-    private CANSparkMax elevatorMotor;
+  // TODO add encoder + hall effect sensor to elevator to allow for precise positioning
+  public ElevatorSubsystem(CANSparkMax elevatorMotor) {
+    this.elevatorMotor = elevatorMotor;
+    setDefaultCommand(runOnce(() -> setElevatorMotor(0)));
+  }
 
+  private void setElevatorMotor(double speed) {
+    elevatorMotor.set(speed);
+  }
 
-    public ElevatorSubsystem(CANSparkMax elevatorMotor) {
-        this.elevatorMotor = elevatorMotor;
+  // Prevent the motor from moving when the top limit switch is hit.
+  // until() is only checked after running for 1 cycle, so we pair with unless()
+  public Command raiseElevatorCommand() {
+    return run(() -> setElevatorMotor(1)).until(topLimitSwitch::get).unless(topLimitSwitch::get);
+  }
 
-        elevatorMotor.getPIDController().setP(0);
-        elevatorMotor.getPIDController().setI(0);
-        elevatorMotor.getPIDController().setD(0);
-    }
-
-    public void setElevatorMotor(double speed) {
-        if (bottomLimitSwitch.get() && speed < 0)
-        {
-            System.out.println("NO MORE DOWN");
-            elevatorMotor.set(0);
-        }
-        else if (topLimitSwitch.get() && speed > 0)
-        {
-            System.out.println("NO MORE UP");
-            elevatorMotor.set(0);
-        }
-        else
-        {
-            System.out.println("MOVING");
-            elevatorMotor.set(speed);
-        }
-    }
-    
+  public Command lowerElevatorCommand() {
+    return run(() -> setElevatorMotor(-1))
+        .until(bottomLimitSwitch::get)
+        .unless(bottomLimitSwitch::get);
+  }
 }
