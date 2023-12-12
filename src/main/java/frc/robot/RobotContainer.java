@@ -154,16 +154,10 @@ public class RobotContainer {
     private CANSparkMax elevatorMotor = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_ID, MotorType.kBrushless);
     private ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorMotor);
 
-    // LOAD TRAJECTORIES
-    // private final TrajectoryLoader trajectoryLoader = new TrajectoryLoader();
-    // private final HashMap<String, Trajectory> trajectories = trajectoryLoader.loadTrajectories();
-
     private final LevelChargingStationCommand levelChargingStationCommand = new LevelChargingStationCommand(odometry, swerveDrive, ledSubsystem);
-    private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -0.77);//1.1);
+    private final AlignByAprilTag alignAtAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0, -0.77);
     private final AlignByAprilTag alignLeftOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.64, -0.77);
     private final AlignByAprilTag alignRightOfAprilTag = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.64, -0.77);
-    // private final AlignByAprilTag alignRightSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, 0.584, -1);
-    // private final AlignByAprilTag alignLeftSubstation = new AlignByAprilTag(swerveDrive, limelight, odometry, -0.584, -1);
 
 
     private HashMap<String, Command> eventMap = new HashMap<>();
@@ -272,7 +266,6 @@ public class RobotContainer {
       JoystickButton toggleGrabberButton = new JoystickButton(altJoystick, 9);
 
       Trigger pivotToTopPegButton = new Trigger(() -> altJoystick.getPOV() == 0);
-      // Trigger pivotToSubstationButton = new Trigger(() -> altJoystick.getPOV() == 45);
       Trigger pivotToBottomButton = new Trigger(() -> altJoystick.getPOV() == 180);
 
       Trigger telescopeToOuterButton = new Trigger(() -> altJoystick.getPOV() == 90);
@@ -282,8 +275,6 @@ public class RobotContainer {
       JoystickButton alignRightOfAprilTagButton = new JoystickButton(leftJoystick, 4);
       JoystickButton alignAtAprilTagButton = new JoystickButton(leftJoystick, 2);
       JoystickButton alignLeftOfAprilTagButton = new JoystickButton(leftJoystick, 3);
-      // JoystickButton alignLeftSubstationButton = new JoystickButton(leftJoystick, 3);
-      // JoystickButton alignRightSubstationButton = new JoystickButton(leftJoystick, 4);
 
       JoystickButton resetGyroButton = new JoystickButton(rightJoystick, 8);
 
@@ -320,7 +311,6 @@ public class RobotContainer {
         pivotSubsystem.setPivotMotorVoltage(-0.1);
         updatePivotTarget();
       }, pivotSubsystem));
-      // pivotDownButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivotPosition(pivotSubsystem.getPivotPosition()), pivotSubsystem));
 
       elevatorUpButton.whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorMotor(0.9), elevatorSubsystem));
       elevatorUpButton.onFalse(new InstantCommand(() -> elevatorSubsystem.setElevatorMotor(0), elevatorSubsystem));
@@ -346,7 +336,7 @@ public class RobotContainer {
       toggleGrabberButton.onTrue(new InstantCommand(() -> grabberSubsystem.toggle(), grabberSubsystem));
 
       pivotToTopPegButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(0.01), pivotSubsystem));
-      // pivotToSubstationButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(0), pivotSubsystem));
+
       pivotToBottomButton.onTrue(new InstantCommand(() -> pivotSubsystem.setTargetPivot(ArmConstants.pivotDownPosition), pivotSubsystem));
 
       telescopeToOuterButton.onTrue(new RunCommand(() -> {
@@ -368,8 +358,6 @@ public class RobotContainer {
       alignAtAprilTagButton.whileTrue(alignAtAprilTag);
       alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag);
       alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag);
-      // alignLeftSubstationButton.whileTrue(alignLeftSubstation);
-      // alignRightSubstationButton.whileTrue(alignRightSubstation);
       
       resetGyroButton.onTrue(new InstantCommand(() -> {
         odometry.zeroHeading();
@@ -385,7 +373,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
       // An ExampleCommand will run in autonomous
-      // odometry.zeroHeading();
       return chooser.getSelected();
     }
 

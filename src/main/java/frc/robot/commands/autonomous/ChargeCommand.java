@@ -24,15 +24,10 @@ public class ChargeCommand extends SequentialCommandGroup {
    * @param subsystem The subsystem used by this command.
    */
   public ChargeCommand(SwerveDriveSubsystem swerveDriveSubsystem, Odometry odometry, HashMap<String, Command> eventMap) {
-
-    // PathPlannerTrajectory charge = PathPlanner.loadPath(TRAJECTORY_NAME, new PathConstraints(3, 2.5));
-
-    // System.out.println(charge.toString());
     addCommands(
       new FollowTrajectoryCommand(TRAJECTORY_NAME, odometry, swerveDriveSubsystem, eventMap, new PathConstraints(2.5, 2.5))
       );
 
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
   }
 }

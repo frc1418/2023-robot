@@ -37,8 +37,6 @@ public class AlignByAprilTag extends CommandBase {
         this.odometry = odometry;
         this.targetX = targetX;
         this.targetY = targetY;
-        // speedXController = new PIDController(1.7, 0, 0);
-        // speedYController = new PIDController(1, 0, 0);
        
         speedController = new ProfiledPIDController(1, 0, 0, new Constraints(0,0));
         speedRotController = new PIDController(0.05, 0, 0);
@@ -71,10 +69,6 @@ public class AlignByAprilTag extends CommandBase {
         else
             targetPose = new Pose2d(new Translation2d(targetX*1.45, targetY*1.3), Rotation2d.fromDegrees(limelight.getTargetRotation().angle()));
 
-        // System.out.println("X DIFFERENCE: " + (robotPose.getX()));
-        // System.out.println("Y DIFFERENCE: " + (robotPose.getY()));
-        // System.out.println("R DIFFERENCE: " + (robotPose.getRotation().getDegrees()));
-
         double x;
         double y;
         double rot;
@@ -91,8 +85,6 @@ public class AlignByAprilTag extends CommandBase {
 
         if(limelight.getTargetRotation() == LimelightDirections.SUBSTATION_SIDE)
             speed *= 1;
-
-        // System.out.println("DISTANCE: " + distance);
 
         Rotation2d direction = Rotation2d.fromDegrees(180 + angleToTarget - odometry.getHeading() + limelight.getTargetRotation().angle());
 

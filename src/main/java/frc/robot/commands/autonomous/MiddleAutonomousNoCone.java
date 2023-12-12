@@ -44,7 +44,6 @@ public class MiddleAutonomousNoCone extends SequentialCommandGroup {
         addRequirements(grabberSubsystem, telescopeSubsystem, pivotSubsystem, swerveDriveSubsystem, elevatorSubsystem);
 
         addCommands(
-            // new DeliverUpperConeCommand(pivotSubsystem, telescopeSubsystem, grabberSubsystem),
             new WaitCommand(3.2).deadlineWith(
                 new ParallelCommandGroup(
                     new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03)),

@@ -33,13 +33,10 @@ public class TelescopeSubsystem extends SubsystemBase {
 
 
     public void setTelescopeMotor(double speed){
-        // System.out.println(speed);
         telescopeMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void setTelescopePosition(double pos) {
-        // System.out.println(pos);
-        // telescopeMotor.set(ControlMode.Position, -0.5/ArmConstants.telescopeRotationToMeters);
         telescopeMotor.set(ControlMode.Position, -pos /ArmConstants.telescopeRotationToMeters);
     }
 

@@ -24,7 +24,7 @@ public class DeliverMiddleConeCommand extends SequentialCommandGroup {
         this.telescopeSubsystem = telescopeSubsystem;
         this.grabberSubsystem = grabberSubsystem;
 
-        addRequirements(pivotSubsystem);//, telescopeSubsystem, grabberSubsystem);
+        addRequirements(pivotSubsystem);
 
         SequentialCommandGroup dropCommand = new WaitCommand(3).andThen(new InstantCommand(() -> grabberSubsystem.toggle()));
 
@@ -44,23 +44,7 @@ public class DeliverMiddleConeCommand extends SequentialCommandGroup {
                                 new RunCommand(() -> telescopeSubsystem.setTelescopePosition(0.03)),
                                 new WaitUntilCommand(() -> telescopeSubsystem.getTelescopePosition() < 0.2)
                                     .andThen(new RunCommand(() -> pivotSubsystem.setPivotPosition(ArmConstants.elevatorUpPivotDownPosition)))))))
-            
-            // new WaitUntilCommand(() -> Math.abs(pivotSubsystem.getPivotPosition() - 0.01) < 0.02)
-            //     .andThen(new RunCommand(() -> telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint))),
-            
 
-            
-
-            // new RunCommand(() -> pivotSubsystem.setPivotPosition(0.01)).deadlineWith(
-            //     new WaitCommand(1).andThen(
-            //         new RunCommand(() -> {
-            //             telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeOuterSetpoint);
-            //             System.out.println("GOING OUT");
-            //         })).deadlineWith(dropCommand.andThen(new PrintCommand("DROPPED"))).andThen(
-            //                 new RunCommand(() -> {
-            //                     System.out.println("COMING IN");
-            //                     telescopeSubsystem.setTelescopePosition(ArmConstants.telescopeMiddleSetpoint);
-            //                 })))
         );
 
     }

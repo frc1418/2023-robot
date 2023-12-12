@@ -44,54 +44,5 @@ public class ArmSubsystem extends SubsystemBase {
         this.telescopeMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
 
     }
-
-    // public void setPivotMotorVoltage(double speed) {
-        
-    //     pivotMotor.setVoltage(speed);
-    // }
-
-    // public void setPivotMotor(double speed) {
-    //     pivotMotor.set(speed);
-    // }
-
-    // public void setTelescopeMotor(double speed){
-    //     // System.out.println(speed);
-    //     telescopeMotor.set(ControlMode.PercentOutput, speed);
-    // }
-
-    // public void setTelescopePosition(double pos) {
-    //     // System.out.println(pos);
-    //     // telescopeMotor.set(ControlMode.Position, -0.5/ArmConstants.telescopeRotationToMeters);
-    //     telescopeMotor.set(ControlMode.Position, -pos /ArmConstants.telescopeRotationToMeters);
-    // }
-
-    // public void setPivotPosition(double pos) {
-    //     System.out.println(ntPivotPosition.getDouble(0));
-    //     pivotMotor.setVoltage(armFeedforward.calculate(pos, 0) + pivotPidController.calculate(ntPivotPosition.getDouble(0), pos));
-    // }
-
-    // @Override
-    // public void periodic() {
-    //     updatePivotPosition();
-    //     updateTelescopeLength();
-    // }
-
-    // public void updatePivotPosition() {
-    //     ntPivotPosition.setDouble(pivotEncoder.getPosition());
-    // }
-
-    // public void updateTelescopeLength() {
-    //     ntTelescopeLength.setDouble(ArmConstants.telescopeRotationToMeters * telescopeMotor.getSensorCollection().getIntegratedSensorPosition());
-    //     armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG + ArmConstants.pivotGPerTelescopeMeter*ntTelescopeLength.getDouble(0), 0);
-    // }
-
-    // public void resetTelescopeEncoder() {
-    //     telescopeMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
-    //     ntTelescopeLength.setDouble(0);
-    // }
-
-    // public double getPivotPosition() {
-    //     return ntPivotPosition.getDouble(0);
-    // }
     
 }

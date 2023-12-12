@@ -16,7 +16,7 @@ public class DeliverUpperConeCommand extends SequentialCommandGroup {
 
     public DeliverUpperConeCommand(PivotSubsystem pivotSubsystem, TelescopeSubsystem telescopeSubsystem, GrabberSubsystem grabberSubsystem){
 
-        addRequirements(pivotSubsystem);//, telescopeSubsystem, grabberSubsystem);
+        addRequirements(pivotSubsystem);
 
         addCommands(
             new InstantCommand(() -> grabberSubsystem.grab()),
