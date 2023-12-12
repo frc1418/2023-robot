@@ -110,12 +110,6 @@ public class WheelSubsystem extends SubsystemBase{
 
     public double getEncoderPosition() {
         return turningEncoder.getPosition();
-        // return turningEncoder.getAbsolutePosition();
-        // double rawPos = turningEncoder.getAbsolutePosition() - turningEncoder.getPositionOffset();
-        // if (rawPos < 0)
-        //     return -rawPos;
-        // else
-        //     return 1 - rawPos;
     }
 
     public double getangleSetpoint() {

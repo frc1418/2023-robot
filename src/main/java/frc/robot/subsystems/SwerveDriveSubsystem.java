@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import java.sql.Driver;
-
-import com.ctre.phoenix.sensors.Pigeon2Configuration;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -73,10 +69,8 @@ public class SwerveDriveSubsystem extends SubsystemBase{
         }
 
         ChassisSpeeds speeds = new ChassisSpeeds(x, y, rot);
-        // ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
 
         if (fieldCentric) {
-            // System.out.println("FIELD CENTRIC");
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, odometry.getRotation2d());
         }
 

@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -66,20 +65,11 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     ntIsEnabled.setBoolean(false);
     m_robotContainer.coastDrive();
-
-    // m_robotContainer.getOdometry().zeroHeading();
-    // m_robotContainer.getOdometry().setAngleOffset(180);
-    // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
-    // m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
   @Override
   public void disabledPeriodic() {
     m_robotContainer.updatePivotTarget();
-    // m_robotContainer.getOdometry().zeroHeading();
-    // m_robotContainer.getOdometry().setAngleOffset(180);
-    // m_robotContainer.getOdometry().reset(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
-    // m_robotContainer.getSwerveDriveSubsystem().resetLockRot();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -113,7 +103,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.getSwerveDriveSubsystem().setFieldCentric(true);
-    // m_robotContainer.configureObjects();
     m_robotContainer.zeroSuperstructure();
   }
 
@@ -121,7 +110,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_robotContainer.periodic();
-    // System.out.println("ALLIANCE COLOR: " + DriverStation.getAlliance());
   }
 
   @Override

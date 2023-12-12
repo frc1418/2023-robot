@@ -26,8 +26,6 @@ public class LimelightSubsystem extends SubsystemBase {
     private double yToTarget;
     private double rotToTarget;
     private LimelightDirections targetRotation;
-
-    private Rotation2d angleToTarget = new Rotation2d();
     
     
     public LimelightSubsystem() {
@@ -59,8 +57,6 @@ public class LimelightSubsystem extends SubsystemBase {
         }
 
         distanceToTarget = Math.hypot(xToTarget, yToTarget);
-        angleToTarget = Rotation2d.fromRadians(Math.atan2(xToTarget, yToTarget));
-
     }
 
     public double getDistance() {
@@ -77,17 +73,12 @@ public class LimelightSubsystem extends SubsystemBase {
 
 
     public Rotation2d getRotationToTargetPlane() {
-        Rotation2d rot = Rotation2d.fromDegrees(rotToTarget - 90 + angleToTarget.getDegrees());
-        // System.out.println(rotToTarget);
         return Rotation2d.fromDegrees(rotToTarget);
     }
 
     public boolean getIsDetecting() {
         int id = (int) ntID.getInteger(Integer.MAX_VALUE);
         boolean isDetecting = ntIsDetecting.getInteger(0) == 1 && id >= 1 && id <= 8;
-        if (isDetecting && id != 6){
-            // System.out.println("DETECTING " + id);
-        }
         return isDetecting;
     }
 

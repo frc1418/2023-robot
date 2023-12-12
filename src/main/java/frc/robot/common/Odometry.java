@@ -54,7 +54,6 @@ public class Odometry {
 
         // Update the pose
         pose = odometry.update(gyroAngle, newPositions);
-        // System.out.println(this.getPose().getRotation().getDegrees());
 
         if (limelight.getIsDetecting() && DriverStation.isTeleop()){
             if(limelight.getTargetRotation() == LimelightDirections.GRID_SIDE)

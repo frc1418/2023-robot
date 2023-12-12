@@ -22,7 +22,7 @@ public class PivotSubsystem extends SubsystemBase {
     private final NetworkTableEntry ntPivotPosition = table.getEntry("pivotPosition");
     private final NetworkTableEntry ntTelescopeLength = table.getEntry("telescopeLength");
 
-    private PIDController pivotPidController = new PIDController(19, 3, 0);//new PIDController(18, 0, 0);
+    private PIDController pivotPidController = new PIDController(19, 3, 0);
     private ArmFeedforward armFeedforward = new ArmFeedforward(0, ArmConstants.startingPivotG, 0);
 
     private double targetPos;
@@ -48,7 +48,6 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setPivotPosition(double pos) {
-        // System.out.println(ntPivotPosition.getDouble(0));
         pivotMotor.setVoltage(armFeedforward.calculate(pos, 0) + pivotPidController.calculate(ntPivotPosition.getDouble(0), pos));
     }
 
