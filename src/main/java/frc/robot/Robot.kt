@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.TimedRobot
-import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 
 /**
@@ -20,7 +19,6 @@ class Robot : TimedRobot() {
     private val nt = NetworkTableInstance.getDefault()
     private val table = nt.getTable("robot")
     private val ntIsEnabled = table.getEntry("isEnabled")
-    private var autonomousCommand: Command? = null
     private lateinit var robotContainer: RobotContainer
 
     /**
@@ -64,21 +62,22 @@ class Robot : TimedRobot() {
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class. */
     override fun autonomousInit() {
         ntIsEnabled.setBoolean(true)
-        autonomousCommand = robotContainer.autonomousCommand
+        robotContainer.ledSubsystem.showAllianceColorCommand()
 
         // schedule the autonomous command (example)
-        autonomousCommand?.schedule()
+        robotContainer.autonomousCommand.schedule()
     }
 
     /** This function is called periodically during autonomous. */
     override fun autonomousPeriodic() {}
+
+    override fun autonomousExit() {
+        super.autonomousExit()
+        robotContainer.autonomousCommand.cancel()
+    }
+
     override fun teleopInit() {
         ntIsEnabled.setBoolean(true)
-        // This makes sure that the autonomous stops running when
-        // teleop starts running. If you want the autonomous to
-        // continue until interrupted by another command, remove
-        // this line or comment it out.
-        autonomousCommand?.cancel()
         robotContainer.swerveDriveSubsystem.fieldCentric = true
         // robotContainer.configureObjects();
     }

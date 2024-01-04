@@ -12,7 +12,7 @@ class ElevatorSubsystem(private val elevatorMotor: CANSparkMax) : SubsystemBase(
 
     // TODO add encoder + hall effect sensor to elevator to allow for precise positioning
     init {
-        defaultCommand = runOnce { setElevatorMotor(0.0) }
+        defaultCommand = runOnce { elevatorMotor.set(0.0) }
     }
 
     private fun setElevatorMotor(speed: Double) {
@@ -21,15 +21,11 @@ class ElevatorSubsystem(private val elevatorMotor: CANSparkMax) : SubsystemBase(
 
     // Prevent the motor from moving when the top limit switch is hit.
     // until() is only checked after running for 1 cycle, so we pair with unless()
-    fun raiseElevatorCommand(): Command {
-        return run { setElevatorMotor(1.0) }
-            .until { topLimitSwitch.get() }
-            .unless { topLimitSwitch.get() }
-    }
+    fun raiseElevatorCommand(): Command =
+        run { setElevatorMotor(1.0) }.until { topLimitSwitch.get() }.unless { topLimitSwitch.get() }
 
-    fun lowerElevatorCommand(): Command {
-        return run { setElevatorMotor(-1.0) }
+    fun lowerElevatorCommand(): Command =
+        run { setElevatorMotor(-1.0) }
             .until { bottomLimitSwitch.get() }
             .unless { bottomLimitSwitch.get() }
-    }
 }

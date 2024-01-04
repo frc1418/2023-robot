@@ -14,29 +14,20 @@ class LedSubsystem(blinkin: Spark) : SubsystemBase() {
     private var color: LedColor = LedColor.BLUE_ALLIANCE
 
     init {
-        setAllianceColor()
-        defaultCommand = runOnce { blinkin.set(color.color) }
+        defaultCommand = run { blinkin.set(color.color) }
     }
 
-    private fun setAllianceColor() {
+    fun showAllianceColorCommand() {
         color =
             if (DriverStation.getAlliance() == Alliance.Blue) LedColor.BLUE_ALLIANCE
             else LedColor.RED_ALLIANCE
     }
 
-    fun showBalancingColorCommand(): Command {
-        return runOnce { color = LedColor.BALANCING }
-    }
+    fun showBalancingColorCommand(): Command = runOnce { color = LedColor.BALANCING }
 
-    fun showDockedColorCommand(): Command {
-        return runOnce { color = LedColor.DOCKED }
-    }
+    fun showDockedColorCommand(): Command = runOnce { color = LedColor.DOCKED }
 
-    fun showGrabberOpenCommand(): Command {
-        return runOnce { color = LedColor.GRABBER_OPEN }
-    }
+    fun showGrabberOpenCommand(): Command = runOnce { color = LedColor.GRABBER_OPEN }
 
-    fun showGrabberClosedCommand(): Command {
-        return runOnce { color = LedColor.GRABBER_CLOSED }
-    }
+    fun showGrabberClosedCommand(): Command = runOnce { color = LedColor.GRABBER_CLOSED }
 }

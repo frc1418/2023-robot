@@ -42,7 +42,7 @@ class FollowTrajectoryCommand(
             Commands.run({ odometry.reset(trajectory.initialHolonomicPose) }),
             autoBuilder.fullAuto(trajectory),
             PrintCommand("DONE"),
-            swerveDriveSubsystem.stop
+            swerveDriveSubsystem.stop()
         )
     }
 }

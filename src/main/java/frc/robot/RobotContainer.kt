@@ -16,8 +16,14 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry
 import edu.wpi.first.networktables.NetworkTableInstance
-import edu.wpi.first.wpilibj.*
+import edu.wpi.first.wpilibj.DoubleSolenoid
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.DriverStation.Alliance
+import edu.wpi.first.wpilibj.GenericHID
+import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.PneumaticsModuleType
+import edu.wpi.first.wpilibj.SPI
+import edu.wpi.first.wpilibj.XboxController
 import edu.wpi.first.wpilibj.motorcontrol.Spark
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -27,12 +33,25 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.PrintCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import edu.wpi.first.wpilibj2.command.button.Trigger
-import frc.robot.Constants.*
+import frc.robot.Constants.ArmConstants
+import frc.robot.Constants.ConePosition
+import frc.robot.Constants.DriverConstants
+import frc.robot.Constants.DrivetrainConstants
+import frc.robot.Constants.ElevatorConstants
+import frc.robot.Constants.GrabberConstants
+import frc.robot.Constants.LedConstants
 import frc.robot.commands.AlignByAprilTag
 import frc.robot.commands.FollowTrajectoryCommand
 import frc.robot.commands.LevelChargingStationCommand
 import frc.robot.common.Odometry
-import frc.robot.subsystems.*
+import frc.robot.subsystems.ElevatorSubsystem
+import frc.robot.subsystems.GrabberSubsystem
+import frc.robot.subsystems.LedSubsystem
+import frc.robot.subsystems.LimelightSubsystem
+import frc.robot.subsystems.PivotSubsystem
+import frc.robot.subsystems.SwerveDriveSubsystem
+import frc.robot.subsystems.TelescopeSubsystem
+import frc.robot.subsystems.WheelSubsystem
 import kotlin.math.abs
 
 /**
@@ -110,7 +129,7 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
     private val roll = table.getEntry("roll")
     private val limelight = LimelightSubsystem()
     private val blinkin = Spark(LedConstants.BLINKIN_CHANNEL)
-    private val ledSubsystem = LedSubsystem(blinkin)
+    val ledSubsystem = LedSubsystem(blinkin)
     private val pivotMotor =
         CANSparkMax(ArmConstants.PIVOT_MOTOR_ID, CANSparkMaxLowLevel.MotorType.kBrushless)
     private val telescopeMotor = TalonFX(ArmConstants.TELESCOPE_MOTOR_ID)
@@ -182,18 +201,18 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
     private fun deliverCone(conePosition: ConePosition): Command {
         return grabberSubsystem.grab.andThen(
             pivotSubsystem
-                .moveToTargetContinuously(getArmPositionForCone(conePosition))
-                .raceWith(
+                .setTarget(getArmPositionForCone(conePosition))
+                .andThen(
                     telescopeSubsystem
-                        .moveToTargetAndHold(getTelescopePositionForCone(conePosition))
-                        .andThen(grabberSubsystem.release, telescopeSubsystem.moveToTarget(0.03))
+                        .setTargetAndWait(getTelescopePositionForCone(conePosition))
+                        .andThen(grabberSubsystem.release, telescopeSubsystem.setTarget(0.03))
                 ),
-            pivotSubsystem.moveToTargetUntilThere(ArmConstants.elevatorUpPivotDownPosition)
+            pivotSubsystem.setTarget(ArmConstants.elevatorUpPivotDownPosition)
         )
     }
 
     init {
-        val balance: Command =
+        val balance =
             swerveDriveSubsystem.disableFieldCentricCommand.andThen(
                 PrintCommand("LEVELING"),
                 ledSubsystem.showBalancingColorCommand(),
@@ -203,12 +222,12 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
         val middleToChargingStationTrajectory =
             followTrajectory("middleToChargingStation", PathConstraints(4.0, 4.0))
         // Move robot from the middle position onto the charging station and balances
-        val middleToChargingStation: Command =
+        val middleToChargingStation =
             pivotSubsystem
-                .moveToTargetContinuously(ArmConstants.pivotDownPosition)
+                .setTarget(ArmConstants.pivotDownPosition)
                 .andThen(
                     telescopeSubsystem
-                        .moveToTarget(0.03)
+                        .setTarget(0.03)
                         .andThen(
                             middleToChargingStationTrajectory,
                             balance.alongWith(elevatorSubsystem.lowerElevatorCommand())
@@ -217,24 +236,23 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
         val chargeCommand = followTrajectory("middleToChargingStation", PathConstraints(2.5, 2.5))
         val leftToLeftBallBlue = followTrajectory("leftToLeftBallBlue", PathConstraints(2.5, 2.5))
         val leftToLeftBallRed = followTrajectory("leftToLeftBallRed", PathConstraints(2.5, 2.5))
-        val retrieveLeftBall: Command =
+        val retrieveLeftBall =
             Commands.either(leftToLeftBallRed, leftToLeftBallBlue) {
                     DriverStation.getAlliance() == Alliance.Red
                 }
                 .andThen(
-                    swerveDriveSubsystem.stop,
+                    swerveDriveSubsystem.stop(),
                     grabberSubsystem.release,
-                    telescopeSubsystem.moveToTargetAndHold(0.03)
+                    telescopeSubsystem.setTarget(0.03)
                 )
         val rightBack = followTrajectory("rightBack", PathConstraints(1.72, 2.5))
         val deliverUpperCone = deliverCone(ConePosition.TOP)
         val deliverMiddleCone = deliverCone(ConePosition.MIDDLE)
-        val leftUpperConeAutonomous: Command = deliverUpperCone.andThen(retrieveLeftBall)
-        val rightUpperConeAutonomous: Command = deliverUpperCone.andThen(rightBack)
+        val leftUpperConeAutonomous = deliverUpperCone.andThen(retrieveLeftBall)
+        val rightUpperConeAutonomous = deliverUpperCone.andThen(rightBack)
         val middleAutonomous: Command = deliverUpperCone.andThen(middleToChargingStation)
-        val middleAutonomousMiddleCone: Command = deliverMiddleCone.andThen(middleToChargingStation)
-        val upperConeAutonomous: Command =
-            deliverUpperCone.andThen(elevatorSubsystem.lowerElevatorCommand())
+        val middleAutonomousMiddleCone = deliverMiddleCone.andThen(middleToChargingStation)
+        val upperConeAutonomous = deliverUpperCone.andThen(elevatorSubsystem.lowerElevatorCommand())
         chooser.addOption("Charge Command", chargeCommand)
         chooser.addOption("Left Upper Cone Autonomous", leftUpperConeAutonomous)
         chooser.addOption("Right Upper Cone Autonomous", rightUpperConeAutonomous)
@@ -333,7 +351,7 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
                 )
             }
 
-        fieldCentricButton.onTrue(swerveDriveSubsystem.toggleFieldCentricCommand)
+        fieldCentricButton.onTrue(swerveDriveSubsystem.toggleFieldCentric())
         balanceChargingStationButton.whileTrue(
             ledSubsystem
                 .showBalancingColorCommand()
@@ -343,27 +361,23 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
         elevatorUpButton.whileTrue(elevatorSubsystem.raiseElevatorCommand())
         elevatorDownButton.whileTrue(elevatorSubsystem.lowerElevatorCommand())
         telescopeSubstation.onTrue(
-            telescopeSubsystem.moveToTarget(ArmConstants.telescopeSubstationSetpoint)
+            telescopeSubsystem.setTarget(ArmConstants.telescopeSubstationSetpoint)
         )
-        val toggleGrabberWithLeds: Command =
-            grabberSubsystem.toggle.andThen(
-                Commands.either(
-                    ledSubsystem.showGrabberOpenCommand(),
-                    ledSubsystem.showGrabberClosedCommand()
-                ) {
-                    grabberSubsystem.isOpen
-                }
-            )
-        toggleGrabberButton.onTrue(toggleGrabberWithLeds)
-        pivotToTopPegButton.onTrue(pivotSubsystem.moveToTarget(ArmConstants.topConePosition))
-        pivotToBottomButton.onTrue(pivotSubsystem.moveToTarget(ArmConstants.bottomConePosition))
+
+        Trigger(grabberSubsystem::isOpen)
+            .onTrue(ledSubsystem.showGrabberOpenCommand())
+            .onFalse(ledSubsystem.showGrabberClosedCommand())
+
+        toggleGrabberButton.onTrue(grabberSubsystem.toggle)
+        pivotToTopPegButton.onTrue(pivotSubsystem.setTarget(ArmConstants.topConePosition))
+        pivotToBottomButton.onTrue(pivotSubsystem.setTarget(ArmConstants.bottomConePosition))
         telescopeToOuterButton.onTrue(
-            telescopeSubsystem.moveToTarget(ArmConstants.telescopeOuterSetpoint)
+            telescopeSubsystem.setTarget(ArmConstants.telescopeOuterSetpoint)
         )
         telescopeToMiddleButton.onTrue(
-            telescopeSubsystem.moveToTarget(ArmConstants.telescopeMiddleSetpoint)
+            telescopeSubsystem.setTarget(ArmConstants.telescopeMiddleSetpoint)
         )
-        telescopeToInButton.onTrue(telescopeSubsystem.moveToTarget(0.06))
+        telescopeToInButton.onTrue(telescopeSubsystem.setTarget(0.06))
         alignAtAprilTagButton.whileTrue(alignAtAprilTag)
         alignLeftOfAprilTagButton.whileTrue(alignLeftOfAprilTag)
         alignRightOfAprilTagButton.whileTrue(alignRightOfAprilTag)
@@ -405,10 +419,8 @@ class RobotContainer( // The robot's subsystems and commands are defined here...
     }
 
     private fun buildAutoEventMap() {
-        eventMap["pickUpBall"] =
-            grabberSubsystem.grab.andThen(pivotSubsystem.moveToTargetUntilThere(0.995))
-        eventMap["telescopeOut"] =
-            telescopeSubsystem.moveToTarget(ArmConstants.telescopeOuterSetpoint)
+        eventMap["pickUpBall"] = grabberSubsystem.grab.andThen(pivotSubsystem.setTarget(0.995))
+        eventMap["telescopeOut"] = telescopeSubsystem.setTarget(ArmConstants.telescopeOuterSetpoint)
     }
 
     private fun getArmPositionForCone(conePosition: ConePosition): Double {

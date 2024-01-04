@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.Commands
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants.ArmConstants
-import kotlin.math.abs
 
 class TelescopeSubsystem(private val telescopeMotor: TalonFX) : SubsystemBase() {
     private val ntInstance = NetworkTableInstance.getDefault()
@@ -27,10 +26,6 @@ class TelescopeSubsystem(private val telescopeMotor: TalonFX) : SubsystemBase() 
     }
 
     override fun periodic() {
-        updateTelescopeLength()
-    }
-
-    private fun updateTelescopeLength() {
         ntTelescopeLength.setDouble(
             ArmConstants.telescopeRotationToMeters *
                 telescopeMotor.sensorCollection.integratedSensorPosition
@@ -38,15 +33,14 @@ class TelescopeSubsystem(private val telescopeMotor: TalonFX) : SubsystemBase() 
     }
 
     private fun setTelescopeTarget(target: Double) {
-        telescopeMotor[ControlMode.Position] = target
+        telescopeMotor.set(ControlMode.Position, target)
     }
 
-    fun moveToTargetAndHold(target: Double): Command =
-        runOnce { setTelescopeTarget(target) }.andThen(Commands.waitUntil { atTarget })
+    fun setTargetAndWait(target: Double): Command =
+        runOnce { setTelescopeTarget(target) }
+            .andThen(Commands.waitUntil { telescopeMotor.closedLoopError < CLOSED_LOOP_THRESHOLD })
 
-    fun moveToTarget(target: Double): Command = runOnce { setTelescopeTarget(target) }
-
-    private val atTarget: Boolean = abs(telescopeMotor.closedLoopError) < CLOSED_LOOP_THRESHOLD
+    fun setTarget(target: Double): Command = runOnce { setTelescopeTarget(target) }
 
     companion object {
         const val CLOSED_LOOP_THRESHOLD = 5.0

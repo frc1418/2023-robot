@@ -92,10 +92,6 @@ class SwerveDriveSubsystem(
         if (DriverStation.isAutonomousEnabled()) {
             lockedRot = odometry.heading
         }
-    }
-
-    private fun toggleFieldCentric() {
-        fieldCentric = !fieldCentric
         ntIsFieldCentric.setBoolean(fieldCentric)
     }
 
@@ -111,11 +107,9 @@ class SwerveDriveSubsystem(
     val disableFieldCentricCommand: CommandBase
         get() = runOnce { fieldCentric = false }
 
-    val toggleFieldCentricCommand: CommandBase
-        get() = runOnce { toggleFieldCentric() }
+    fun toggleFieldCentric(): CommandBase = runOnce { fieldCentric = !fieldCentric }
 
-    val stop: Command
-        get() = runOnce { drive(0.0, 0.0, 0.0) }
+    fun stop(): Command = runOnce { drive(0.0, 0.0, 0.0) }
 
     fun resetLockRot() {
         lockedRot = odometry.heading
